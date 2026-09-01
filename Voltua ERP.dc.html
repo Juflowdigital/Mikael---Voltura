@@ -736,6 +736,7 @@ a{color:#f97316;text-decoration:none}a:hover{color:#ea580c}
 </sc-if>
 <sc-if value="{{is_fin}}" hint-placeholder-val="{{false}}">
   <div style="padding:24px 26px;display:flex;flex-direction:column;gap:16px">
+    <div style="display:flex;align-items:center;gap:10px"><div style="font-family:'Space Grotesk';font-size:18px;font-weight:600">Financeiro</div><div style="flex:1"></div><div onClick="{{newIncome}}" style="font-size:12.5px;font-weight:650;color:#16a34a;border:1px solid rgba(22,163,74,.35);border-radius:8px;padding:7px 11px;cursor:pointer">+ Entrada</div><div onClick="{{newExpense}}" style="font-size:12.5px;font-weight:650;color:#dc2626;border:1px solid rgba(220,38,38,.35);border-radius:8px;padding:7px 11px;cursor:pointer">+ Saída</div></div>
     <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px">
       <sc-for list="{{finKpis}}" as="k" hint-placeholder-count="4">
         <div style="background:light-dark(#ffffff,#10242b);border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:12px;padding:14px 18px">
@@ -1392,7 +1393,7 @@ class Component extends DCLogic {
     try { const sb = await this.sb(), org = this.state.organizationId, value = this.parseMoney(this.state.actionValue) || 0, stamp = String(Date.now()).slice(-8);
       if (type === 'contract') { const c = await sb.from('clients').insert({ organization_id: org, name }).select('id').single(); if (c.error) throw c.error; const r = await sb.from('contracts').insert({ organization_id: org, contract_number: 'CT-' + stamp, client_id: c.data.id, status: 'draft', total_value: value }).select('id').single(); if (r.error) throw r.error; }
       if (type === 'purchase') { const s = await sb.from('suppliers').insert({ organization_id: org, name }).select('id').single(); if (s.error) throw s.error; const r = await sb.from('purchase_orders').insert({ organization_id: org, order_number: 'PC-' + stamp, supplier_id: s.data.id, status: 'draft', total_value: value }).select('id').single(); if (r.error) throw r.error; }
-      if (type === 'charge') { const r = await sb.from('financial_transactions').insert({ organization_id: org, direction: 'income', category: 'cobranca', description: name, amount: value || 0.01, due_date: new Date().toISOString().slice(0, 10), status: 'pending', created_by: this.state.userId }).select('id').single(); if (r.error) throw r.error; }
+      if (type === 'charge' || type === 'income' || type === 'expense') { const r = await sb.from('financial_transactions').insert({ organization_id: org, direction: type === 'expense' ? 'expense' : 'income', category: type === 'charge' ? 'cobranca' : 'manual', description: name, amount: value || 0.01, due_date: new Date().toISOString().slice(0, 10), status: 'pending', created_by: this.state.userId }).select('id').single(); if (r.error) throw r.error; }
       this.setState({ modal: null, actionName: '', actionValue: '' }); this.toastMsg('Registro salvo com sucesso');
     } catch (e) { this.toastMsg('Não foi possível salvar: ' + e.message); }
   }
@@ -1506,7 +1507,7 @@ class Component extends DCLogic {
       authKeyDown: e => { if (e.key === 'Enter') this.signIn(); }, login: () => this.signIn(),
       notifOpen: S.notif, notifCount: S.alertasOff ? 0 : 6,
       toast: S.toast, toastOn: !!S.toast,
-      modalLead: S.modal === 'lead', modalProp: S.modal === 'prop', modalAction: S.modal === 'action', actionTitle: S.actionType === 'contract' ? 'Novo contrato' : S.actionType === 'purchase' ? 'Nova solicitação de compra' : 'Nova cobrança', actionHint: S.actionType === 'contract' ? 'Cadastre o cliente e o valor inicial do contrato.' : S.actionType === 'purchase' ? 'Cadastre o fornecedor e o valor estimado do pedido.' : 'Informe o cliente ou descrição e o valor da cobrança.', actionName: S.actionName, actionValue: S.actionValue, setActionName: e => this.setState({ actionName: e.target.value }), setActionValue: e => this.setState({ actionValue: e.target.value }), saveAction: () => this.saveAction(), modalCard: S.modal === 'card' && !!selK,
+      modalLead: S.modal === 'lead', modalProp: S.modal === 'prop', modalAction: S.modal === 'action', actionTitle: S.actionType === 'contract' ? 'Novo contrato' : S.actionType === 'purchase' ? 'Nova solicitação de compra' : S.actionType === 'income' ? 'Registrar entrada' : S.actionType === 'expense' ? 'Registrar saída' : 'Nova cobrança', actionHint: S.actionType === 'contract' ? 'Cadastre o cliente e o valor inicial do contrato.' : S.actionType === 'purchase' ? 'Cadastre o fornecedor e o valor estimado do pedido.' : S.actionType === 'income' ? 'Registre uma receita recebida ou prevista.' : S.actionType === 'expense' ? 'Registre uma despesa paga ou prevista.' : 'Informe o cliente ou descrição e o valor da cobrança.', actionName: S.actionName, actionValue: S.actionValue, setActionName: e => this.setState({ actionName: e.target.value }), setActionValue: e => this.setState({ actionValue: e.target.value }), saveAction: () => this.saveAction(), modalCard: S.modal === 'card' && !!selK,
       openLead: () => this.setState({ modal: 'lead', form: {} }),
       openProp: () => this.setState({ modal: 'prop', form: {} }),
       modalOrc: S.modal === 'orc',
@@ -1557,6 +1558,8 @@ class Component extends DCLogic {
       newContr: () => this.openAction('contract'),
       newPed: () => this.openAction('purchase'),
       newCobr: () => this.openAction('charge'),
+      newIncome: () => this.openAction('income'),
+      newExpense: () => this.openAction('expense'),
       invite: () => { this.nav('equipe'); this.toastMsg('Módulo de equipe aberto — convites são enviados pelo cadastro de colaboradores'); },
       dimensionar: () => this.toastMsg('Cenários recalculados para ' + S.consumo + ' kWh/mês'),
       consumoVal: S.consumo, setConsumo: e => this.setState({ consumo: parseInt(e.target.value) || 0 }),
