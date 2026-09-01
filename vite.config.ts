@@ -1,7 +1,16 @@
 import { defineConfig } from 'vite'
 import { resolve } from 'node:path'
+import { copyFileSync } from 'node:fs'
 
 export default defineConfig({
+  base: './',
+  plugins: [{
+    name: 'copy-runtime-assets',
+    writeBundle() {
+      copyFileSync(resolve(__dirname, 'support.js'), resolve(__dirname, 'dist/support.js'))
+      copyFileSync(resolve(__dirname, 'map.html'), resolve(__dirname, 'dist/map.html'))
+    },
+  }],
   build: {
     rollupOptions: {
       input: {
