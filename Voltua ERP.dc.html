@@ -1308,6 +1308,27 @@ class Component extends DCLogic {
     return window.voltuaSupabase;
   }
   roleName = { admin: 'Administrador', commercial: 'Comercial / Vendedor', engineering: 'Engenharia / Projetos', installer: 'Instalador / Campo', finance: 'Financeiro', viewer: 'Visualizador' };
+  stageKeys = ['lead', 'qualified', 'site_visit', 'proposal_sent', 'negotiation', 'won', 'lost'];
+  money(v) { return 'R$ ' + Number(v || 0).toLocaleString('pt-BR', { maximumFractionDigits: 2 }); }
+  async loadOperationalData(organizationId) {
+    const sb = await this.sb();
+    const [{ data: leads, error: leadsError }, { data: proposals, error: proposalsError }] = await Promise.all([
+      sb.from('leads').select('id,name,city,customer_type,source,stage,estimated_value,created_at').eq('organization_id', organizationId).order('created_at', { ascending: false }),
+      sb.from('proposals').select('id,proposal_number,status,total_value,created_at,clients(name),budgets(system_power_kwp)').eq('organization_id', organizationId).order('created_at', { ascending: false })
+    ]);
+    if (leadsError) throw leadsError;
+    if (proposalsError) throw proposalsError;
+    const funil = this.funilBase().map((column, index) => Object.assign({}, column, { cards: [], q: 0, stage: this.stageKeys[index] }));
+    (leads || []).forEach(lead => {
+      const index = Math.max(0, this.stageKeys.indexOf(lead.stage));
+      funil[index].cards.push(Object.assign(this.mkC(lead.name, lead.city || '—', lead.customer_type || 'Não informado', lead.estimated_value ? this.money(lead.estimated_value) : 'R$ —', lead.source || 'Não informada', '#16a34a', new Date(lead.created_at).toLocaleDateString('pt-BR')), { id: lead.id }));
+      funil[index].q++;
+    });
+    const labels = { draft: 'Rascunho', sent: 'Enviada', viewed: 'Visualizada', accepted: 'Aceita', rejected: 'Rejeitada', expired: 'Expirada' };
+    const colors = { draft: this.GY, sent: this.B, viewed: this.A, accepted: this.G, rejected: this.R, expired: this.GY };
+    const props = (proposals || []).map(p => Object.assign({ dbId: p.id, id: '#' + p.proposal_number, cli: p.clients?.name || 'Cliente', data: new Date(p.created_at).toLocaleDateString('pt-BR'), pot: (p.budgets?.system_power_kwp || '—') + ' kWp', v: this.money(p.total_value), ver: 'v1' }, this.stm(labels[p.status] || p.status, colors[p.status] || this.GY)));
+    this.setState({ funil, props });
+  }
   async enterSession(session) {
     const sb = await this.sb();
     const [{ data: profile }, { data: membership, error }] = await Promise.all([
@@ -1317,6 +1338,8 @@ class Component extends DCLogic {
     if (error || !membership) throw new Error('Usuário sem acesso a uma organização. Peça ao administrador para adicioná-lo à equipe.');
     const perfil = this.roleName[membership.role] || 'Visualizador';
     this.setState({ screen: perfil === 'Instalador / Campo' ? 'campo' : 'dash', user: { nome: profile?.full_name || session.user.email, perfil }, organizationId: membership.organization_id, authLoading: false, authError: '', authPassword: '' });
+    try { await this.loadOperationalData(membership.organization_id); }
+    catch (loadError) { this.toastMsg('Falha ao carregar dados: ' + loadError.message); }
   }
   async restoreSession() {
     try { const sb = await this.sb(); const { data } = await sb.auth.getSession(); if (data.session) await this.enterSession(data.session); else this.setState({ screen: 'login', authLoading: false }); }
@@ -1341,25 +1364,42 @@ class Component extends DCLogic {
   ff(k) { return e => this.setState({ form: Object.assign({}, this.state.form, { [k]: e.target.value }) }); }
   getFunil() { return this.state.funil ?? this.funilBase(); }
   mapFunil(cols) { return cols.map((c, ci) => Object.assign({}, c, { over: e => e.preventDefault(), drop: e => { e.preventDefault(); this.dropTo(ci); }, cards: c.cards.map((k, ki) => Object.assign({}, k, { open: () => this.setState({ modal: 'card', card: [ci, ki] }), drag: () => { this._drag = [ci, ki]; } })) })); }
-  dropTo(ci2) { const d = this._drag; this._drag = null; if (!d || d[0] === ci2) return; const f = this.cloneFunil(); const k = f[d[0]].cards.splice(d[1], 1)[0]; f[d[0]].q--; f[ci2].q++; f[ci2].cards.push(k); this.setState({ funil: f }); this.toastMsg(k.n + ' movido para "' + f[ci2].n + '"'); }
+  async saveLeadStage(card, stageIndex) {
+    if (!card.id) return;
+    const sb = await this.sb();
+    const { error } = await sb.from('leads').update({ stage: this.stageKeys[stageIndex] }).eq('id', card.id).eq('organization_id', this.state.organizationId);
+    if (error) throw error;
+  }
+  async dropTo(ci2) { const d = this._drag; this._drag = null; if (!d || d[0] === ci2) return; const f = this.cloneFunil(); const k = f[d[0]].cards.splice(d[1], 1)[0]; f[d[0]].q--; f[ci2].q++; f[ci2].cards.push(k); try { await this.saveLeadStage(k, ci2); this.setState({ funil: f }); this.toastMsg(k.n + ' movido para "' + f[ci2].n + '"'); } catch (e) { this.toastMsg('Erro ao mover lead: ' + e.message); } }
   cloneFunil() { return this.getFunil().map(c => Object.assign({}, c, { cards: c.cards.slice() })); }
-  moveCard(dir) {
+  async moveCard(dir) {
     const [ci, ki] = this.state.card, f = this.cloneFunil(), ni = ci + dir;
     if (ni < 0 || ni >= f.length) return;
     const k = f[ci].cards.splice(ki, 1)[0]; f[ci].q--; f[ni].q++; f[ni].cards.unshift(k);
-    this.setState({ funil: f, modal: null, card: null }); this.toastMsg(k.n + ' movido para "' + f[ni].n + '"');
+    try { await this.saveLeadStage(k, ni); this.setState({ funil: f, modal: null, card: null }); this.toastMsg(k.n + ' movido para "' + f[ni].n + '"'); } catch (e) { this.toastMsg('Erro ao atualizar lead: ' + e.message); }
   }
-  addLead() {
+  async addLead() {
     const fm = this.state.form; if (!fm.nome) { this.toastMsg('Informe o nome do lead'); return; }
-    const f = this.cloneFunil();
-    f[0].cards.unshift(this.mkC(fm.nome, fm.cidade || 'Fortaleza', fm.tipo || 'Residencial', fm.valor || 'R$ —', fm.origem || 'Indicação', '#16a34a', 'agora')); f[0].q++;
-    this.setState({ funil: f, modal: null, form: {} }); this.toastMsg('Lead cadastrado no funil');
+    try {
+      const sb = await this.sb(), value = this.parseMoney(fm.valor);
+      const { data, error } = await sb.from('leads').insert({ organization_id: this.state.organizationId, name: fm.nome.trim(), city: fm.cidade || null, customer_type: fm.tipo || null, source: fm.origem || null, estimated_value: value, stage: 'lead' }).select('id').single();
+      if (error) throw error;
+      const f = this.cloneFunil(); f[0].cards.unshift(Object.assign(this.mkC(fm.nome, fm.cidade || '—', fm.tipo || 'Não informado', value ? this.money(value) : 'R$ —', fm.origem || 'Não informada', '#16a34a', 'agora'), { id: data.id })); f[0].q++;
+      this.setState({ funil: f, modal: null, form: {} }); this.toastMsg('Lead cadastrado no funil');
+    } catch (e) { this.toastMsg('Erro ao cadastrar lead: ' + e.message); }
   }
   getProps() { return this.state.props ?? this.propsBase(); }
-  addProp() {
+  parseMoney(value) { let normalized = String(value || '').replace(/[^0-9,.-]/g, ''); if (normalized.includes(',')) normalized = normalized.replace(/\./g, '').replace(',', '.'); else if (/\.\d{3}$/.test(normalized)) normalized = normalized.replace(/\./g, ''); const number = Number(normalized); return Number.isFinite(number) ? number : null; }
+  async addProp() {
     const fm = this.state.form; if (!fm.nome) { this.toastMsg('Informe o cliente da proposta'); return; }
-    const p = [Object.assign({ id: '#PR-1050', cli: fm.nome, data: 'agora', pot: (fm.pot || '6,84') + ' kWp', v: fm.valor || 'R$ 32.400', ver: 'v1' }, this.stm('Rascunho', this.GY))].concat(this.getProps());
-    this.setState({ props: p, modal: null, form: {} }); this.toastMsg('Proposta #PR-1050 criada como rascunho');
+    try {
+      const sb = await this.sb(), org = this.state.organizationId, value = this.parseMoney(fm.valor) || 0;
+      const { data: client, error: clientError } = await sb.from('clients').insert({ organization_id: org, name: fm.nome.trim() }).select('id').single(); if (clientError) throw clientError;
+      const number = 'PR-' + String(Date.now()).slice(-8);
+      const { data, error } = await sb.from('proposals').insert({ organization_id: org, proposal_number: number, client_id: client.id, total_value: value, status: 'draft' }).select('id').single(); if (error) throw error;
+      const p = [Object.assign({ dbId: data.id, id: '#' + number, cli: fm.nome, data: 'agora', pot: (fm.pot || '—') + ' kWp', v: this.money(value), ver: 'v1' }, this.stm('Rascunho', this.GY))].concat(this.getProps());
+      this.setState({ props: p, modal: null, form: {} }); this.toastMsg('Proposta ' + number + ' criada como rascunho');
+    } catch (e) { this.toastMsg('Erro ao criar proposta: ' + e.message); }
   }
   getParc() { return this.state.parc ?? this.parcBase(); }
   baixa(i) {
@@ -1502,7 +1542,7 @@ class Component extends DCLogic {
       logout: () => this.signOut(),
       perfis: this.perfisDef.map(([nome, desc, ini]) => ({
         nome, desc, ini,
-        go: () => this.setState({ user: { nome: nome === 'Administrador' ? 'Mykael Soares' : nome.split(' / ')[0] + ' Demo', perfil: nome }, screen: nome.startsWith('Instalador') ? 'campo' : 'dash' })
+        go: () => this.toastMsg('Perfis são definidos pelo administrador no cadastro da equipe')
       })),
       navGroups: this.navDef.map(([label, items]) => ({
         label,

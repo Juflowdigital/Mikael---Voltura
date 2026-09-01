@@ -8,7 +8,8 @@
     "build": "vite build",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
-    "check": "npm run typecheck && npm run build",
+    "check:component": "node scripts/check-component.mjs",
+    "check": "npm run typecheck && npm run check:component && npm run build",
     "supabase": "supabase"
   },
   "dependencies": {
