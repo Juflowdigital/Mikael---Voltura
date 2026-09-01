@@ -1299,6 +1299,17 @@ a{color:#f97316;text-decoration:none}a:hover{color:#ea580c}
       </div>
     </div>
   </sc-if>
+  <sc-if value="{{modalAction}}" hint-placeholder-val="{{false}}">
+    <div onClick="{{closeModal}}" style="position:fixed;inset:0;background:rgba(8,20,25,.5);z-index:60;display:grid;place-items:center">
+      <div onClick="{{stop}}" style="width:400px;max-width:calc(100vw - 32px);background:light-dark(#fff,#10242b);border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:14px;padding:22px 24px;display:flex;flex-direction:column;gap:12px;box-shadow:0 24px 60px rgba(0,0,0,.3)">
+        <div style="font-family:'Space Grotesk';font-size:18px;font-weight:600">{{actionTitle}}</div>
+        <div style="font-size:12px;color:light-dark(#5c6b70,#8ba0a6)">{{actionHint}}</div>
+        <input value="{{actionName}}" onChange="{{setActionName}}" placeholder="Descrição / cliente / fornecedor" style="font:inherit;padding:11px 12px;border-radius:9px;border:1px solid light-dark(#cdd6d9,#2a4550);background:light-dark(#fff,#10242b);color:inherit;outline-color:#f97316">
+        <input value="{{actionValue}}" onChange="{{setActionValue}}" placeholder="Valor (opcional)" inputmode="decimal" style="font:inherit;padding:11px 12px;border-radius:9px;border:1px solid light-dark(#cdd6d9,#2a4550);background:light-dark(#fff,#10242b);color:inherit;outline-color:#f97316">
+        <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:4px"><div onClick="{{closeModal}}" style="font-size:13px;font-weight:600;border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:9px;padding:9px 16px;cursor:pointer">Cancelar</div><div onClick="{{saveAction}}" style="font-size:13px;font-weight:600;background:#f97316;color:#fff;border-radius:9px;padding:9px 16px;cursor:pointer">Salvar</div></div>
+      </div>
+    </div>
+  </sc-if>
   <sc-if value="{{modalCard}}" hint-placeholder-val="{{false}}">
     <div onClick="{{closeModal}}" style="position:fixed;inset:0;background:rgba(8,20,25,.45);z-index:60;display:grid;place-items:center">
       <div onClick="{{stop}}" style="width:380px;background:light-dark(#ffffff,#10242b);border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:14px;padding:22px 24px;display:flex;flex-direction:column;gap:8px;box-shadow:0 24px 60px rgba(0,0,0,.3)">
@@ -1319,7 +1330,7 @@ a{color:#f97316;text-decoration:none}a:hover{color:#ea580c}
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props="{&quot;modoEscuro&quot;: {&quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: false, &quot;tsType&quot;: &quot;boolean&quot;, &quot;section&quot;: &quot;Aparência&quot;}, &quot;mostrarMapa&quot;: {&quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: true, &quot;tsType&quot;: &quot;boolean&quot;, &quot;section&quot;: &quot;Dashboard&quot;}}">
 class Component extends DCLogic {
-  state = { screen: 'login', menuOpen: false, darkSet: null, notif: false, user: { nome: 'Usuário', perfil: 'Visualizador' }, toast: '', modal: null, card: null, consumo: 650, funil: null, props: null, parc: null, chkDone: null, alertasOff: false, checkedOut: false, form: {}, detail: null, q: '', periodo: 'Mês', perIni: '', perFim: '', cfgT: null, pdfP: null, cliSel: null, authEmail: '', authPassword: '', authLoading: true, authError: '' };
+  state = { screen: 'login', menuOpen: false, darkSet: null, notif: false, user: { nome: 'Usuário', perfil: 'Visualizador' }, toast: '', modal: null, actionType: '', actionName: '', actionValue: '', userId: null, organizationId: null, consumo: 650, funil: null, props: null, parc: null, chkDone: null, alertasOff: false, checkedOut: false, form: {}, detail: null, q: '', periodo: 'Mês', perIni: '', perFim: '', cfgT: null, pdfP: null, cliSel: null, authEmail: '', authPassword: '', authLoading: true, authError: '' };
   componentDidMount() { this.restoreSession(); }
   async sb() {
     for (let i = 0; i < 100 && !window.voltuaSupabase; i++) await new Promise(r => setTimeout(r, 30));
@@ -1356,7 +1367,7 @@ class Component extends DCLogic {
     ]);
     if (error || !membership) throw new Error('Usuário sem acesso a uma organização. Peça ao administrador para adicioná-lo à equipe.');
     const perfil = this.roleName[membership.role] || 'Visualizador';
-    this.setState({ screen: perfil === 'Instalador / Campo' ? 'campo' : 'dash', menuOpen: false, user: { nome: profile?.full_name || session.user.email, perfil }, organizationId: membership.organization_id, authLoading: false, authError: '', authPassword: '' });
+    this.setState({ screen: perfil === 'Instalador / Campo' ? 'campo' : 'dash', menuOpen: false, user: { nome: profile?.full_name || session.user.email, perfil }, userId: session.user.id, organizationId: membership.organization_id, authLoading: false, authError: '', authPassword: '' });
     try { await this.loadOperationalData(membership.organization_id); }
     catch (loadError) { this.toastMsg('Falha ao carregar dados: ' + loadError.message); }
   }
@@ -1375,6 +1386,16 @@ class Component extends DCLogic {
   allowed(id) { const m = this.permMap[this.state.user.perfil]; return !m || m.indexOf(id) >= 0; }
   nav(id) { if (!this.allowed(id)) { this.toastMsg('Seu perfil não tem acesso a este módulo'); return; } this.setState({ screen: id, menuOpen: false, notif: false }); }
   toggleMenu() { this.setState({ menuOpen: !this.state.menuOpen }); }
+  openAction(type) { this.setState({ modal: 'action', actionType: type, actionName: '', actionValue: {}[type] || '' }); }
+  async saveAction() {
+    const type = this.state.actionType, name = this.state.actionName.trim(); if (!name) return this.toastMsg('Informe uma descrição');
+    try { const sb = await this.sb(), org = this.state.organizationId, value = this.parseMoney(this.state.actionValue) || 0, stamp = String(Date.now()).slice(-8);
+      if (type === 'contract') { const c = await sb.from('clients').insert({ organization_id: org, name }).select('id').single(); if (c.error) throw c.error; const r = await sb.from('contracts').insert({ organization_id: org, contract_number: 'CT-' + stamp, client_id: c.data.id, status: 'draft', total_value: value }).select('id').single(); if (r.error) throw r.error; }
+      if (type === 'purchase') { const s = await sb.from('suppliers').insert({ organization_id: org, name }).select('id').single(); if (s.error) throw s.error; const r = await sb.from('purchase_orders').insert({ organization_id: org, order_number: 'PC-' + stamp, supplier_id: s.data.id, status: 'draft', total_value: value }).select('id').single(); if (r.error) throw r.error; }
+      if (type === 'charge') { const r = await sb.from('financial_transactions').insert({ organization_id: org, direction: 'income', category: 'cobranca', description: name, amount: value || 0.01, due_date: new Date().toISOString().slice(0, 10), status: 'pending', created_by: this.state.userId }).select('id').single(); if (r.error) throw r.error; }
+      this.setState({ modal: null, actionName: '', actionValue: '' }); this.toastMsg('Registro salvo com sucesso');
+    } catch (e) { this.toastMsg('Não foi possível salvar: ' + e.message); }
+  }
   openDet(t, sub, rows, acao) { this.setState({ modal: 'det', detail: { t, sub, rows: rows.filter(r => r && r[1] !== undefined && r[1] !== null && r[1] !== ''), acao } }); }
   detMap(list, fn) { return list.map((x, i) => Object.assign({}, x, { det: () => this.openDet(...fn(x, i)) })); }
   toastMsg(m) { clearTimeout(this._tt); this.setState({ toast: m }); this._tt = setTimeout(() => this.setState({ toast: '' }), 2800); }
@@ -1485,7 +1506,7 @@ class Component extends DCLogic {
       authKeyDown: e => { if (e.key === 'Enter') this.signIn(); }, login: () => this.signIn(),
       notifOpen: S.notif, notifCount: S.alertasOff ? 0 : 6,
       toast: S.toast, toastOn: !!S.toast,
-      modalLead: S.modal === 'lead', modalProp: S.modal === 'prop', modalCard: S.modal === 'card' && !!selK,
+      modalLead: S.modal === 'lead', modalProp: S.modal === 'prop', modalAction: S.modal === 'action', actionTitle: S.actionType === 'contract' ? 'Novo contrato' : S.actionType === 'purchase' ? 'Nova solicitação de compra' : 'Nova cobrança', actionHint: S.actionType === 'contract' ? 'Cadastre o cliente e o valor inicial do contrato.' : S.actionType === 'purchase' ? 'Cadastre o fornecedor e o valor estimado do pedido.' : 'Informe o cliente ou descrição e o valor da cobrança.', actionName: S.actionName, actionValue: S.actionValue, setActionName: e => this.setState({ actionName: e.target.value }), setActionValue: e => this.setState({ actionValue: e.target.value }), saveAction: () => this.saveAction(), modalCard: S.modal === 'card' && !!selK,
       openLead: () => this.setState({ modal: 'lead', form: {} }),
       openProp: () => this.setState({ modal: 'prop', form: {} }),
       modalOrc: S.modal === 'orc',
@@ -1533,9 +1554,9 @@ class Component extends DCLogic {
       movePrev: () => this.moveCard(-1), moveNext: () => this.moveCard(1),
       cardZap: () => selK && this.zap('Olá ' + selK.n.split(' ')[0] + '! Aqui é da Voltua Energia, tudo bem?'),
       clearAlertas: () => { this.setState({ alertasOff: true, notif: false }); this.toastMsg('Alertas marcados como lidos'); },
-      newContr: () => { this.nav('contr'); this.toastMsg('Módulo de contratos aberto — selecione uma proposta aceita para gerar o contrato'); },
-      newPed: () => { this.nav('compras'); this.toastMsg('Módulo de compras aberto — selecione uma obra para criar a solicitação'); },
-      newCobr: () => { this.nav('cobr'); this.toastMsg('Módulo de cobranças aberto — selecione uma parcela para gerar o PIX'); },
+      newContr: () => this.openAction('contract'),
+      newPed: () => this.openAction('purchase'),
+      newCobr: () => this.openAction('charge'),
       invite: () => { this.nav('equipe'); this.toastMsg('Módulo de equipe aberto — convites são enviados pelo cadastro de colaboradores'); },
       dimensionar: () => this.toastMsg('Cenários recalculados para ' + S.consumo + ' kWh/mês'),
       consumoVal: S.consumo, setConsumo: e => this.setState({ consumo: parseInt(e.target.value) || 0 }),
