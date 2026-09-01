@@ -2,7 +2,15 @@
 <html>
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0c2b33">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Voltura">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="icon" href="./favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="./favicon.svg">
 <script type="module" src="/src/bootstrap.ts"></script>
 <script src="./support.js"></script>
 </head>
@@ -13,10 +21,14 @@
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 body{margin:0;font-family:'Instrument Sans',sans-serif;color-scheme:light}
+html,body{min-height:100%;overscroll-behavior-x:none}body{padding-top:env(safe-area-inset-top);padding-right:env(safe-area-inset-right);padding-bottom:env(safe-area-inset-bottom);padding-left:env(safe-area-inset-left)}
 a{color:#f97316;text-decoration:none}a:hover{color:#ea580c}
 ::-webkit-scrollbar{width:10px;height:10px}::-webkit-scrollbar-thumb{background:light-dark(#cdd6d9,#2a4550);border-radius:8px}::-webkit-scrollbar-track{background:transparent}
 .login-shell{position:relative;flex:1;display:grid;grid-template-columns:minmax(0,1.15fr) minmax(420px,.85fr);min-height:100vh;overflow:hidden;background:#071a20}.login-shell:before{content:"";position:absolute;inset:0;background:url('./assets/login-solar-hero.png') center/cover no-repeat;opacity:.58;filter:saturate(.82) contrast(1.04);transform:scale(1.01)}.login-shell:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(5,24,30,.94),rgba(7,29,36,.78) 48%,rgba(7,23,29,.52))}.login-brand,.login-panel{position:relative;z-index:1}.login-brand{display:flex;flex-direction:column;justify-content:space-between;padding:52px 5.5vw;color:#fff}.login-panel{display:flex;align-items:center;justify-content:center;padding:40px;background:rgba(7,20,25,.3);backdrop-filter:blur(3px)}.login-card{width:100%;max-width:390px;padding:34px;border:1px solid rgba(255,255,255,.14);border-radius:20px;background:rgba(250,252,252,.94);box-shadow:0 28px 80px rgba(0,0,0,.32);color:#15272d;backdrop-filter:blur(18px)}.login-input{box-sizing:border-box;width:100%;font:inherit;padding:13px 14px;border-radius:10px;border:1px solid #ccd7da;background:#fff;color:#15272d;outline:none;transition:.2s}.login-input:focus{border-color:#f97316;box-shadow:0 0 0 3px rgba(249,115,22,.13)}.login-button{width:100%;font:inherit;font-weight:700;padding:13px;border:0;border-radius:10px;background:linear-gradient(135deg,#f97316,#ea580c);color:#fff;cursor:pointer;box-shadow:0 9px 24px rgba(234,88,12,.25)}
 @media(max-width:820px){.login-shell{grid-template-columns:1fr}.login-brand{min-height:190px;padding:28px}.login-brand-copy{display:none!important}.login-panel{padding:24px;background:rgba(5,20,25,.68)}.login-card{padding:26px}}
+@media(max-width:900px){.app-sidebar{position:fixed!important;left:0;top:env(safe-area-inset-top);height:calc(100dvh - env(safe-area-inset-top))!important;z-index:50;box-shadow:14px 0 40px rgba(0,0,0,.28);transition:transform .22s ease}.app-main{min-width:0!important;width:100%!important}.mobile-menu-button{display:grid!important}.app-topbar{padding-top:8px!important;height:58px!important}}
+@media(min-width:901px){.mobile-menu-button{display:none!important}}
+@media(min-width:901px){.app-sidebar{transform:none!important}}
 </style>
 </helmet>
 <div style="display:flex;min-height:100vh;background:light-dark(#f2f4f5,#0b1a1f);color:light-dark(#16262b,#e8eef0)">
@@ -57,7 +69,7 @@ a{color:#f97316;text-decoration:none}a:hover{color:#ea580c}
   </div>
 </sc-if>
 <sc-if value="{{isApp}}" hint-placeholder-val="{{true}}">
-  <div style="width:230px;flex-shrink:0;background:#0c2b33;color:#fff;display:flex;flex-direction:column;position:sticky;top:0;height:100vh">
+  <div class="app-sidebar" style="width:230px;flex-shrink:0;background:#0c2b33;color:#fff;display:flex;flex-direction:column;position:sticky;top:0;height:100vh;transform:{{menuTransform}}">
     <div style="display:flex;align-items:center;gap:9px;padding:18px 16px 14px">
       <div style="width:26px;height:26px;border-radius:7px;background:#f97316;display:grid;place-items:center"><svg width="17" height="17" viewBox="0 0 48 48" fill="none"><circle cx="24" cy="9.5" r="4.5" fill="#ffffff"></circle><path d="M8 15 L16 15 L26.5 42 L20 42 Z" fill="#ffffff"></path><path d="M40 15 L32 15 L21.5 42 L28 42 Z" fill="#ffffff" opacity="0.82"></path></svg></div>
       <div style="font-family:'Space Grotesk';font-weight:700;font-size:17px">Voltua<span style="color:#f97316">.</span></div>
@@ -84,7 +96,8 @@ a{color:#f97316;text-decoration:none}a:hover{color:#ea580c}
     </div>
   </div>
   <div style="flex:1;min-width:0;display:flex;flex-direction:column">
-    <div style="height:58px;flex-shrink:0;display:flex;align-items:center;gap:12px;padding:0 26px;border-bottom:1px solid light-dark(#e3e8ea,#1d3640);background:light-dark(#ffffff,#0e2029);position:sticky;top:0;z-index:20">
+    <div class="app-topbar" style="height:58px;flex-shrink:0;display:flex;align-items:center;gap:12px;padding:0 26px;border-bottom:1px solid light-dark(#e3e8ea,#1d3640);background:light-dark(#ffffff,#0e2029);position:sticky;top:0;z-index:20;padding-top:env(safe-area-inset-top)">
+      <button class="mobile-menu-button" onClick="{{toggleMenu}}" aria-label="Abrir menu" style="display:none;width:34px;height:34px;place-items:center;border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:9px;background:transparent;color:inherit;font-size:20px;cursor:pointer">☰</button>
       <div style="font-family:'Space Grotesk';font-size:16px;font-weight:600">{{screenTitle}}</div>
       <div style="font-size:12px;color:light-dark(#8a979b,#5f7883)">{{screenSub}}</div>
       <div style="flex:1"></div>
@@ -1306,7 +1319,7 @@ a{color:#f97316;text-decoration:none}a:hover{color:#ea580c}
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props="{&quot;modoEscuro&quot;: {&quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: false, &quot;tsType&quot;: &quot;boolean&quot;, &quot;section&quot;: &quot;Aparência&quot;}, &quot;mostrarMapa&quot;: {&quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: true, &quot;tsType&quot;: &quot;boolean&quot;, &quot;section&quot;: &quot;Dashboard&quot;}}">
 class Component extends DCLogic {
-  state = { screen: 'login', darkSet: null, notif: false, user: { nome: 'Usuário', perfil: 'Visualizador' }, toast: '', modal: null, card: null, consumo: 650, funil: null, props: null, parc: null, chkDone: null, alertasOff: false, checkedOut: false, form: {}, detail: null, q: '', periodo: 'Mês', perIni: '', perFim: '', cfgT: null, pdfP: null, cliSel: null, authEmail: '', authPassword: '', authLoading: true, authError: '' };
+  state = { screen: 'login', menuOpen: false, darkSet: null, notif: false, user: { nome: 'Usuário', perfil: 'Visualizador' }, toast: '', modal: null, card: null, consumo: 650, funil: null, props: null, parc: null, chkDone: null, alertasOff: false, checkedOut: false, form: {}, detail: null, q: '', periodo: 'Mês', perIni: '', perFim: '', cfgT: null, pdfP: null, cliSel: null, authEmail: '', authPassword: '', authLoading: true, authError: '' };
   componentDidMount() { this.restoreSession(); }
   async sb() {
     for (let i = 0; i < 100 && !window.voltuaSupabase; i++) await new Promise(r => setTimeout(r, 30));
@@ -1343,7 +1356,7 @@ class Component extends DCLogic {
     ]);
     if (error || !membership) throw new Error('Usuário sem acesso a uma organização. Peça ao administrador para adicioná-lo à equipe.');
     const perfil = this.roleName[membership.role] || 'Visualizador';
-    this.setState({ screen: perfil === 'Instalador / Campo' ? 'campo' : 'dash', user: { nome: profile?.full_name || session.user.email, perfil }, organizationId: membership.organization_id, authLoading: false, authError: '', authPassword: '' });
+    this.setState({ screen: perfil === 'Instalador / Campo' ? 'campo' : 'dash', menuOpen: false, user: { nome: profile?.full_name || session.user.email, perfil }, organizationId: membership.organization_id, authLoading: false, authError: '', authPassword: '' });
     try { await this.loadOperationalData(membership.organization_id); }
     catch (loadError) { this.toastMsg('Falha ao carregar dados: ' + loadError.message); }
   }
@@ -1360,7 +1373,8 @@ class Component extends DCLogic {
   async signOut() { try { const sb = await this.sb(); await sb.auth.signOut(); } finally { this.setState({ screen: 'login', organizationId: null, authPassword: '', notif: false }); } }
   permMap = { 'Comercial / Vendedor': ['dash', 'crm', 'orc', 'prop', 'contr', 'cliente', 'equipe', 'rel'], 'Engenharia / Projetos': ['dash', 'homol', 'obras', 'campo', 'compras', 'estoque'], 'Instalador / Campo': ['campo'], 'Financeiro': ['dash', 'fin', 'cobr', 'rel'], 'Visualizador': ['dash', 'rel'] };
   allowed(id) { const m = this.permMap[this.state.user.perfil]; return !m || m.indexOf(id) >= 0; }
-  nav(id) { if (!this.allowed(id)) { this.toastMsg('Seu perfil não tem acesso a este módulo'); return; } this.setState({ screen: id, notif: false }); }
+  nav(id) { if (!this.allowed(id)) { this.toastMsg('Seu perfil não tem acesso a este módulo'); return; } this.setState({ screen: id, menuOpen: false, notif: false }); }
+  toggleMenu() { this.setState({ menuOpen: !this.state.menuOpen }); }
   openDet(t, sub, rows, acao) { this.setState({ modal: 'det', detail: { t, sub, rows: rows.filter(r => r && r[1] !== undefined && r[1] !== null && r[1] !== ''), acao } }); }
   detMap(list, fn) { return list.map((x, i) => Object.assign({}, x, { det: () => this.openDet(...fn(x, i)) })); }
   toastMsg(m) { clearTimeout(this._tt); this.setState({ toast: m }); this._tt = setTimeout(() => this.setState({ toast: '' }), 2800); }
@@ -1464,7 +1478,7 @@ class Component extends DCLogic {
     const perK = ({ 'Dia': { prop: '2', kwp: '9,6', d1: '+1 vs ontem', d2: 'instalados hoje' }, 'Semana': { prop: '9', kwp: '52,3', d1: '+3 vs semana anterior', d2: 'nesta semana' }, 'Personalizado': { prop: '18', kwp: '121,4', d1: 'no período selecionado', d2: 'no período selecionado' } })[S.periodo] || { prop: '32', kwp: '214,6', d1: '+18% vs julho', d2: '+31,2 kWp na semana' };
     const vals = {
       showMapa: this.props.mostrarMapa ?? true,
-      isLogin: S.screen === 'login', isApp: S.screen !== 'login',
+      isLogin: S.screen === 'login', isApp: S.screen !== 'login', menuTransform: S.menuOpen ? 'translateX(0)' : 'translateX(-105%)', toggleMenu: () => this.toggleMenu(),
       authEmail: S.authEmail, authPassword: S.authPassword, authError: S.authError, authErrorOn: !!S.authError,
       authLoading: S.authLoading, authButton: S.authLoading ? 'Entrando…' : 'Entrar',
       setAuthEmail: e => this.setState({ authEmail: e.target.value }), setAuthPassword: e => this.setState({ authPassword: e.target.value }),

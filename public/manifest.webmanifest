@@ -1,0 +1,14 @@
+{
+  "name": "Voltura",
+  "short_name": "Voltura",
+  "description": "Gestão completa para integradores de energia solar.",
+  "start_url": "./Voltua%20ERP.dc.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#071a20",
+  "theme_color": "#0c2b33",
+  "icons": [
+    { "src": "./favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}

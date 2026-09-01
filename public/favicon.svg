@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" role="img" aria-label="Voltura">
+  <rect width="48" height="48" rx="11" fill="#f97316"/>
+  <circle cx="24" cy="9.5" r="4.5" fill="#fff"/>
+  <path d="M8 15h8l10.5 27H20L8 15Z" fill="#fff"/>
+  <path d="M40 15h-8L21.5 42H28l12-27Z" fill="#fff" opacity=".82"/>
+</svg>
