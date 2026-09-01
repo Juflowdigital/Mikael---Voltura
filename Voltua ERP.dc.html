@@ -79,8 +79,8 @@ a{color:#f97316;text-decoration:none}a:hover{color:#ea580c}
       <sc-for list="{{navGroups}}" as="g" hint-placeholder-count="5">
         <div style="font-size:10px;letter-spacing:.09em;text-transform:uppercase;color:rgba(255,255,255,.38);padding:14px 8px 5px;font-weight:600">{{g.label}}</div>
         <sc-for list="{{g.items}}" as="it" hint-placeholder-count="3">
-          <div onClick="{{it.go}}" style="display:flex;align-items:center;gap:9px;padding:7px 8px;border-radius:8px;cursor:pointer;background:{{it.bg}}" style-hover="background:rgba(255,255,255,.07)">
-            <span style="font-family:'Space Grotesk';font-size:10px;color:{{it.numc}};width:16px">{{it.num}}</span>
+          <div onClick="{{it.go}}" style="display:flex;align-items:center;gap:9px;padding:8px;border-radius:8px;cursor:pointer;background:{{it.bg}}" style-hover="background:rgba(255,255,255,.07)">
+            <span style="display:grid;place-items:center;width:18px;height:18px;font-size:14px;color:{{it.numc}}">{{it.icon}}</span>
             <span style="font-size:13px;color:{{it.cl}};font-weight:500">{{it.label}}</span>
           </div>
         </sc-for>
@@ -1449,12 +1449,12 @@ class Component extends DCLogic {
     equipe: ['Equipe, Metas e Permissões', 'Módulo 14'], rel: ['Relatórios e Exportações', 'Módulo 16'], config: ['Configurações', 'Empresa, cálculo, alertas e integrações']
   };
   navDef = [
-    ['Visão geral', [['dash', '15', 'Dashboard']]],
-    ['Comercial', [['crm', '01', 'CRM e Funil'], ['orc', '02', 'Orçamentos'], ['prop', '03', 'Propostas'], ['contr', '04', 'Contratos']]],
-    ['Operações', [['homol', '05', 'Homologação'], ['obras', '06', 'Obras'], ['campo', '07', 'App do Instalador'], ['compras', '08', 'Compras'], ['estoque', '09', 'Estoque'], ['frota', '10', 'Patrimônio e Frota']]],
-    ['Financeiro', [['fin', '11', 'Financeiro'], ['cobr', '12', 'Cobranças']]],
-    ['Pós-venda', [['om', '13', 'O&M e Assistência']]],
-    ['Gestão', [['equipe', '14', 'Equipe e Metas'], ['rel', '16', 'Relatórios'], ['config', '17', 'Configurações']]]
+    ['Visão geral', [['dash', '15', 'Dashboard', '⌂']]],
+    ['Comercial', [['crm', '01', 'CRM e Funil', '◎'], ['orc', '02', 'Orçamentos', '◇'], ['prop', '03', 'Propostas', '▤'], ['contr', '04', 'Contratos', '▱']]],
+    ['Operações', [['homol', '05', 'Homologação', '✓'], ['obras', '06', 'Obras', '⌘'], ['campo', '07', 'App do Instalador', '⌖'], ['compras', '08', 'Compras', '⇄'], ['estoque', '09', 'Estoque', '▥'], ['frota', '10', 'Patrimônio e Frota', '◇']]],
+    ['Financeiro', [['fin', '11', 'Financeiro', '▣'], ['cobr', '12', 'Cobranças', '◌']]],
+    ['Pós-venda', [['om', '13', 'O&M e Assistência', '↻']]],
+    ['Gestão', [['equipe', '14', 'Equipe e Metas', '♙'], ['rel', '16', 'Relatórios', '▥'], ['config', '17', 'Configurações', '⚙']]]
   ];
   perfisDef = [
     ['Administrador', 'Acesso total: módulos, financeiro e configurações', 'AD'],
@@ -1533,10 +1533,10 @@ class Component extends DCLogic {
       movePrev: () => this.moveCard(-1), moveNext: () => this.moveCard(1),
       cardZap: () => selK && this.zap('Olá ' + selK.n.split(' ')[0] + '! Aqui é da Voltua Energia, tudo bem?'),
       clearAlertas: () => { this.setState({ alertasOff: true, notif: false }); this.toastMsg('Alertas marcados como lidos'); },
-      newContr: () => this.toastMsg('Contrato gerado a partir da proposta aceita — sem redigitar dados'),
-      newPed: () => this.toastMsg('Solicitação de compra criada a partir da necessidade da obra'),
-      newCobr: () => this.toastMsg('Cobrança PIX gerada e vinculada à parcela'),
-      invite: () => this.toastMsg('Convite enviado — o colaborador define a senha no primeiro acesso'),
+      newContr: () => { this.nav('contr'); this.toastMsg('Módulo de contratos aberto — selecione uma proposta aceita para gerar o contrato'); },
+      newPed: () => { this.nav('compras'); this.toastMsg('Módulo de compras aberto — selecione uma obra para criar a solicitação'); },
+      newCobr: () => { this.nav('cobr'); this.toastMsg('Módulo de cobranças aberto — selecione uma parcela para gerar o PIX'); },
+      invite: () => { this.nav('equipe'); this.toastMsg('Módulo de equipe aberto — convites são enviados pelo cadastro de colaboradores'); },
       dimensionar: () => this.toastMsg('Cenários recalculados para ' + S.consumo + ' kWh/mês'),
       consumoVal: S.consumo, setConsumo: e => this.setState({ consumo: parseInt(e.target.value) || 0 }),
       checkoutFn: () => { if (this.getChk().some(x => !x)) { this.toastMsg('Conclua o checklist antes do check-out'); } else { this.setState({ checkedOut: true }); this.toastMsg('Check-out registrado · 16:42 · GPS -3.890, -38.455'); } },
@@ -1566,9 +1566,9 @@ class Component extends DCLogic {
       })),
       navGroups: this.navDef.map(([label, items]) => ({
         label,
-        items: items.filter(([id]) => this.allowed(id)).map(([id, num, lb]) => {
+        items: items.filter(([id]) => this.allowed(id)).map(([id, num, lb, icon]) => {
           const on = S.screen === id;
-          return { num, label: lb, go: () => this.nav(id), bg: on ? 'rgba(249,115,22,.16)' : 'transparent', cl: on ? '#fff' : 'rgba(255,255,255,.72)', numc: on ? '#f9a35b' : 'rgba(255,255,255,.35)' };
+          return { num, icon, label: lb, go: () => this.nav(id), bg: on ? 'rgba(249,115,22,.16)' : 'transparent', cl: on ? '#fff' : 'rgba(255,255,255,.72)', numc: on ? '#f9a35b' : 'rgba(255,255,255,.35)' };
         })
       })).filter(g => g.items.length),
       kpis: this.detMap([
