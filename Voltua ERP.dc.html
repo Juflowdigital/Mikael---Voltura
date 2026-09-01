@@ -1331,7 +1331,7 @@ a{color:#f97316;text-decoration:none}a:hover{color:#ea580c}
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props="{&quot;modoEscuro&quot;: {&quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: false, &quot;tsType&quot;: &quot;boolean&quot;, &quot;section&quot;: &quot;Aparência&quot;}, &quot;mostrarMapa&quot;: {&quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: true, &quot;tsType&quot;: &quot;boolean&quot;, &quot;section&quot;: &quot;Dashboard&quot;}}">
 class Component extends DCLogic {
-  state = { screen: 'login', menuOpen: false, darkSet: null, notif: false, user: { nome: 'Usuário', perfil: 'Visualizador' }, toast: '', modal: null, actionType: '', actionName: '', actionValue: '', userId: null, organizationId: null, consumo: 650, funil: null, props: null, parc: null, chkDone: null, alertasOff: false, checkedOut: false, form: {}, detail: null, q: '', periodo: 'Mês', perIni: '', perFim: '', cfgT: null, pdfP: null, cliSel: null, authEmail: '', authPassword: '', authLoading: true, authError: '' };
+  state = { screen: 'login', menuOpen: false, darkSet: null, cleanDemo: true, user: { nome: 'Usuário', perfil: 'Visualizador' }, toast: '', modal: null, actionType: '', actionName: '', actionValue: '', userId: null, organizationId: null, consumo: 650, funil: null, props: null, parc: null, chkDone: null, alertasOff: false, checkedOut: false, form: {}, detail: null, q: '', periodo: 'Mês', perIni: '', perFim: '', cfgT: null, pdfP: null, cliSel: null, authEmail: '', authPassword: '', authLoading: true, authError: '' };
   componentDidMount() { this.restoreSession(); }
   async sb() {
     for (let i = 0; i < 100 && !window.voltuaSupabase; i++) await new Promise(r => setTimeout(r, 30));
@@ -1623,6 +1623,7 @@ class Component extends DCLogic {
       ], m => ['Movimentação financeira', m.d, [['Descrição', m.t], ['Valor', m.v]], ['Abrir no financeiro', () => this.nav('fin')]]),
       st
     };
+    if (S.cleanDemo) ['pdfGer','pdfStats','cliContato','cliTimeline','cliDocs','kpis','vendas','funilResumo','alertas','movs','atividades','canais','orcEntrada','custos','financ','propStats','contratos','homolEtapas','homols','homolDocs','concPrazos','obrasList','checklist','campoFeats','pedidos','cotacoes','estStats','estItens','estMovs','consumoObra','veiculos','ferramentas','finKpis','pagar','receber','custoObras','dre','comissoes','cobrStats','omStats','chamados','geracao','omContratos','metas','auditoria','colabs','cfgEmpresaRows','cfgKitsRows','integracoes'].forEach(key => { vals[key] = []; });
     return Object.assign(vals, this.extraVals(st));
   }
   extraVals(st) {
