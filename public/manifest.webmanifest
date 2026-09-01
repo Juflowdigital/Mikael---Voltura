@@ -1,7 +1,7 @@
 {
   "name": "Voltura",
   "short_name": "Voltura",
-  "description": "Gestão completa para integradores de energia solar.",
+  "description": "Gestão solar em uma única plataforma.",
   "start_url": "./Voltua%20ERP.dc.html",
   "scope": "./",
   "display": "standalone",
