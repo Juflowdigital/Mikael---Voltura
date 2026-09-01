@@ -1338,7 +1338,7 @@ class Component extends DCLogic {
     if (!window.voltuaSupabase) throw new Error('Cliente Supabase não carregado. Execute o projeto com npm run dev.');
     return window.voltuaSupabase;
   }
-  roleName = { admin: 'Administrador', commercial: 'Comercial / Vendedor', engineering: 'Engenharia / Projetos', installer: 'Instalador / Campo', finance: 'Financeiro', viewer: 'Visualizador' };
+  roleName = { admin: 'Administrador', commercial: 'Comercial / Vendedor', engineering: 'Engenharia / Projetos', finance: 'Financeiro', viewer: 'Visualizador' };
   stageKeys = ['lead', 'qualified', 'site_visit', 'proposal_sent', 'negotiation', 'won', 'lost'];
   money(v) { return 'R$ ' + Number(v || 0).toLocaleString('pt-BR', { maximumFractionDigits: 2 }); }
   async loadOperationalData(organizationId) {
@@ -1368,7 +1368,7 @@ class Component extends DCLogic {
     ]);
     if (error || !membership) throw new Error('Usuário sem acesso a uma organização. Peça ao administrador para adicioná-lo à equipe.');
     const perfil = this.roleName[membership.role] || 'Visualizador';
-    this.setState({ screen: perfil === 'Instalador / Campo' ? 'campo' : 'dash', menuOpen: false, user: { nome: profile?.full_name || session.user.email, perfil }, userId: session.user.id, organizationId: membership.organization_id, authLoading: false, authError: '', authPassword: '' });
+    this.setState({ screen: 'dash', menuOpen: false, user: { nome: profile?.full_name || session.user.email, perfil }, userId: session.user.id, organizationId: membership.organization_id, authLoading: false, authError: '', authPassword: '' });
     try { await this.loadOperationalData(membership.organization_id); }
     catch (loadError) { this.toastMsg('Falha ao carregar dados: ' + loadError.message); }
   }
@@ -1383,7 +1383,7 @@ class Component extends DCLogic {
     catch (e) { this.setState({ screen: 'login', authLoading: false, authError: e.message === 'Invalid login credentials' ? 'E-mail ou senha inválidos.' : e.message }); }
   }
   async signOut() { try { const sb = await this.sb(); await sb.auth.signOut(); } finally { this.setState({ screen: 'login', organizationId: null, authPassword: '', notif: false }); } }
-  permMap = { 'Comercial / Vendedor': ['dash', 'crm', 'orc', 'prop', 'contr', 'cliente', 'equipe', 'rel'], 'Engenharia / Projetos': ['dash', 'homol', 'obras', 'campo', 'compras', 'estoque'], 'Instalador / Campo': ['campo'], 'Financeiro': ['dash', 'fin', 'cobr', 'rel'], 'Visualizador': ['dash', 'rel'] };
+  permMap = { 'Comercial / Vendedor': ['dash', 'crm', 'orc', 'prop', 'contr', 'cliente', 'equipe', 'rel'], 'Engenharia / Projetos': ['dash', 'homol', 'obras', 'compras', 'estoque'], 'Financeiro': ['dash', 'fin', 'cobr', 'rel'], 'Visualizador': ['dash', 'rel'] };
   allowed(id) { const m = this.permMap[this.state.user.perfil]; return !m || m.indexOf(id) >= 0; }
   nav(id) { if (!this.allowed(id)) { this.toastMsg('Seu perfil não tem acesso a este módulo'); return; } this.setState({ screen: id, menuOpen: false, notif: false }); }
   toggleMenu() { this.setState({ menuOpen: !this.state.menuOpen }); }
@@ -1464,7 +1464,7 @@ class Component extends DCLogic {
     dash: ['Dashboard', 'Visão geral · Agosto 2026'], crm: ['CRM e Funil Comercial', 'Módulo 01'],
     orc: ['Orçamento e Dimensionamento', 'Módulo 02'], prop: ['Propostas Comerciais', 'Módulo 03'],
     contr: ['Contratos e Assinatura', 'Módulo 04'], homol: ['Projetos e Homologação', 'Módulo 05'],
-    obras: ['Obras e Execução', 'Módulo 06'], campo: ['App do Instalador', 'Módulo 07 · visão mobile'],
+    obras: ['Obras e Execução', 'Módulo 06'],
     compras: ['Compras e Fornecedores', 'Módulo 08'], estoque: ['Estoque e Almoxarifado', 'Módulo 09'],
     frota: ['Patrimônio e Frota', 'Módulo 10'], fin: ['Gestão Financeira', 'Módulo 11'],
     cobr: ['Cobranças e Recebimentos', 'Módulo 12'], om: ['Pós-venda e O&M', 'Módulo 13'],
@@ -1473,7 +1473,7 @@ class Component extends DCLogic {
   navDef = [
     ['Visão geral', [['dash', '15', 'Dashboard', '⌂']]],
     ['Comercial', [['crm', '01', 'CRM e Funil', '◎'], ['orc', '02', 'Orçamentos', '◇'], ['prop', '03', 'Propostas', '▤'], ['contr', '04', 'Contratos', '▱']]],
-    ['Operações', [['homol', '05', 'Homologação', '✓'], ['obras', '06', 'Obras', '⌘'], ['campo', '07', 'App do Instalador', '⌖'], ['compras', '08', 'Compras', '⇄'], ['estoque', '09', 'Estoque', '▥'], ['frota', '10', 'Patrimônio e Frota', '◇']]],
+    ['Operações', [['homol', '05', 'Homologação', '✓'], ['obras', '06', 'Obras', '⌘'], ['compras', '08', 'Compras', '⇄'], ['estoque', '09', 'Estoque', '▥'], ['frota', '10', 'Patrimônio e Frota', '◇']]],
     ['Financeiro', [['fin', '11', 'Financeiro', '▣'], ['cobr', '12', 'Cobranças', '◌']]],
     ['Pós-venda', [['om', '13', 'O&M e Assistência', '↻']]],
     ['Gestão', [['equipe', '14', 'Equipe e Metas', '♙'], ['rel', '16', 'Relatórios', '▥'], ['config', '17', 'Configurações', '⚙']]]
@@ -1482,7 +1482,6 @@ class Component extends DCLogic {
     ['Administrador', 'Acesso total: módulos, financeiro e configurações', 'AD'],
     ['Comercial / Vendedor', 'Clientes, funil, orçamentos e propostas', 'CV'],
     ['Engenharia / Projetos', 'Obras, homologações e documentação técnica', 'EP'],
-    ['Instalador / Campo', 'Obras designadas, checklist e fotos', 'IC'],
     ['Financeiro', 'Contas, fluxo de caixa e cobranças', 'FI'],
     ['Visualizador', 'Dashboards e relatórios (somente leitura)', 'VI']
   ];
@@ -1628,7 +1627,7 @@ class Component extends DCLogic {
   }
   extraVals(st) {
     const S = this.state, G = this.G, A = this.A, R = this.R, B = this.B, GY = this.GY, O = this.O;
-    const scr = {}; ['dash','crm','orc','prop','contr','homol','obras','campo','compras','estoque','frota','fin','cobr','om','equipe','rel','config'].forEach(k => scr['is_' + k] = S.screen === k);
+    const scr = {}; ['dash','crm','orc','prop','contr','homol','obras','compras','estoque','frota','fin','cobr','om','equipe','rel','config'].forEach(k => scr['is_' + k] = S.screen === k);
     const TXT = 'light-dark(#16262b,#e8eef0)', MUT = 'light-dark(#8a979b,#5f7883)';
     return Object.assign(scr, {
       funilCols: this.mapFunil(this.getFunil()),
