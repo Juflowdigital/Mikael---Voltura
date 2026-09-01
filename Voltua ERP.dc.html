@@ -15,12 +15,14 @@
 body{margin:0;font-family:'Instrument Sans',sans-serif;color-scheme:light}
 a{color:#f97316;text-decoration:none}a:hover{color:#ea580c}
 ::-webkit-scrollbar{width:10px;height:10px}::-webkit-scrollbar-thumb{background:light-dark(#cdd6d9,#2a4550);border-radius:8px}::-webkit-scrollbar-track{background:transparent}
+.login-shell{position:relative;flex:1;display:grid;grid-template-columns:minmax(0,1.15fr) minmax(420px,.85fr);min-height:100vh;overflow:hidden;background:#071a20}.login-shell:before{content:"";position:absolute;inset:0;background:url('./assets/login-solar-hero.png') center/cover no-repeat;opacity:.58;filter:saturate(.82) contrast(1.04);transform:scale(1.01)}.login-shell:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(5,24,30,.94),rgba(7,29,36,.78) 48%,rgba(7,23,29,.52))}.login-brand,.login-panel{position:relative;z-index:1}.login-brand{display:flex;flex-direction:column;justify-content:space-between;padding:52px 5.5vw;color:#fff}.login-panel{display:flex;align-items:center;justify-content:center;padding:40px;background:rgba(7,20,25,.3);backdrop-filter:blur(3px)}.login-card{width:100%;max-width:390px;padding:34px;border:1px solid rgba(255,255,255,.14);border-radius:20px;background:rgba(250,252,252,.94);box-shadow:0 28px 80px rgba(0,0,0,.32);color:#15272d;backdrop-filter:blur(18px)}.login-input{box-sizing:border-box;width:100%;font:inherit;padding:13px 14px;border-radius:10px;border:1px solid #ccd7da;background:#fff;color:#15272d;outline:none;transition:.2s}.login-input:focus{border-color:#f97316;box-shadow:0 0 0 3px rgba(249,115,22,.13)}.login-button{width:100%;font:inherit;font-weight:700;padding:13px;border:0;border-radius:10px;background:linear-gradient(135deg,#f97316,#ea580c);color:#fff;cursor:pointer;box-shadow:0 9px 24px rgba(234,88,12,.25)}
+@media(max-width:820px){.login-shell{grid-template-columns:1fr}.login-brand{min-height:190px;padding:28px}.login-brand-copy{display:none!important}.login-panel{padding:24px;background:rgba(5,20,25,.68)}.login-card{padding:26px}}
 </style>
 </helmet>
 <div style="display:flex;min-height:100vh;background:light-dark(#f2f4f5,#0b1a1f);color:light-dark(#16262b,#e8eef0)">
 <sc-if value="{{isLogin}}" hint-placeholder-val="{{false}}">
-  <div style="flex:1;display:flex;min-height:100vh">
-    <div style="flex:1.1;background:#0c2b33;color:#fff;display:flex;flex-direction:column;justify-content:space-between;padding:48px">
+  <div class="login-shell">
+    <div class="login-brand">
       <div style="display:flex;align-items:center;gap:10px">
         <div style="width:34px;height:34px;border-radius:9px;background:#f97316;display:grid;place-items:center;box-shadow:0 4px 14px rgba(249,115,22,.4)">
           <svg width="22" height="22" viewBox="0 0 48 48" fill="none"><circle cx="24" cy="9.5" r="4.5" fill="#ffffff"></circle><path d="M8 15 L16 15 L26.5 42 L20 42 Z" fill="#ffffff"></path><path d="M40 15 L32 15 L21.5 42 L28 42 Z" fill="#ffffff" opacity="0.82"></path></svg>
@@ -28,24 +30,28 @@ a{color:#f97316;text-decoration:none}a:hover{color:#ea580c}
         <div style="font-family:'Space Grotesk';font-weight:700;font-size:20px;letter-spacing:-.01em">Voltua<span style="color:#f97316">.</span></div>
         <div style="font-size:11px;color:rgba(255,255,255,.55);border:1px solid rgba(255,255,255,.2);border-radius:99px;padding:2px 8px">ERP Solar</div>
       </div>
-      <div style="display:flex;flex-direction:column;gap:16px;max-width:420px">
-        <div style="font-family:'Space Grotesk';font-size:34px;font-weight:600;line-height:1.15;letter-spacing:-.02em">Do lead ao pós-venda, em uma só plataforma.</div>
-        <div style="font-size:14px;color:rgba(255,255,255,.65);line-height:1.6">CRM, dimensionamento automático, propostas, homologação, obras, estoque, financeiro e O&amp;M — sem mensalidade, sem limite de usuários.</div>
+      <div class="login-brand-copy" style="display:flex;flex-direction:column;gap:18px;max-width:540px">
+        <div style="width:44px;height:3px;border-radius:99px;background:#f97316"></div>
+        <div style="font-family:'Space Grotesk';font-size:44px;font-weight:600;line-height:1.08;letter-spacing:-.035em">Toda a operação solar.<br>Uma única plataforma.</div>
+        <div style="font-size:15px;color:rgba(255,255,255,.72);line-height:1.7;max-width:490px">Gestão comercial, engenharia, obras, estoque e financeiro conectados para sua empresa crescer com controle.</div>
       </div>
       <div style="font-size:12px;color:rgba(255,255,255,.4)">Voltua Energia · Sistema de gestão para integradores fotovoltaicos</div>
     </div>
-    <div style="flex:1;display:flex;align-items:center;justify-content:center;padding:40px">
-      <div style="width:100%;max-width:400px;display:flex;flex-direction:column;gap:18px">
+    <div class="login-panel">
+      <div class="login-card">
         <div>
-          <div style="font-family:'Space Grotesk';font-size:22px;font-weight:600">Entrar no sistema</div>
-          <div style="font-size:13px;color:light-dark(#5c6b70,#8ba0a6);margin-top:4px">Use seu e-mail e senha cadastrados</div>
+          <div style="font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#f97316">Acesso seguro</div>
+          <div style="font-family:'Space Grotesk';font-size:27px;font-weight:650;margin-top:6px">Bem-vindo de volta</div>
+          <div style="font-size:13px;color:#687a80;margin:5px 0 24px">Entre com as credenciais da sua empresa.</div>
         </div>
         <label style="font-size:12px;font-weight:600">E-mail</label>
-        <input type="email" value="{{authEmail}}" onChange="{{setAuthEmail}}" onKeyDown="{{authKeyDown}}" autocomplete="email" placeholder="voce@empresa.com.br" style="font:inherit;padding:12px 14px;border-radius:10px;border:1px solid light-dark(#cdd6d9,#2a4550);background:light-dark(#fff,#10242b);color:inherit;outline-color:#f97316">
+        <input class="login-input" type="email" value="{{authEmail}}" onChange="{{setAuthEmail}}" onKeyDown="{{authKeyDown}}" autocomplete="email" placeholder="voce@empresa.com.br">
         <label style="font-size:12px;font-weight:600">Senha</label>
-        <input type="password" value="{{authPassword}}" onChange="{{setAuthPassword}}" onKeyDown="{{authKeyDown}}" autocomplete="current-password" placeholder="Sua senha" style="font:inherit;padding:12px 14px;border-radius:10px;border:1px solid light-dark(#cdd6d9,#2a4550);background:light-dark(#fff,#10242b);color:inherit;outline-color:#f97316">
+        <input class="login-input" type="password" value="{{authPassword}}" onChange="{{setAuthPassword}}" onKeyDown="{{authKeyDown}}" autocomplete="current-password" placeholder="Digite sua senha">
         <sc-if value="{{authErrorOn}}" hint-placeholder-val="false"><div style="font-size:12px;color:#dc2626">{{authError}}</div></sc-if>
-        <button onClick="{{login}}" disabled="{{authLoading}}" style="font:inherit;font-weight:700;padding:12px;border:0;border-radius:10px;background:#f97316;color:#fff;cursor:pointer">{{authButton}}</button>
+        <button class="login-button" onClick="{{login}}" disabled="{{authLoading}}">{{authButton}}</button>
+        <div style="display:flex;align-items:center;justify-content:center;gap:7px;margin-top:15px;font-size:11px;color:#7c8c91"><span style="width:6px;height:6px;border-radius:50%;background:#16a34a"></span>Ambiente protegido e monitorado</div>
+        <div style="margin-top:28px;padding-top:17px;border-top:1px solid #e3eaec;text-align:center;font-size:11px;color:#8a999e">Criado por <span style="font-weight:750;color:#33484f">JuFlow Digital</span></div>
       </div>
     </div>
   </div>
