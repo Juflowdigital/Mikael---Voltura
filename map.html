@@ -1,0 +1,14 @@
+<!DOCTYPE html><html><head><meta charset="utf-8">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha384-sHL9NAb7lN7rfvG5lfHpm643Xkcjzp4jFvuavGOndn6pjVqS6ny56CAt3nsEVT4H" crossorigin="anonymous">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha384-cxOPjt7s7Iz04uaHJceBmS+qpjv2JkIHNVcuOrM+YHwZOmJGBXI00mdUXEq65HTH" crossorigin="anonymous"></script>
+<style>html,body,#m{margin:0;height:100%;font-family:sans-serif}</style></head>
+<body><div id="m"></div>
+<script>
+const map=L.map('m',{zoomControl:true,scrollWheelZoom:false});
+L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OpenStreetMap contributors'}).addTo(map);
+const obras=[["Fortaleza",-3.7319,-38.5267,4],["Caucaia",-3.7361,-38.6531,2],["Eusébio",-3.89,-38.45,1],["Maracanaú",-3.8767,-38.6256,1],["Sobral",-3.6891,-40.3482,1]];
+const pts=[];
+obras.forEach(([n,la,lo,q])=>{pts.push([la,lo]);
+L.circleMarker([la,lo],{radius:7+q*2,color:'#f97316',weight:2,fillColor:'#f97316',fillOpacity:.35}).addTo(map).bindTooltip(n+" — "+q+(q>1?" obras":" obra"),{permanent:false});});
+map.fitBounds(pts,{padding:[40,40]});
+</script></body></html>

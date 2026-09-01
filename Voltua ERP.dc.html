@@ -1,0 +1,1850 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script type="module" src="/src/bootstrap.ts"></script>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+body{margin:0;font-family:'Instrument Sans',sans-serif;color-scheme:light}
+a{color:#f97316;text-decoration:none}a:hover{color:#ea580c}
+::-webkit-scrollbar{width:10px;height:10px}::-webkit-scrollbar-thumb{background:light-dark(#cdd6d9,#2a4550);border-radius:8px}::-webkit-scrollbar-track{background:transparent}
+</style>
+</helmet>
+<div style="display:flex;min-height:100vh;background:light-dark(#f2f4f5,#0b1a1f);color:light-dark(#16262b,#e8eef0)">
+<sc-if value="{{isLogin}}" hint-placeholder-val="{{false}}">
+  <div style="flex:1;display:flex;min-height:100vh">
+    <div style="flex:1.1;background:#0c2b33;color:#fff;display:flex;flex-direction:column;justify-content:space-between;padding:48px">
+      <div style="display:flex;align-items:center;gap:10px">
+        <div style="width:34px;height:34px;border-radius:9px;background:#f97316;display:grid;place-items:center;box-shadow:0 4px 14px rgba(249,115,22,.4)">
+          <svg width="22" height="22" viewBox="0 0 48 48" fill="none"><circle cx="24" cy="9.5" r="4.5" fill="#ffffff"></circle><path d="M8 15 L16 15 L26.5 42 L20 42 Z" fill="#ffffff"></path><path d="M40 15 L32 15 L21.5 42 L28 42 Z" fill="#ffffff" opacity="0.82"></path></svg>
+        </div>
+        <div style="font-family:'Space Grotesk';font-weight:700;font-size:20px;letter-spacing:-.01em">Voltua<span style="color:#f97316">.</span></div>
+        <div style="font-size:11px;color:rgba(255,255,255,.55);border:1px solid rgba(255,255,255,.2);border-radius:99px;padding:2px 8px">ERP Solar</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:16px;max-width:420px">
+        <div style="font-family:'Space Grotesk';font-size:34px;font-weight:600;line-height:1.15;letter-spacing:-.02em">Do lead ao pós-venda, em uma só plataforma.</div>
+        <div style="font-size:14px;color:rgba(255,255,255,.65);line-height:1.6">CRM, dimensionamento automático, propostas, homologação, obras, estoque, financeiro e O&amp;M — sem mensalidade, sem limite de usuários.</div>
+      </div>
+      <div style="font-size:12px;color:rgba(255,255,255,.4)">Voltua Energia · Sistema de gestão para integradores fotovoltaicos</div>
+    </div>
+    <div style="flex:1;display:flex;align-items:center;justify-content:center;padding:40px">
+      <div style="width:100%;max-width:400px;display:flex;flex-direction:column;gap:18px">
+        <div>
+          <div style="font-family:'Space Grotesk';font-size:22px;font-weight:600">Entrar no sistema</div>
+          <div style="font-size:13px;color:light-dark(#5c6b70,#8ba0a6);margin-top:4px">Use seu e-mail e senha cadastrados</div>
+        </div>
+        <label style="font-size:12px;font-weight:600">E-mail</label>
+        <input type="email" value="{{authEmail}}" onChange="{{setAuthEmail}}" onKeyDown="{{authKeyDown}}" autocomplete="email" placeholder="voce@empresa.com.br" style="font:inherit;padding:12px 14px;border-radius:10px;border:1px solid light-dark(#cdd6d9,#2a4550);background:light-dark(#fff,#10242b);color:inherit;outline-color:#f97316">
+        <label style="font-size:12px;font-weight:600">Senha</label>
+        <input type="password" value="{{authPassword}}" onChange="{{setAuthPassword}}" onKeyDown="{{authKeyDown}}" autocomplete="current-password" placeholder="Sua senha" style="font:inherit;padding:12px 14px;border-radius:10px;border:1px solid light-dark(#cdd6d9,#2a4550);background:light-dark(#fff,#10242b);color:inherit;outline-color:#f97316">
+        <sc-if value="{{authErrorOn}}" hint-placeholder-val="false"><div style="font-size:12px;color:#dc2626">{{authError}}</div></sc-if>
+        <button onClick="{{login}}" disabled="{{authLoading}}" style="font:inherit;font-weight:700;padding:12px;border:0;border-radius:10px;background:#f97316;color:#fff;cursor:pointer">{{authButton}}</button>
+      </div>
+    </div>
+  </div>
+</sc-if>
+<sc-if value="{{isApp}}" hint-placeholder-val="{{true}}">
+  <div style="width:230px;flex-shrink:0;background:#0c2b33;color:#fff;display:flex;flex-direction:column;position:sticky;top:0;height:100vh">
+    <div style="display:flex;align-items:center;gap:9px;padding:18px 16px 14px">
+      <div style="width:26px;height:26px;border-radius:7px;background:#f97316;display:grid;place-items:center"><svg width="17" height="17" viewBox="0 0 48 48" fill="none"><circle cx="24" cy="9.5" r="4.5" fill="#ffffff"></circle><path d="M8 15 L16 15 L26.5 42 L20 42 Z" fill="#ffffff"></path><path d="M40 15 L32 15 L21.5 42 L28 42 Z" fill="#ffffff" opacity="0.82"></path></svg></div>
+      <div style="font-family:'Space Grotesk';font-weight:700;font-size:17px">Voltua<span style="color:#f97316">.</span></div>
+      <div style="font-size:10px;color:rgba(255,255,255,.5);border:1px solid rgba(255,255,255,.18);border-radius:99px;padding:1px 7px">ERP</div>
+    </div>
+    <div style="flex:1;overflow-y:auto;padding:4px 10px 12px;display:flex;flex-direction:column;gap:2px">
+      <sc-for list="{{navGroups}}" as="g" hint-placeholder-count="5">
+        <div style="font-size:10px;letter-spacing:.09em;text-transform:uppercase;color:rgba(255,255,255,.38);padding:14px 8px 5px;font-weight:600">{{g.label}}</div>
+        <sc-for list="{{g.items}}" as="it" hint-placeholder-count="3">
+          <div onClick="{{it.go}}" style="display:flex;align-items:center;gap:9px;padding:7px 8px;border-radius:8px;cursor:pointer;background:{{it.bg}}" style-hover="background:rgba(255,255,255,.07)">
+            <span style="font-family:'Space Grotesk';font-size:10px;color:{{it.numc}};width:16px">{{it.num}}</span>
+            <span style="font-size:13px;color:{{it.cl}};font-weight:500">{{it.label}}</span>
+          </div>
+        </sc-for>
+      </sc-for>
+    </div>
+    <div style="border-top:1px solid rgba(255,255,255,.1);padding:12px 14px;display:flex;align-items:center;gap:10px">
+      <div style="width:30px;height:30px;border-radius:50%;background:rgba(249,115,22,.2);color:#f9a35b;display:grid;place-items:center;font-size:12px;font-weight:700">{{userIni}}</div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:12.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{userNome}}</div>
+        <div style="font-size:11px;color:rgba(255,255,255,.5)">{{userPerfil}}</div>
+      </div>
+      <div onClick="{{logout}}" title="Sair" style="cursor:pointer;font-size:11px;color:rgba(255,255,255,.55);border:1px solid rgba(255,255,255,.18);border-radius:7px;padding:4px 8px" style-hover="color:#fff;border-color:rgba(255,255,255,.4)">Sair</div>
+    </div>
+  </div>
+  <div style="flex:1;min-width:0;display:flex;flex-direction:column">
+    <div style="height:58px;flex-shrink:0;display:flex;align-items:center;gap:12px;padding:0 26px;border-bottom:1px solid light-dark(#e3e8ea,#1d3640);background:light-dark(#ffffff,#0e2029);position:sticky;top:0;z-index:20">
+      <div style="font-family:'Space Grotesk';font-size:16px;font-weight:600">{{screenTitle}}</div>
+      <div style="font-size:12px;color:light-dark(#8a979b,#5f7883)">{{screenSub}}</div>
+      <div style="flex:1"></div>
+      <div style="position:relative">
+        <input value="{{qVal}}" onChange="{{setQ}}" placeholder="Buscar cliente, obra, proposta…" style="width:200px;font-size:12.5px;font-family:'Instrument Sans';border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:99px;padding:8px 14px;background:light-dark(#f7f9f9,#0e2029);color:inherit;outline-color:#f97316">
+        <sc-if value="{{searchOpen}}" hint-placeholder-val="{{false}}">
+          <div style="position:absolute;top:40px;right:0;width:290px;background:light-dark(#ffffff,#10242b);border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:12px;box-shadow:0 16px 40px rgba(0,0,0,.18);z-index:70;overflow:hidden;padding:6px">
+            <sc-for list="{{searchResults}}" as="r" hint-placeholder-count="3">
+              <div onClick="{{r.go}}" style="padding:9px 12px;border-radius:8px;cursor:pointer" style-hover="background:light-dark(#f2f4f5,#17303a)">
+                <div style="font-size:13px;font-weight:600">{{r.t}}</div>
+                <div style="font-size:11px;color:light-dark(#8a979b,#5f7883)">{{r.sub}}</div>
+              </div>
+            </sc-for>
+            <sc-if value="{{searchEmpty}}" hint-placeholder-val="{{false}}">
+              <div style="padding:12px;font-size:12px;color:light-dark(#8a979b,#5f7883)">Nada encontrado para esta busca</div>
+            </sc-if>
+          </div>
+        </sc-if>
+      </div>
+      <div style="display:flex;align-items:center;gap:3px;border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:99px;padding:3px">
+        <sc-for list="{{periodos}}" as="p" hint-placeholder-count="4">
+          <div onClick="{{p.go}}" style="font-size:11.5px;font-weight:600;border-radius:99px;padding:5px 11px;cursor:pointer;white-space:nowrap;background:{{p.bg}};color:{{p.cl}}">{{p.n}}</div>
+        </sc-for>
+      </div>
+      <sc-if value="{{isCustom}}" hint-placeholder-val="{{false}}">
+        <input type="date" onChange="{{setIni}}" style="font-size:11.5px;font-family:'Instrument Sans';border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:8px;padding:6px 8px;background:light-dark(#f7f9f9,#0e2029);color:inherit">
+        <input type="date" onChange="{{setFim}}" style="font-size:11.5px;font-family:'Instrument Sans';border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:8px;padding:6px 8px;background:light-dark(#f7f9f9,#0e2029);color:inherit">
+        <div onClick="{{aplicarPer}}" style="font-size:11.5px;font-weight:700;background:#f97316;color:#fff;border-radius:8px;padding:7px 11px;cursor:pointer" style-hover="background:#ea580c">Aplicar</div>
+      </sc-if>
+      <div onClick="{{toggleDark}}" style="cursor:pointer;display:flex;align-items:center;gap:7px;font-size:12px;font-weight:500;color:light-dark(#5c6b70,#8ba0a6);border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:99px;padding:6px 12px" style-hover="border-color:#f97316;color:#f97316">{{darkLabel}}</div>
+      <div onClick="{{toggleNotif}}" style="position:relative;cursor:pointer;width:34px;height:34px;border-radius:99px;border:1px solid light-dark(#e3e8ea,#1d3640);display:grid;place-items:center" style-hover="border-color:#f97316">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.7 21a2 2 0 0 1-3.4 0"></path></svg>
+        <div style="position:absolute;top:-4px;right:-4px;background:#dc2626;color:#fff;font-size:10px;font-weight:700;border-radius:99px;min-width:16px;height:16px;display:grid;place-items:center;padding:0 3px">{{notifCount}}</div>
+      </div>
+    </div>
+    <div style="flex:1;overflow-y:auto">
+      <sc-if value="{{is_dash}}" hint-placeholder-val="{{true}}">
+        <div style="padding:24px 26px;display:flex;flex-direction:column;gap:18px">
+          <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:14px">
+            <sc-for list="{{kpis}}" as="k" hint-placeholder-count="5">
+              <div onClick="{{k.det}}" style="cursor:pointer;background:light-dark(#ffffff,#10242b);border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:12px;padding:16px 18px">
+                <div style="font-size:12px;color:light-dark(#5c6b70,#8ba0a6);font-weight:500">{{k.l}}</div>
+                <div style="font-family:'Space Grotesk';font-size:24px;font-weight:600;margin-top:6px;letter-spacing:-.01em">{{k.v}}</div>
+                <div style="font-size:11.5px;margin-top:5px;color:{{k.dc}};font-weight:600">{{k.d}}</div>
+              </div>
+            </sc-for>
+          </div>
+          <div style="display:grid;grid-template-columns:1.7fr 1fr;gap:14px">
+            <div style="background:light-dark(#ffffff,#10242b);border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:12px;padding:18px 20px">
+              <div style="display:flex;align-items:baseline;gap:10px">
+                <div style="font-family:'Space Grotesk';font-size:15px;font-weight:600">Vendas fechadas</div>
+                <div style="font-size:12px;color:light-dark(#5c6b70,#8ba0a6)">{{vendasSub}}</div>
+              </div>
+              <div style="display:flex;align-items:flex-end;gap:14px;height:170px;margin-top:18px">
+                <sc-for list="{{vendas}}" as="v" hint-placeholder-count="8">
+                  <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;height:100%;justify-content:flex-end">
+                    <div style="font-size:11px;font-weight:600;color:light-dark(#5c6b70,#9db0b5)">{{v.val}}</div>
+                    <div style="width:100%;max-width:38px;border-radius:6px 6px 3px 3px;background:{{v.cor}};height:{{v.h}}"></div>
+                    <div style="font-size:11px;color:light-dark(#8a979b,#5f7883)">{{v.m}}</div>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+            <div style="background:light-dark(#ffffff,#10242b);border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:12px;padding:18px 20px">
+              <div style="font-family:'Space Grotesk';font-size:15px;font-weight:600">Funil comercial</div>
+              <div style="font-size:12px;color:light-dark(#5c6b70,#8ba0a6);margin-top:2px">Conversão por etapa · agosto</div>
+              <div style="display:flex;flex-direction:column;gap:10px;margin-top:16px">
+                <sc-for list="{{funilResumo}}" as="f" hint-placeholder-count="6">
+                  <div>
+                    <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px">
+                      <span style="font-weight:500">{{f.n}}</span><span style="color:light-dark(#5c6b70,#8ba0a6)">{{f.q}}</span>
+                    </div>
+                    <div style="height:8px;border-radius:99px;background:light-dark(#eef1f2,#17303a)"><div style="height:8px;border-radius:99px;background:#f97316;width:{{f.w}}"></div></div>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1.2fr 1fr;gap:14px">
+            <div style="background:light-dark(#ffffff,#10242b);border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:12px;padding:18px 20px">
+              <div style="font-family:'Space Grotesk';font-size:15px;font-weight:600">Painel de alertas</div>
+              <div style="display:flex;flex-direction:column;gap:12px;margin-top:14px">
+                <sc-for list="{{alertas}}" as="a" hint-placeholder-count="5">
+                  <div style="display:flex;gap:10px">
+                    <div style="width:8px;height:8px;border-radius:99px;background:{{a.c}};margin-top:5px;flex-shrink:0"></div>
+                    <div>
+                      <div style="font-size:13px;font-weight:600">{{a.t}}</div>
+                      <div style="font-size:12px;color:light-dark(#5c6b70,#8ba0a6);line-height:1.45">{{a.d}}</div>
+                    </div>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+            <div style="background:light-dark(#ffffff,#10242b);border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:12px;overflow:hidden;display:flex;flex-direction:column">
+              <div style="padding:16px 20px 10px;display:flex;justify-content:space-between;align-items:baseline">
+                <div style="font-family:'Space Grotesk';font-size:15px;font-weight:600">Mapa de obras</div>
+                <div style="font-size:12px;color:light-dark(#5c6b70,#8ba0a6)">9 obras · 5 cidades</div>
+              </div>
+              <sc-if value="{{showMapa}}" hint-placeholder-val="{{true}}">
+                <iframe src="map.html" style="border:0;width:100%;flex:1;min-height:250px"></iframe>
+              </sc-if>
+            </div>
+            <div style="background:light-dark(#ffffff,#10242b);border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:12px;padding:18px 20px">
+              <div style="font-family:'Space Grotesk';font-size:15px;font-weight:600">Últimas movimentações</div>
+              <div style="display:flex;flex-direction:column;margin-top:8px">
+                <sc-for list="{{movs}}" as="m" hint-placeholder-count="4">
+                  <div onClick="{{m.det}}" style="cursor:pointer;display:flex;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px solid light-dark(#eef1f2,#17303a)">
+                    <div>
+                      <div style="font-size:12.5px;font-weight:500;line-height:1.4">{{m.t}}</div>
+                      <div style="font-size:11px;color:light-dark(#8a979b,#5f7883)">{{m.d}}</div>
+                    </div>
+                    <div style="font-size:12.5px;font-weight:700;color:{{m.c}};white-space:nowrap">{{m.v}}</div>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+      <sc-if value="{{is_crm}}" hint-placeholder-val="{{false}}">
+  <div style="padding:24px 26px;display:flex;flex-direction:column;gap:16px">
+    <div style="display:flex;align-items:center;gap:10px">
+      <div style="font-family:'Space Grotesk';font-size:18px;font-weight:600">Funil comercial</div>
+      <div style="font-size:12px;color:light-dark(#5c6b70,#8ba0a6)">48 leads ativos · conversão 17%</div>
+      <div style="flex:1"></div>
+      <div style="font-size:12.5px;font-weight:500;border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:9px;padding:7px 12px;cursor:pointer;color:light-dark(#5c6b70,#8ba0a6)">Origem: Todas</div>
+      <div style="font-size:13px;font-weight:600;background:#f97316;color:#fff;border-radius:9px;padding:8px 14px;cursor:pointer" style-hover="background:#ea580c" onClick="{{openLead}}">+ Novo lead</div>
+    </div>
+    <div style="display:flex;gap:12px;overflow-x:auto;padding-bottom:8px;align-items:flex-start">
+      <sc-for list="{{funilCols}}" as="col" hint-placeholder-count="7">
+        <div onDragOver="{{col.over}}" onDrop="{{col.drop}}" style="width:225px;flex-shrink:0;background:light-dark(#eceff0,#0e2029);border-radius:12px;padding:10px">
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:2px 6px 8px">
+            <div style="font-size:12px;font-weight:700;letter-spacing:.03em;text-transform:uppercase;color:light-dark(#44565b,#9db0b5)">{{col.n}}</div>
+            <div style="font-size:11px;font-weight:700;background:light-dark(#ffffff,#1d3640);border-radius:99px;padding:1px 8px;color:light-dark(#5c6b70,#9db0b5)">{{col.q}}</div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <sc-for list="{{col.cards}}" as="c" hint-placeholder-count="2">
+              <div onClick="{{c.open}}" draggable="true" onDragStart="{{c.drag}}" style="background:light-dark(#ffffff,#10242b);border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:10px;padding:11px 12px;cursor:grab" style-hover="border-color:#f97316">
+                <div style="display:flex;justify-content:space-between;gap:8px">
+                  <div style="font-size:13px;font-weight:600">{{c.n}}</div>
+                  <div style="font-size:11px;font-weight:600;color:{{c.oc}}">{{c.o}}</div>
+                </div>
+                <div style="font-size:11.5px;color:light-dark(#5c6b70,#8ba0a6);margin-top:3px">{{c.c}} · {{c.tipo}}</div>
+                <div style="display:flex;justify-content:space-between;margin-top:8px;align-items:center">
+                  <div style="font-size:12px;font-weight:700;font-family:'Space Grotesk'">{{c.v}}</div>
+                  <div style="font-size:10.5px;color:light-dark(#8a979b,#5f7883)">{{c.f}}</div>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+    <div style="display:grid;grid-template-columns:1.4fr 1fr;gap:14px">
+      <div style="background:light-dark(#ffffff,#10242b);border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:12px;padding:18px 20px">
+        <div style="font-family:'Space Grotesk';font-size:15px;font-weight:600">Agenda de atividades e follow-ups</div>
+        <div style="display:flex;flex-direction:column;margin-top:6px">
+          <sc-for list="{{atividades}}" as="a" hint-placeholder-count="4">
+            <div onClick="{{a.det}}" style="cursor:pointer;display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid light-dark(#eef1f2,#17303a)">
+              <div style="font-size:11px;font-weight:700;color:{{a.hc}};background:{{a.hb}};border-radius:7px;padding:4px 8px;white-space:nowrap">{{a.h}}</div>
+              <div style="flex:1">
+                <div style="font-size:13px;font-weight:500">{{a.t}}</div>
+                <div style="font-size:11.5px;color:light-dark(#8a979b,#5f7883)">{{a.d}}</div>
+              </div>
+              <div style="font-size:11.5px;color:light-dark(#5c6b70,#8ba0a6)">{{a.r}}</div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+      <div style="background:light-dark(#ffffff,#10242b);border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:12px;padding:18px 20px">
+        <div style="font-family:'Space Grotesk';font-size:15px;font-weight:600">Conversão por canal</div>
+        <div style="display:flex;flex-direction:column;gap:11px;margin-top:16px">
+          <sc-for list="{{canais}}" as="c" hint-placeholder-count="4">
+            <div>
+              <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px">
+                <span style="font-weight:500">{{c.n}}</span><span style="color:light-dark(#5c6b70,#8ba0a6)">{{c.q}} leads · {{c.pct}}</span>
+              </div>
+              <div style="height:8px;border-radius:99px;background:light-dark(#eef1f2,#17303a)"><div style="height:8px;border-radius:99px;background:{{c.cor}};width:{{c.w}}"></div></div>
+            </div>
+          </sc-for>
+        </div>
+        <div style="margin-top:16px;padding:12px;border-radius:10px;background:rgba(249,115,22,.08);border:1px solid rgba(249,115,22,.25);font-size:12px;line-height:1.5;color:light-dark(#7c4a12,#f0b27e)">Indicação é o canal com maior conversão (34%). Considere ativar um programa de indicação premiada.</div>
+      </div>
+    </div>
+  </div>
+</sc-if>
+<sc-if value="{{is_orc}}" hint-placeholder-val="{{false}}">
+  <div style="padding:24px 26px;display:flex;flex-direction:column;gap:16px">
+    <div style="display:flex;align-items:center;gap:10px">
+      <div style="font-family:'Space Grotesk';font-size:18px;font-weight:600">Orçamento e dimensionamento</div>
+      <div style="font-size:12px;color:light-dark(#5c6b70,#8ba0a6)">Informe o consumo e o sistema dimensiona kWp, módulos, inversor e preço</div>
+      <div style="flex:1"></div>
+      <div onClick="{{openOrc}}" style="font-size:13px;font-weight:600;background:#f97316;color:#fff;border-radius:9px;padding:8px 14px;cursor:pointer" style-hover="background:#ea580c">+ Novo orçamento</div>
+    </div>
+    <div style="display:grid;grid-template-columns:300px 1fr;gap:14px;align-items:start">
+      <div style="background:light-dark(#ffffff,#10242b);border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:12px;padding:18px 20px;display:flex;flex-direction:column;gap:13px">
+        <div style="font-family:'Space Grotesk';font-size:15px;font-weight:600">Dados de entrada</div>
+        <div>
+          <div style="font-size:11.5px;font-weight:600;color:light-dark(#5c6b70,#8ba0a6);margin-bottom:4px">Consumo médio (kWh/mês) — edite e veja os cenários mudarem</div>
+          <input type="number" value="{{consumoVal}}" onChange="{{setConsumo}}" style="width:100%;box-sizing:border-box;font-size:14px;font-weight:700;font-family:'Space Grotesk';border:1.5px solid #f97316;border-radius:9px;padding:9px 12px;background:light-dark(#fff7f0,#1a2c26);color:inherit;outline-color:#f97316">
+        </div>
+        <sc-for list="{{orcEntrada}}" as="e" hint-placeholder-count="4">
+          <div>
+            <div style="font-size:11.5px;font-weight:600;color:light-dark(#5c6b70,#8ba0a6);margin-bottom:4px">{{e.l}}</div>
+            <div style="font-size:13.5px;font-weight:600;border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:9px;padding:9px 12px;background:light-dark(#f7f9f9,#0e2029)">{{e.v}}</div>
+          </div>
+        </sc-for>
+        <div onClick="{{dimensionar}}" style="font-size:13px;font-weight:600;background:#f97316;color:#fff;border-radius:9px;padding:10px;text-align:center;cursor:pointer" style-hover="background:#ea580c">Dimensionar automaticamente</div>
+        <div style="font-size:11.5px;color:light-dark(#8a979b,#5f7883);line-height:1.5">Irradiação regional embutida · fator de perdas 18% configurável</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px">
+          <sc-for list="{{cenarios}}" as="c" hint-placeholder-count="3">
+            <div style="background:light-dark(#ffffff,#10242b);border:1px solid {{c.bc}};border-radius:12px;padding:16px 18px;position:relative">
+              <sc-if value="{{c.rec}}" hint-placeholder-val="{{false}}">
+                <div style="position:absolute;top:-9px;left:14px;background:#f97316;color:#fff;font-size:10px;font-weight:700;letter-spacing:.05em;border-radius:99px;padding:2px 9px">RECOMENDADO</div>
+              </sc-if>
+              <div style="font-size:12px;color:light-dark(#5c6b70,#8ba0a6);font-weight:500">{{c.tipo}}</div>
+              <div style="font-family:'Space Grotesk';font-size:23px;font-weight:600;margin-top:4px">{{c.kwp}}</div>
+              <div style="display:flex;flex-direction:column;gap:5px;margin-top:10px;font-size:12px;color:light-dark(#44565b,#9db0b5)">
+                <div>{{c.mod}}</div><div>{{c.inv}}</div><div>{{c.area}}</div><div>{{c.ger}}</div>
+              </div>
+              <div style="border-top:1px solid light-dark(#eef1f2,#17303a);margin-top:12px;padding-top:10px;display:flex;justify-content:space-between;align-items:baseline">
+                <div style="font-family:'Space Grotesk';font-size:16px;font-weight:700">{{c.preco}}</div>
+                <div style="font-size:11px;font-weight:600;color:#16a34a">payback {{c.pay}}</div>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+        <div style="display:grid;grid-template-columns:1.3fr 1fr;gap:14px">
+          <div style="background:light-dark(#ffffff,#10242b);border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:12px;overflow:hidden">
+            <div style="font-family:'Space Grotesk';font-size:15px;font-weight:600;padding:16px 20px 8px">Composição de custo · cenário ideal</div>
+            <table style="width:100%;border-collapse:collapse">
+              <tbody>
+                <sc-for list="{{custos}}" as="c" hint-placeholder-count="7">
+                  <tr>
+                    <td style="padding:9px 20px;font-size:13px;border-top:1px solid light-dark(#eef1f2,#17303a)">{{c.n}}</td>
+                    <td style="padding:9px 20px;font-size:13px;border-top:1px solid light-dark(#eef1f2,#17303a);text-align:right;font-weight:600;font-family:'Space Grotesk'">{{c.v}}</td>
+                  </tr>
+                </sc-for>
+                <tr>
+                  <td style="padding:11px 20px;font-size:13px;font-weight:700;border-top:2px solid light-dark(#e3e8ea,#1d3640)">Valor final da proposta</td>
+                  <td style="padding:11px 20px;font-size:15px;font-weight:700;font-family:'Space Grotesk';text-align:right;border-top:2px solid light-dark(#e3e8ea,#1d3640);color:#f97316">R$ 32.400</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div style="background:light-dark(#ffffff,#10242b);border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:12px;padding:18px 20px">
+            <div style="font-family:'Space Grotesk';font-size:15px;font-weight:600">Simulador de financiamento</div>
+            <div style="display:flex;flex-direction:column;gap:9px;margin-top:14px">
+              <sc-for list="{{financ}}" as="f" hint-placeholder-count="3">
+                <div style="display:flex;justify-content:space-between;font-size:13px;padding:8px 12px;border-radius:9px;background:light-dark(#f7f9f9,#0e2029)">
+                  <span>{{f.n}}</span><span style="font-weight:700;font-family:'Space Grotesk'">{{f.v}}</span>
+                </div>
+              </sc-for>
+            </div>
+            <div style="margin-top:14px;padding:12px;border-radius:10px;background:rgba(22,163,74,.1);border:1px solid rgba(22,163,74,.3);font-size:12.5px;line-height:1.5;color:light-dark(#14532d,#86efac)"><b>Parcela de R$ 812</b> praticamente substitui a conta de luz atual de <b>R$ 780</b> — e em 5 anos o sistema é do cliente.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</sc-if>
+<sc-if value="{{is_prop}}" hint-placeholder-val="{{false}}">
+  <div style="padding:24px 26px;display:flex;flex-direction:column;gap:16px">
+    <div style="display:flex;align-items:center;gap:10px">
+      <div style="font-family:'Space Grotesk';font-size:18px;font-weight:600">Propostas</div>
+      <div style="font-size:12px;color:light-dark(#5c6b70,#8ba0a6)">PDF com logo e cores da empresa · gráficos de payback e economia em 25 anos</div>
+      <div style="flex:1"></div>
+      <div style="font-size:13px;font-weight:600;background:#f97316;color:#fff;border-radius:9px;padding:8px 14px;cursor:pointer" style-hover="background:#ea580c" onClick="{{openProp}}">+ Nova proposta</div>
+    </div>
+    <div style="background:light-dark(#ffffff,#10242b);border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:12px;overflow:hidden">
+      <table style="width:100%;border-collapse:collapse">
+        <thead><tr>
+          <th style="text-align:left;padding:11px 16px;font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:light-dark(#5c6b70,#8ba0a6);font-weight:600;border-bottom:1px solid light-dark(#e3e8ea,#1d3640)">Proposta</th>
+          <th style="text-align:left;padding:11px 16px;font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:light-dark(#5c6b70,#8ba0a6);font-weight:600;border-bottom:1px solid light-dark(#e3e8ea,#1d3640)">Cliente</th>
+          <th style="text-align:left;padding:11px 16px;font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:light-dark(#5c6b70,#8ba0a6);font-weight:600;border-bottom:1px solid light-dark(#e3e8ea,#1d3640)">Potência</th>
+          <th style="text-align:left;padding:11px 16px;font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:light-dark(#5c6b70,#8ba0a6);font-weight:600;border-bottom:1px solid light-dark(#e3e8ea,#1d3640)">Valor</th>
+          <th style="text-align:left;padding:11px 16px;font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:light-dark(#5c6b70,#8ba0a6);font-weight:600;border-bottom:1px solid light-dark(#e3e8ea,#1d3640)">Versão</th>
+          <th style="text-align:left;padding:11px 16px;font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:light-dark(#5c6b70,#8ba0a6);font-weight:600;border-bottom:1px solid light-dark(#e3e8ea,#1d3640)">Status</th>
+          <th style="text-align:right;padding:11px 16px;font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:light-dark(#5c6b70,#8ba0a6);font-weight:600;border-bottom:1px solid light-dark(#e3e8ea,#1d3640)">Ações</th>
+        </tr></thead>
+        <tbody>
+          <sc-for list="{{propostas}}" as="p" hint-placeholder-count="6">
+            <tr onClick="{{p.det}}" style="cursor:pointer" style-hover="background:light-dark(#f7f9f9,#0e2029)">
+              <td style="padding:12px 16px;font-size:13px;border-top:1px solid light-dark(#eef1f2,#17303a);font-weight:600;font-family:'Space Grotesk'">{{p.id}}</td>
+              <td style="padding:12px 16px;font-size:13px;border-top:1px solid light-dark(#eef1f2,#17303a)">{{p.cli}}<div style="font-size:11px;color:light-dark(#8a979b,#5f7883)">{{p.data}}</div></td>
+              <td style="padding:12px 16px;font-size:13px;border-top:1px solid light-dark(#eef1f2,#17303a)">{{p.pot}}</td>
+              <td style="padding:12px 16px;font-size:13px;border-top:1px solid light-dark(#eef1f2,#17303a);font-weight:600">{{p.v}}</td>
+              <td style="padding:12px 16px;font-size:12px;border-top:1px solid light-dark(#eef1f2,#17303a);color:light-dark(#5c6b70,#8ba0a6)">{{p.ver}}</td>
+              <td style="padding:12px 16px;border-top:1px solid light-dark(#eef1f2,#17303a)"><span style="font-size:11.5px;font-weight:700;color:{{p.sc}};background:{{p.sb}};border-radius:99px;padding:4px 10px">{{p.s}}</span></td>
+              <td style="padding:12px 16px;border-top:1px solid light-dark(#eef1f2,#17303a);text-align:right;white-space:nowrap">
+                <span onClick="{{p.pdf}}" style="font-size:12px;font-weight:600;color:#f97316;cursor:pointer;margin-right:12px">PDF</span>
+                <span onClick="{{p.zap}}" style="font-size:12px;font-weight:600;color:#16a34a;cursor:pointer">WhatsApp</span>
+              </td>
+            </tr>
+          </sc-for>
+        </tbody>
+      </table>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px">
+      <sc-for list="{{propStats}}" as="s" hint-placeholder-count="4">
+        <div style="background:light-dark(#ffffff,#10242b);border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:12px;padding:14px 18px">
+          <div style="font-size:12px;color:light-dark(#5c6b70,#8ba0a6)">{{s.l}}</div>
+          <div style="font-family:'Space Grotesk';font-size:20px;font-weight:600;margin-top:4px">{{s.v}}</div>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+</sc-if>
+<sc-if value="{{is_contr}}" hint-placeholder-val="{{false}}">
+  <div style="padding:24px 26px;display:flex;flex-direction:column;gap:16px">
+    <div style="display:flex;align-items:center;gap:10px">
+      <div style="font-family:'Space Grotesk';font-size:18px;font-weight:600">Contratos</div>
+      <div style="font-size:12px;color:light-dark(#5c6b70,#8ba0a6)">Gerados automaticamente da proposta aceita · aceite com IP, data e hora</div>
+      <div style="flex:1"></div>
+      <div style="font-size:13px;font-weight:600;background:#f97316;color:#fff;border-radius:9px;padding:8px 14px;cursor:pointer" style-hover="background:#ea580c" onClick="{{newContr}}">+ Gerar contrato</div>
+    </div>
+    <div style="display:flex;gap:10px;padding:13px 16px;border-radius:11px;background:rgba(220,38,38,.08);border:1px solid rgba(220,38,38,.25);align-items:center">
+      <div style="width:8px;height:8px;border-radius:99px;background:#dc2626"></div>
+      <div style="font-size:13px;color:light-dark(#7f1d1d,#fca5a5)"><b>2 contratos</b> pendentes de assinatura há mais de 5 dias — Marcos Paiva (6d) e Fazenda Ipê (8d)</div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <sc-for list="{{contratos}}" as="c" hint-placeholder-count="5">
+        <div onClick="{{c.det}}" style="cursor:pointer;background:light-dark(#ffffff,#10242b);border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:12px;padding:15px 20px;display:grid;grid-template-columns:110px 1.4fr 1fr 1fr 130px 110px;gap:14px;align-items:center">
+          <div style="font-family:'Space Grotesk';font-weight:600;font-size:13.5px">{{c.id}}</div>
+          <div><div style="font-size:13.5px;font-weight:600">{{c.cli}}</div><div style="font-size:11.5px;color:light-dark(#8a979b,#5f7883)">{{c.obra}}</div></div>
+          <div style="font-size:13px;font-weight:600">{{c.v}}<div style="font-size:11px;font-weight:400;color:light-dark(#8a979b,#5f7883)">{{c.parc}}</div></div>
+          <div style="font-size:12.5px;color:light-dark(#5c6b70,#8ba0a6)">Assinaturas: <b style="color:light-dark(#16262b,#e8eef0)">{{c.ass}}</b><div style="font-size:11px">{{c.dias}}</div></div>
+          <div><span style="font-size:11.5px;font-weight:700;color:{{c.sc}};background:{{c.sb}};border-radius:99px;padding:4px 10px">{{c.s}}</span></div>
+          <div style="text-align:right"><span onClick="{{c.act}}" style="font-size:12px;font-weight:600;color:#f97316;cursor:pointer">{{c.acao}}</span></div>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+</sc-if>
+<sc-if value="{{is_homol}}" hint-placeholder-val="{{false}}">
+  <div style="padding:24px 26px;display:flex;flex-direction:column;gap:16px">
+    <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:10px">
+      <sc-for list="{{homolEtapas}}" as="e" hint-placeholder-count="7">
+        <div style="background:light-dark(#ffffff,#10242b);border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:11px;padding:12px 14px;text-align:center">
+          <div style="font-family:'Space Grotesk';font-size:20px;font-weight:600;color:{{e.c}}">{{e.q}}</div>
+          <div style="font-size:11px;color:light-dark(#5c6b70,#8ba0a6);margin-top:2px;line-height:1.3">{{e.n}}</div>
+        </div>
+      </sc-for>
+    </div>
+    <div style="background:light-dark(#ffffff,#10242b);border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:12px;overflow:hidden">
+      <div style="padding:16px 20px 10px;display:flex;justify-content:space-between;align-items:baseline">
+        <div style="font-family:'Space Grotesk';font-size:15px;font-weight:600">Processos em andamento</div>
+        <div style="font-size:12px;color:light-dark(#5c6b70,#8ba0a6)">Prazos legais com alerta automático</div>
+      </div>
+      <table style="width:100%;border-collapse:collapse">
+        <thead><tr>
+          <th style="text-align:left;padding:9px 20px;font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:light-dark(#5c6b70,#8ba0a6);font-weight:600;border-bottom:1px solid light-dark(#e3e8ea,#1d3640)">Obra / Cliente</th>
+          <th style="text-align:left;padding:9px 20px;font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:light-dark(#5c6b70,#8ba0a6);font-weight:600;border-bottom:1px solid light-dark(#e3e8ea,#1d3640)">Concessionária</th>
+          <th style="text-align:left;padding:9px 20px;font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:light-dark(#5c6b70,#8ba0a6);font-weight:600;border-bottom:1px solid light-dark(#e3e8ea,#1d3640)">Protocolo</th>
+          <th style="text-align:left;padding:9px 20px;font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:light-dark(#5c6b70,#8ba0a6);font-weight:600;border-bottom:1px solid light-dark(#e3e8ea,#1d3640)">Etapa</th>
+          <th style="text-align:left;padding:9px 20px;font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:light-dark(#5c6b70,#8ba0a6);font-weight:600;border-bottom:1px solid light-dark(#e3e8ea,#1d3640)">Prazo</th>
+          <th style="text-align:left;padding:9px 20px;font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:light-dark(#5c6b70,#8ba0a6);font-weight:600;border-bottom:1px solid light-dark(#e3e8ea,#1d3640)">Docs</th>
+        </tr></thead>
+        <tbody>
+          <sc-for list="{{homols}}" as="h" hint-placeholder-count="5">
+            <tr onClick="{{h.det}}" style="cursor:pointer" style-hover="background:light-dark(#f7f9f9,#0e2029)">
+              <td style="padding:12px 20px;font-size:13px;border-top:1px solid light-dark(#eef1f2,#17303a);font-weight:600">{{h.obra}}</td>
+              <td style="padding:12px 20px;font-size:13px;border-top:1px solid light-dark(#eef1f2,#17303a)">{{h.conc}}</td>
+              <td style="padding:12px 20px;font-size:12.5px;border-top:1px solid light-dark(#eef1f2,#17303a);font-family:'Space Grotesk';color:light-dark(#5c6b70,#8ba0a6)">{{h.prot}}</td>
+              <td style="padding:12px 20px;border-top:1px solid light-dark(#eef1f2,#17303a)"><span style="font-size:11.5px;font-weight:700;color:{{h.sc}};background:{{h.sb}};border-radius:99px;padding:4px 10px">{{h.s}}</span></td>
+              <td style="padding:12px 20px;font-size:12.5px;border-top:1px solid light-dark(#eef1f2,#17303a);font-weight:600;color:{{h.pc}}">{{h.prazo}}</td>
+              <td style="padding:12px 20px;font-size:12px;border-top:1px solid light-dark(#eef1f2,#17303a);color:light-dark(#5c6b70,#8ba0a6)">{{h.docs}}</td>
+            </tr>
+          </sc-for>
+        </tbody>
+      </table>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+      <div style="background:light-dark(#ffffff,#10242b);border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:12px;padding:18px 20px">
+        <div style="font-family:'Space Grotesk';font-size:15px;font-weight:600">Checklist de documentação · Cond. Vila Verde</div>
+        <div style="display:flex;flex-direction:column;gap:8px;margin-top:12px">
+          <sc-for list="{{homolDocs}}" as="d" hint-placeholder-count="5">
+            <div style="display:flex;align-items:center;gap:10px;font-size:13px">
+              <div style="width:17px;height:17px;border-radius:5px;display:grid;place-items:center;font-size:11px;font-weight:700;background:{{d.bg}};color:{{d.cl}};border:1px solid {{d.bd}}">{{d.m}}</div>
+              <span>{{d.n}}</span>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+      <div style="background:light-dark(#ffffff,#10242b);border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:12px;padding:18px 20px">
+        <div style="font-family:'Space Grotesk';font-size:15px;font-weight:600">Prazo médio por concessionária</div>
+        <div style="font-size:12px;color:light-dark(#5c6b70,#8ba0a6);margin-top:2px">Histórico para prever gargalos</div>
+        <div style="display:flex;flex-direction:column;gap:11px;margin-top:14px">
+          <sc-for list="{{concPrazos}}" as="c" hint-placeholder-count="3">
+            <div>
+              <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><span style="font-weight:500">{{c.n}}</span><span style="color:light-dark(#5c6b70,#8ba0a6)">{{c.d}}</span></div>
+              <div style="height:8px;border-radius:99px;background:light-dark(#eef1f2,#17303a)"><div style="height:8px;border-radius:99px;background:#0c9;background:{{c.cor}};width:{{c.w}}"></div></div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </div>
+  </div>
+</sc-if>
+<sc-if value="{{is_obras}}" hint-placeholder-val="{{false}}">
+  <div style="padding:24px 26px;display:flex;flex-direction:column;gap:16px">
+    <div style="display:flex;align-items:center;gap:10px">
+      <div style="font-family:'Space Grotesk';font-size:18px;font-weight:600">Pipeline de obras</div>
+      <div style="font-size:12px;color:light-dark(#5c6b70,#8ba0a6)">9 obras simultâneas · abertas automaticamente do contrato assinado</div>
+      <div style="flex:1"></div>
+      <div style="font-size:12.5px;font-weight:500;border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:9px;padding:7px 12px;cursor:pointer;color:light-dark(#5c6b70,#8ba0a6)">Cidade: Todas</div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <sc-for list="{{obrasList}}" as="o" hint-placeholder-count="5">
+        <div onClick="{{o.det}}" style="cursor:pointer;background:light-dark(#ffffff,#10242b);border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:12px;padding:16px 20px">
+          <div style="display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr 120px;gap:14px;align-items:center">
+            <div>
+              <div style="font-size:14px;font-weight:600">{{o.n}}</div>
+              <div style="font-size:12px;color:light-dark(#8a979b,#5f7883);margin-top:2px">{{o.cid}} · {{o.kwp}}</div>
+            </div>
+            <div style="font-size:12.5px;color:light-dark(#5c6b70,#8ba0a6)">Equipe<div style="font-weight:600;color:light-dark(#16262b,#e8eef0)">{{o.eq}}</div></div>
+            <div style="font-size:12.5px;color:light-dark(#5c6b70,#8ba0a6)">Veículo<div style="font-weight:600;color:light-dark(#16262b,#e8eef0)">{{o.vei}}</div></div>
+            <div style="font-size:12.5px;color:light-dark(#5c6b70,#8ba0a6)">Entrega prevista<div style="font-weight:600;color:{{o.pc}}">{{o.prazo}}</div></div>
+            <div style="text-align:right"><span style="font-size:11.5px;font-weight:700;color:{{o.sc}};background:{{o.sb}};border-radius:99px;padding:4px 10px">{{o.s}}</span></div>
+          </div>
+          <div style="display:flex;align-items:center;gap:6px;margin-top:14px">
+            <sc-for list="{{o.etapas}}" as="e" hint-placeholder-count="5">
+              <div style="flex:1;display:flex;flex-direction:column;gap:5px">
+                <div style="height:6px;border-radius:99px;background:{{e.c}}"></div>
+                <div style="font-size:10.5px;color:{{e.tc}};font-weight:500">{{e.n}}</div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+</sc-if>
+<sc-if value="{{is_campo}}" hint-placeholder-val="{{false}}">
+  <div style="padding:24px 26px;display:flex;gap:28px;justify-content:center;align-items:flex-start;flex-wrap:wrap">
+    <div style="width:330px;flex-shrink:0;background:#0c2b33;border-radius:38px;padding:10px;box-shadow:0 24px 60px rgba(0,0,0,.25)">
+      <div style="background:light-dark(#f2f4f5,#0b1a1f);border-radius:30px;overflow:hidden;display:flex;flex-direction:column;height:640px">
+        <div style="background:#0c2b33;color:#fff;padding:12px 18px 14px">
+          <div style="display:flex;justify-content:space-between;font-size:11px;color:rgba(255,255,255,.6)"><span>09:41</span><span>▮▮▮ 100%</span></div>
+          <div style="display:flex;align-items:center;gap:8px;margin-top:10px">
+            <div style="width:22px;height:22px;border-radius:6px;background:#f97316;display:grid;place-items:center"><svg width="14" height="14" viewBox="0 0 48 48" fill="none"><circle cx="24" cy="9.5" r="4.5" fill="#ffffff"></circle><path d="M8 15 L16 15 L26.5 42 L20 42 Z" fill="#ffffff"></path><path d="M40 15 L32 15 L21.5 42 L28 42 Z" fill="#ffffff" opacity="0.82"></path></svg></div>
+            <div style="font-family:'Space Grotesk';font-weight:600;font-size:15px">Minhas obras</div>
+            <div style="flex:1"></div>
+            <div style="font-size:11px;background:rgba(255,255,255,.12);border-radius:99px;padding:3px 9px">João · Equipe A</div>
+          </div>
+        </div>
+        <div style="flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:12px">
+          <div style="background:light-dark(#ffffff,#10242b);border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:14px;padding:14px">
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <div style="font-size:14px;font-weight:700">Residência Ana Rocha</div>
+              <span style="font-size:10.5px;font-weight:700;color:#d97706;background:rgba(217,119,6,.14);border-radius:99px;padding:3px 8px">EM EXECUÇÃO</span>
+            </div>
+            <div style="font-size:12px;color:light-dark(#5c6b70,#8ba0a6);margin-top:3px">Eusébio-CE · 6,84 kWp · 12 módulos</div>
+            <div style="display:flex;gap:8px;margin-top:12px">
+              <div style="flex:1;text-align:center;font-size:12px;font-weight:700;background:#16a34a;color:#fff;border-radius:9px;padding:9px">✓ Check-in 07:58</div>
+              <div onClick="{{checkoutFn}}" style="flex:1;text-align:center;font-size:12px;font-weight:700;border:1.5px solid light-dark(#e3e8ea,#1d3640);border-radius:9px;padding:9px;color:light-dark(#5c6b70,#8ba0a6);cursor:pointer" style-hover="border-color:#f97316;color:#f97316">Check-out</div>
+            </div>
+          </div>
+          <div style="background:light-dark(#ffffff,#10242b);border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:14px;padding:14px">
+            <div style="font-size:13px;font-weight:700">Checklist de execução <span style="color:#f97316">{{chkCount}}</span></div>
+            <div style="display:flex;flex-direction:column;gap:9px;margin-top:10px">
+              <sc-for list="{{checklist}}" as="c" hint-placeholder-count="8">
+                <div onClick="{{c.tog}}" style="display:flex;align-items:center;gap:9px;font-size:12.5px;cursor:pointer">
+                  <div style="width:18px;height:18px;border-radius:6px;display:grid;place-items:center;font-size:11px;font-weight:700;background:{{c.bg}};color:{{c.cl}};border:1.5px solid {{c.bd}};flex-shrink:0">{{c.m}}</div>
+                  <span style="color:{{c.tc}}">{{c.n}}</span>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+          <div style="background:light-dark(#ffffff,#10242b);border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:14px;padding:14px">
+            <div style="font-size:13px;font-weight:700">Fotos da etapa · Durante</div>
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px">
+              <div style="aspect-ratio:1;border-radius:10px;background:light-dark(#e6ebec,#17303a);display:grid;place-items:center;font-size:10px;color:light-dark(#8a979b,#5f7883)">IMG_204</div>
+              <div style="aspect-ratio:1;border-radius:10px;background:light-dark(#e6ebec,#17303a);display:grid;place-items:center;font-size:10px;color:light-dark(#8a979b,#5f7883)">IMG_205</div>
+              <div onClick="{{photoFn}}" style="aspect-ratio:1;border-radius:10px;border:1.5px dashed light-dark(#c3ced2,#2a4550);display:grid;place-items:center;font-size:20px;color:#f97316;cursor:pointer">+</div>
+            </div>
+          </div>
+          <div style="background:light-dark(#ffffff,#10242b);border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:14px;padding:14px">
+            <div style="font-size:13px;font-weight:700">Séries registradas</div>
+            <div style="font-size:12px;color:light-dark(#5c6b70,#8ba0a6);margin-top:6px;line-height:1.7;font-family:'Space Grotesk'">MOD-57A21094 · MOD-57A21095<br>MOD-57A21096 · INV-GW8K-3312</div>
+            <div onClick="{{scanFn}}" style="margin-top:10px;text-align:center;font-size:12px;font-weight:700;border:1.5px solid rgba(249,115,22,.5);color:#f97316;border-radius:9px;padding:8px;cursor:pointer">Ler código de barras</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div style="max-width:380px;display:flex;flex-direction:column;gap:14px;padding-top:8px">
+      <div style="font-family:'Space Grotesk';font-size:18px;font-weight:600">App de campo (PWA)</div>
+      <div style="font-size:13.5px;line-height:1.6;color:light-dark(#44565b,#9db0b5)">O instalador acessa pelo celular, sem instalar nada, e vê apenas as obras designadas a ele. Tudo o que é registrado em campo alimenta a obra em tempo real no ERP.</div>
+      <sc-for list="{{campoFeats}}" as="f" hint-placeholder-count="6">
+        <div style="display:flex;gap:11px;align-items:flex-start">
+          <div style="width:7px;height:7px;border-radius:99px;background:#f97316;margin-top:6px;flex-shrink:0"></div>
+          <div style="font-size:13px;line-height:1.5"><b>{{f.t}}</b> — {{f.d}}</div>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+</sc-if>
+<sc-if value="{{is_compras}}" hint-placeholder-val="{{false}}">
+  <div style="padding:24px 26px;display:flex;flex-direction:column;gap:16px">
+    <div style="display:flex;align-items:center;gap:10px">
+      <div style="font-family:'Space Grotesk';font-size:18px;font-weight:600">Pedidos de compra</div>
+      <div style="font-size:12px;color:light-dark(#5c6b70,#8ba0a6)">Gerados a partir da necessidade da obra · contas a pagar automáticas no recebimento</div>
+      <div style="flex:1"></div>
+      <div style="font-size:13px;font-weight:600;background:#f97316;color:#fff;border-radius:9px;padding:8px 14px;cursor:pointer" style-hover="background:#ea580c" onClick="{{newPed}}">+ Solicitação</div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <sc-for list="{{pedidos}}" as="p" hint-placeholder-count="5">
+        <div onClick="{{p.det}}" style="cursor:pointer;background:light-dark(#ffffff,#10242b);border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:12px;padding:15px 20px;display:grid;grid-template-columns:90px 1.3fr 1.2fr 1fr 1fr 130px;gap:14px;align-items:center">
+          <div style="font-family:'Space Grotesk';font-weight:600;font-size:13.5px">{{p.id}}</div>
+          <div><div style="font-size:13.5px;font-weight:600">{{p.forn}}</div><div style="font-size:11.5px;color:light-dark(#8a979b,#5f7883)">Prazo entrega: {{p.prazo}}</div></div>
+          <div style="font-size:12.5px;color:light-dark(#5c6b70,#8ba0a6)">Obra<div style="font-weight:600;color:light-dark(#16262b,#e8eef0)">{{p.obra}}</div></div>
+          <div style="font-size:12.5px;color:light-dark(#5c6b70,#8ba0a6)">{{p.itens}}</div>
+          <div style="font-size:13.5px;font-weight:700;font-family:'Space Grotesk'">{{p.v}}</div>
+          <div style="text-align:right"><span style="font-size:11.5px;font-weight:700;color:{{p.sc}};background:{{p.sb}};border-radius:99px;padding:4px 10px">{{p.s}}</span></div>
+        </div>
+      </sc-for>
+    </div>
+    <div style="background:light-dark(#ffffff,#10242b);border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:12px;padding:18px 20px">
+      <div style="font-family:'Space Grotesk';font-size:15px;font-weight:600">Comparativo de cotações · Kit 6,84 kWp (PC-91)</div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:14px">
+        <sc-for list="{{cotacoes}}" as="c" hint-placeholder-count="3">
+          <div onClick="{{c.det}}" style="cursor:pointer;border:1px solid {{c.bd}};border-radius:11px;padding:14px 16px;position:relative">
+            <sc-if value="{{c.best}}" hint-placeholder-val="{{false}}">
+              <div style="position:absolute;top:-9px;left:12px;background:#16a34a;color:#fff;font-size:10px;font-weight:700;border-radius:99px;padding:2px 9px">MELHOR PREÇO</div>
+            </sc-if>
+            <div style="font-size:13.5px;font-weight:600">{{c.n}}</div>
+            <div style="font-family:'Space Grotesk';font-size:20px;font-weight:600;margin-top:6px">{{c.v}}</div>
+            <div style="font-size:12px;color:light-dark(#5c6b70,#8ba0a6);margin-top:4px">{{c.cond}}</div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </div>
+</sc-if>
+<sc-if value="{{is_estoque}}" hint-placeholder-val="{{false}}">
+  <div style="padding:24px 26px;display:flex;flex-direction:column;gap:16px">
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px">
+      <sc-for list="{{estStats}}" as="s" hint-placeholder-count="4">
+        <div style="background:light-dark(#ffffff,#10242b);border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:12px;padding:14px 18px">
+          <div style="font-size:12px;color:light-dark(#5c6b70,#8ba0a6)">{{s.l}}</div>
+          <div style="font-family:'Space Grotesk';font-size:20px;font-weight:600;margin-top:4px;color:{{s.c}}">{{s.v}}</div>
+        </div>
+      </sc-for>
+    </div>
+    <div style="background:light-dark(#ffffff,#10242b);border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:12px;overflow:hidden">
+      <div style="padding:16px 20px 10px;display:flex;justify-content:space-between;align-items:baseline">
+        <div style="font-family:'Space Grotesk';font-size:15px;font-weight:600">Itens em estoque · Depósito Matriz</div>
+        <div style="font-size:12px;color:light-dark(#5c6b70,#8ba0a6)">Rastreio por nº de série em módulos e inversores</div>
+      </div>
+      <table style="width:100%;border-collapse:collapse">
+        <thead><tr>
+          <th style="text-align:left;padding:9px 20px;font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:light-dark(#5c6b70,#8ba0a6);font-weight:600;border-bottom:1px solid light-dark(#e3e8ea,#1d3640)">Item</th>
+          <th style="text-align:left;padding:9px 20px;font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:light-dark(#5c6b70,#8ba0a6);font-weight:600;border-bottom:1px solid light-dark(#e3e8ea,#1d3640)">SKU</th>
+          <th style="text-align:right;padding:9px 20px;font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:light-dark(#5c6b70,#8ba0a6);font-weight:600;border-bottom:1px solid light-dark(#e3e8ea,#1d3640)">Mínimo</th>
+          <th style="text-align:right;padding:9px 20px;font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:light-dark(#5c6b70,#8ba0a6);font-weight:600;border-bottom:1px solid light-dark(#e3e8ea,#1d3640)">Disponível</th>
+          <th style="text-align:right;padding:9px 20px;font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:light-dark(#5c6b70,#8ba0a6);font-weight:600;border-bottom:1px solid light-dark(#e3e8ea,#1d3640)">Reservado</th>
+          <th style="text-align:left;padding:9px 20px 9px 26px;font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:light-dark(#5c6b70,#8ba0a6);font-weight:600;border-bottom:1px solid light-dark(#e3e8ea,#1d3640)">Situação</th>
+        </tr></thead>
+        <tbody>
+          <sc-for list="{{estItens}}" as="i" hint-placeholder-count="6">
+            <tr onClick="{{i.det}}" style="cursor:pointer" style-hover="background:light-dark(#f7f9f9,#0e2029)">
+              <td style="padding:12px 20px;font-size:13px;border-top:1px solid light-dark(#eef1f2,#17303a);font-weight:600">{{i.n}}</td>
+              <td style="padding:12px 20px;font-size:12.5px;border-top:1px solid light-dark(#eef1f2,#17303a);font-family:'Space Grotesk';color:light-dark(#5c6b70,#8ba0a6)">{{i.sku}}</td>
+              <td style="padding:12px 20px;font-size:13px;border-top:1px solid light-dark(#eef1f2,#17303a);text-align:right">{{i.min}}</td>
+              <td style="padding:12px 20px;font-size:13px;border-top:1px solid light-dark(#eef1f2,#17303a);text-align:right;font-weight:700">{{i.qt}}</td>
+              <td style="padding:12px 20px;font-size:13px;border-top:1px solid light-dark(#eef1f2,#17303a);text-align:right;color:light-dark(#5c6b70,#8ba0a6)">{{i.res}}</td>
+              <td style="padding:12px 20px 12px 26px;border-top:1px solid light-dark(#eef1f2,#17303a)"><span style="font-size:11.5px;font-weight:700;color:{{i.sc}};background:{{i.sb}};border-radius:99px;padding:4px 10px">{{i.s}}</span></td>
+            </tr>
+          </sc-for>
+        </tbody>
+      </table>
+    </div>
+    <div style="display:grid;grid-template-columns:1.3fr 1fr;gap:14px">
+      <div style="background:light-dark(#ffffff,#10242b);border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:12px;padding:18px 20px">
+        <div style="font-family:'Space Grotesk';font-size:15px;font-weight:600">Movimentações recentes</div>
+        <div style="display:flex;flex-direction:column;margin-top:6px">
+          <sc-for list="{{estMovs}}" as="m" hint-placeholder-count="4">
+            <div onClick="{{m.det}}" style="cursor:pointer;display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid light-dark(#eef1f2,#17303a)">
+              <span style="font-size:11px;font-weight:700;color:{{m.c}};background:{{m.b}};border-radius:7px;padding:3px 8px;width:76px;text-align:center">{{m.tipo}}</span>
+              <div style="flex:1;font-size:13px">{{m.t}}</div>
+              <div style="font-size:11.5px;color:light-dark(#8a979b,#5f7883)">{{m.d}}</div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+      <div style="background:light-dark(#ffffff,#10242b);border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:12px;padding:18px 20px">
+        <div style="font-family:'Space Grotesk';font-size:15px;font-weight:600">Consumo por obra · agosto</div>
+        <div style="display:flex;flex-direction:column;gap:10px;margin-top:14px">
+          <sc-for list="{{consumoObra}}" as="c" hint-placeholder-count="4">
+            <div onClick="{{c.det}}" style="cursor:pointer;display:flex;justify-content:space-between;font-size:13px;padding:8px 12px;border-radius:9px;background:light-dark(#f7f9f9,#0e2029)">
+              <span>{{c.n}}</span><span style="font-weight:700;font-family:'Space Grotesk'">{{c.v}}</span>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </div>
+  </div>
+</sc-if>
+<sc-if value="{{is_frota}}" hint-placeholder-val="{{false}}">
+  <div style="padding:24px 26px;display:flex;flex-direction:column;gap:16px">
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px">
+      <sc-for list="{{veiculos}}" as="v" hint-placeholder-count="3">
+        <div onClick="{{v.det}}" style="cursor:pointer;background:light-dark(#ffffff,#10242b);border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:12px;padding:16px 18px">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div style="font-size:14px;font-weight:700">{{v.n}}</div>
+            <span style="font-size:11px;font-weight:700;color:{{v.sc}};background:{{v.sb}};border-radius:99px;padding:3px 9px">{{v.s}}</span>
+          </div>
+          <div style="font-size:12px;color:light-dark(#8a979b,#5f7883);margin-top:2px;font-family:'Space Grotesk'">{{v.placa}} · {{v.km}}</div>
+          <div style="display:flex;flex-direction:column;gap:6px;margin-top:12px;font-size:12.5px;color:light-dark(#44565b,#9db0b5)">
+            <div>Obra atual: <b style="color:light-dark(#16262b,#e8eef0)">{{v.obra}}</b></div>
+            <div>Próx. manutenção: <b style="color:{{v.mc}}">{{v.manut}}</b></div>
+            <div>Combustível no mês: <b style="color:light-dark(#16262b,#e8eef0)">{{v.comb}}</b></div>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+    <div style="background:light-dark(#ffffff,#10242b);border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:12px;overflow:hidden">
+      <div style="font-family:'Space Grotesk';font-size:15px;font-weight:600;padding:16px 20px 10px">Ferramentas e equipamentos</div>
+      <table style="width:100%;border-collapse:collapse">
+        <tbody>
+          <sc-for list="{{ferramentas}}" as="f" hint-placeholder-count="5">
+            <tr onClick="{{f.det}}" style="cursor:pointer" style-hover="background:light-dark(#f7f9f9,#0e2029)">
+              <td style="padding:11px 20px;font-size:13px;border-top:1px solid light-dark(#eef1f2,#17303a);font-weight:600">{{f.n}}</td>
+              <td style="padding:11px 20px;font-size:12.5px;border-top:1px solid light-dark(#eef1f2,#17303a);font-family:'Space Grotesk';color:light-dark(#5c6b70,#8ba0a6)">{{f.pat}}</td>
+              <td style="padding:11px 20px;font-size:13px;border-top:1px solid light-dark(#eef1f2,#17303a)">{{f.resp}}</td>
+              <td style="padding:11px 20px;font-size:13px;border-top:1px solid light-dark(#eef1f2,#17303a);color:light-dark(#5c6b70,#8ba0a6)">{{f.local}}</td>
+              <td style="padding:11px 20px;border-top:1px solid light-dark(#eef1f2,#17303a);text-align:right"><span style="font-size:11.5px;font-weight:700;color:{{f.sc}};background:{{f.sb}};border-radius:99px;padding:4px 10px">{{f.s}}</span></td>
+            </tr>
+          </sc-for>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</sc-if>
+<sc-if value="{{is_fin}}" hint-placeholder-val="{{false}}">
+  <div style="padding:24px 26px;display:flex;flex-direction:column;gap:16px">
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px">
+      <sc-for list="{{finKpis}}" as="k" hint-placeholder-count="4">
+        <div style="background:light-dark(#ffffff,#10242b);border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:12px;padding:14px 18px">
+          <div style="font-size:12px;color:light-dark(#5c6b70,#8ba0a6)">{{k.l}}</div>
+          <div style="font-family:'Space Grotesk';font-size:20px;font-weight:600;margin-top:4px;color:{{k.c}}">{{k.v}}</div>
+          <div style="font-size:11px;color:light-dark(#8a979b,#5f7883);margin-top:3px">{{k.d}}</div>
+        </div>
+      </sc-for>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+      <div style="background:light-dark(#ffffff,#10242b);border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:12px;overflow:hidden">
+        <div style="padding:16px 20px 8px;font-family:'Space Grotesk';font-size:15px;font-weight:600">Contas a pagar · próximas</div>
+        <table style="width:100%;border-collapse:collapse"><tbody>
+          <sc-for list="{{pagar}}" as="p" hint-placeholder-count="4">
+            <tr onClick="{{p.det}}" style="cursor:pointer" style-hover="background:light-dark(#f7f9f9,#0e2029)">
+              <td style="padding:10px 20px;font-size:13px;border-top:1px solid light-dark(#eef1f2,#17303a)">{{p.n}}<div style="font-size:11px;color:light-dark(#8a979b,#5f7883)">{{p.cat}}</div></td>
+              <td style="padding:10px 20px;font-size:12.5px;border-top:1px solid light-dark(#eef1f2,#17303a);color:{{p.vc}};font-weight:600">{{p.venc}}</td>
+              <td style="padding:10px 20px;font-size:13px;border-top:1px solid light-dark(#eef1f2,#17303a);text-align:right;font-weight:700;font-family:'Space Grotesk'">{{p.v}}</td>
+            </tr>
+          </sc-for>
+        </tbody></table>
+      </div>
+      <div style="background:light-dark(#ffffff,#10242b);border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:12px;overflow:hidden">
+        <div style="padding:16px 20px 8px;font-family:'Space Grotesk';font-size:15px;font-weight:600">Contas a receber · próximas</div>
+        <table style="width:100%;border-collapse:collapse"><tbody>
+          <sc-for list="{{receber}}" as="p" hint-placeholder-count="4">
+            <tr onClick="{{p.det}}" style="cursor:pointer" style-hover="background:light-dark(#f7f9f9,#0e2029)">
+              <td style="padding:10px 20px;font-size:13px;border-top:1px solid light-dark(#eef1f2,#17303a)">{{p.n}}<div style="font-size:11px;color:light-dark(#8a979b,#5f7883)">{{p.cat}}</div></td>
+              <td style="padding:10px 20px;font-size:12.5px;border-top:1px solid light-dark(#eef1f2,#17303a);color:{{p.vc}};font-weight:600">{{p.venc}}</td>
+              <td style="padding:10px 20px;font-size:13px;border-top:1px solid light-dark(#eef1f2,#17303a);text-align:right;font-weight:700;font-family:'Space Grotesk';color:#16a34a">{{p.v}}</td>
+            </tr>
+          </sc-for>
+        </tbody></table>
+      </div>
+    </div>
+    <div style="background:light-dark(#ffffff,#10242b);border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:12px;overflow:hidden">
+      <div style="padding:16px 20px 10px;display:flex;justify-content:space-between;align-items:baseline">
+        <div style="font-family:'Space Grotesk';font-size:15px;font-weight:600">Custo real × orçado por obra</div>
+        <div style="font-size:12px;color:light-dark(#5c6b70,#8ba0a6)">Margem de contribuição real de cada projeto</div>
+      </div>
+      <table style="width:100%;border-collapse:collapse">
+        <thead><tr>
+          <th style="text-align:left;padding:9px 20px;font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:light-dark(#5c6b70,#8ba0a6);font-weight:600;border-bottom:1px solid light-dark(#e3e8ea,#1d3640)">Obra</th>
+          <th style="text-align:right;padding:9px 20px;font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:light-dark(#5c6b70,#8ba0a6);font-weight:600;border-bottom:1px solid light-dark(#e3e8ea,#1d3640)">Contrato</th>
+          <th style="text-align:right;padding:9px 20px;font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:light-dark(#5c6b70,#8ba0a6);font-weight:600;border-bottom:1px solid light-dark(#e3e8ea,#1d3640)">Custo orçado</th>
+          <th style="text-align:right;padding:9px 20px;font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:light-dark(#5c6b70,#8ba0a6);font-weight:600;border-bottom:1px solid light-dark(#e3e8ea,#1d3640)">Custo real</th>
+          <th style="text-align:right;padding:9px 20px;font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:light-dark(#5c6b70,#8ba0a6);font-weight:600;border-bottom:1px solid light-dark(#e3e8ea,#1d3640)">Margem real</th>
+        </tr></thead>
+        <tbody>
+          <sc-for list="{{custoObras}}" as="c" hint-placeholder-count="4">
+            <tr onClick="{{c.det}}" style="cursor:pointer" style-hover="background:light-dark(#f7f9f9,#0e2029)">
+              <td style="padding:11px 20px;font-size:13px;border-top:1px solid light-dark(#eef1f2,#17303a);font-weight:600">{{c.n}}</td>
+              <td style="padding:11px 20px;font-size:13px;border-top:1px solid light-dark(#eef1f2,#17303a);text-align:right">{{c.contrato}}</td>
+              <td style="padding:11px 20px;font-size:13px;border-top:1px solid light-dark(#eef1f2,#17303a);text-align:right;color:light-dark(#5c6b70,#8ba0a6)">{{c.orc}}</td>
+              <td style="padding:11px 20px;font-size:13px;border-top:1px solid light-dark(#eef1f2,#17303a);text-align:right">{{c.real}}</td>
+              <td style="padding:11px 20px;font-size:13px;border-top:1px solid light-dark(#eef1f2,#17303a);text-align:right;font-weight:700;color:{{c.mc}}">{{c.margem}}</td>
+            </tr>
+          </sc-for>
+        </tbody>
+      </table>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+      <div style="background:light-dark(#ffffff,#10242b);border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:12px;padding:18px 20px">
+        <div style="font-family:'Space Grotesk';font-size:15px;font-weight:600">DRE gerencial · agosto</div>
+        <div style="display:flex;flex-direction:column;margin-top:8px">
+          <sc-for list="{{dre}}" as="d" hint-placeholder-count="5">
+            <div style="display:flex;justify-content:space-between;font-size:13px;padding:8px 0;border-bottom:1px solid light-dark(#eef1f2,#17303a)">
+              <span style="font-weight:{{d.fw}}">{{d.n}}</span><span style="font-weight:700;font-family:'Space Grotesk';color:{{d.c}}">{{d.v}}</span>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+      <div style="background:light-dark(#ffffff,#10242b);border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:12px;padding:18px 20px">
+        <div style="font-family:'Space Grotesk';font-size:15px;font-weight:600">Comissões do mês</div>
+        <div style="font-size:12px;color:light-dark(#5c6b70,#8ba0a6);margin-top:2px">Regras por faixa de margem, calculadas automaticamente</div>
+        <div style="display:flex;flex-direction:column;gap:9px;margin-top:14px">
+          <sc-for list="{{comissoes}}" as="c" hint-placeholder-count="3">
+            <div onClick="{{c.det}}" style="cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-size:13px;padding:9px 12px;border-radius:9px;background:light-dark(#f7f9f9,#0e2029)">
+              <span>{{c.n}} <span style="color:light-dark(#8a979b,#5f7883);font-size:11.5px">· {{c.d}}</span></span>
+              <span style="font-weight:700;font-family:'Space Grotesk'">{{c.v}}</span>
+            </div>
+          </sc-for>
+        </div>
+        <div style="margin-top:12px;font-size:12px;color:light-dark(#8a979b,#5f7883)">Conciliação bancária: extrato OFX importado em 26/08 · 42 lançamentos conciliados</div>
+      </div>
+    </div>
+  </div>
+</sc-if>
+<sc-if value="{{is_cobr}}" hint-placeholder-val="{{false}}">
+  <div style="padding:24px 26px;display:flex;flex-direction:column;gap:16px">
+    <div style="display:flex;align-items:center;gap:10px">
+      <div style="font-family:'Space Grotesk';font-size:18px;font-weight:600">Parcelas e cobranças</div>
+      <div style="font-size:12px;color:light-dark(#5c6b70,#8ba0a6)">PIX QR Code da conta da empresa · baixa em um clique · envio por WhatsApp</div>
+      <div style="flex:1"></div>
+      <div style="font-size:13px;font-weight:600;background:#f97316;color:#fff;border-radius:9px;padding:8px 14px;cursor:pointer" style-hover="background:#ea580c" onClick="{{newCobr}}">+ Nova cobrança</div>
+    </div>
+    <div style="background:light-dark(#ffffff,#10242b);border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:12px;overflow:hidden">
+      <table style="width:100%;border-collapse:collapse">
+        <thead><tr>
+          <th style="text-align:left;padding:11px 20px;font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:light-dark(#5c6b70,#8ba0a6);font-weight:600;border-bottom:1px solid light-dark(#e3e8ea,#1d3640)">Cliente / Contrato</th>
+          <th style="text-align:left;padding:11px 20px;font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:light-dark(#5c6b70,#8ba0a6);font-weight:600;border-bottom:1px solid light-dark(#e3e8ea,#1d3640)">Parcela</th>
+          <th style="text-align:left;padding:11px 20px;font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:light-dark(#5c6b70,#8ba0a6);font-weight:600;border-bottom:1px solid light-dark(#e3e8ea,#1d3640)">Vencimento</th>
+          <th style="text-align:right;padding:11px 20px;font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:light-dark(#5c6b70,#8ba0a6);font-weight:600;border-bottom:1px solid light-dark(#e3e8ea,#1d3640)">Valor</th>
+          <th style="text-align:left;padding:11px 20px 11px 26px;font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:light-dark(#5c6b70,#8ba0a6);font-weight:600;border-bottom:1px solid light-dark(#e3e8ea,#1d3640)">Meio</th>
+          <th style="text-align:left;padding:11px 20px;font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:light-dark(#5c6b70,#8ba0a6);font-weight:600;border-bottom:1px solid light-dark(#e3e8ea,#1d3640)">Status</th>
+          <th style="text-align:right;padding:11px 20px;font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:light-dark(#5c6b70,#8ba0a6);font-weight:600;border-bottom:1px solid light-dark(#e3e8ea,#1d3640)">Ações</th>
+        </tr></thead>
+        <tbody>
+          <sc-for list="{{parcelas}}" as="p" hint-placeholder-count="6">
+            <tr onClick="{{p.det}}" style="cursor:pointer" style-hover="background:light-dark(#f7f9f9,#0e2029)">
+              <td style="padding:12px 20px;font-size:13px;border-top:1px solid light-dark(#eef1f2,#17303a);font-weight:600">{{p.cli}}<div style="font-size:11px;font-weight:400;color:light-dark(#8a979b,#5f7883)">{{p.ct}}</div></td>
+              <td style="padding:12px 20px;font-size:13px;border-top:1px solid light-dark(#eef1f2,#17303a)">{{p.parc}}</td>
+              <td style="padding:12px 20px;font-size:12.5px;border-top:1px solid light-dark(#eef1f2,#17303a);font-weight:600;color:{{p.vc}}">{{p.venc}}</td>
+              <td style="padding:12px 20px;font-size:13px;border-top:1px solid light-dark(#eef1f2,#17303a);text-align:right;font-weight:700;font-family:'Space Grotesk'">{{p.v}}</td>
+              <td style="padding:12px 20px 12px 26px;font-size:12.5px;border-top:1px solid light-dark(#eef1f2,#17303a)">{{p.meio}}</td>
+              <td style="padding:12px 20px;border-top:1px solid light-dark(#eef1f2,#17303a)"><span style="font-size:11.5px;font-weight:700;color:{{p.sc}};background:{{p.sb}};border-radius:99px;padding:4px 10px">{{p.s}}</span></td>
+              <td style="padding:12px 20px;border-top:1px solid light-dark(#eef1f2,#17303a);text-align:right;white-space:nowrap">
+                <span onClick="{{p.zap}}" style="font-size:12px;font-weight:600;color:#16a34a;cursor:pointer;margin-right:12px">WhatsApp</span>
+                <span onClick="{{p.act}}" style="font-size:12px;font-weight:600;color:#f97316;cursor:pointer">{{p.acao}}</span>
+              </td>
+            </tr>
+          </sc-for>
+        </tbody>
+      </table>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px">
+      <sc-for list="{{cobrStats}}" as="s" hint-placeholder-count="4">
+        <div style="background:light-dark(#ffffff,#10242b);border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:12px;padding:14px 18px">
+          <div style="font-size:12px;color:light-dark(#5c6b70,#8ba0a6)">{{s.l}}</div>
+          <div style="font-family:'Space Grotesk';font-size:20px;font-weight:600;margin-top:4px;color:{{s.c}}">{{s.v}}</div>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+</sc-if>
+<sc-if value="{{is_om}}" hint-placeholder-val="{{false}}">
+  <div style="padding:24px 26px;display:flex;flex-direction:column;gap:16px">
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px">
+      <sc-for list="{{omStats}}" as="s" hint-placeholder-count="4">
+        <div style="background:light-dark(#ffffff,#10242b);border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:12px;padding:14px 18px">
+          <div style="font-size:12px;color:light-dark(#5c6b70,#8ba0a6)">{{s.l}}</div>
+          <div style="font-family:'Space Grotesk';font-size:20px;font-weight:600;margin-top:4px;color:{{s.c}}">{{s.v}}</div>
+          <div style="font-size:11px;color:light-dark(#8a979b,#5f7883);margin-top:3px">{{s.d}}</div>
+        </div>
+      </sc-for>
+    </div>
+    <div style="background:light-dark(#ffffff,#10242b);border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:12px;overflow:hidden">
+      <div style="padding:16px 20px 10px;font-family:'Space Grotesk';font-size:15px;font-weight:600">Chamados técnicos abertos</div>
+      <table style="width:100%;border-collapse:collapse"><tbody>
+        <sc-for list="{{chamados}}" as="c" hint-placeholder-count="4">
+          <tr onClick="{{c.det}}" style="cursor:pointer" style-hover="background:light-dark(#f7f9f9,#0e2029)">
+            <td style="padding:12px 20px;font-size:13px;border-top:1px solid light-dark(#eef1f2,#17303a);font-family:'Space Grotesk';font-weight:600">{{c.id}}</td>
+            <td style="padding:12px 20px;font-size:13px;border-top:1px solid light-dark(#eef1f2,#17303a);font-weight:600">{{c.cli}}<div style="font-size:11px;font-weight:400;color:light-dark(#8a979b,#5f7883)">{{c.t}}</div></td>
+            <td style="padding:12px 20px;border-top:1px solid light-dark(#eef1f2,#17303a)"><span style="font-size:11.5px;font-weight:700;color:{{c.pc}};background:{{c.pb}};border-radius:99px;padding:4px 10px">{{c.pri}}</span></td>
+            <td style="padding:12px 20px;font-size:12.5px;border-top:1px solid light-dark(#eef1f2,#17303a);font-weight:600;color:{{c.slac}}">SLA: {{c.sla}}</td>
+            <td style="padding:12px 20px;font-size:13px;border-top:1px solid light-dark(#eef1f2,#17303a);color:light-dark(#5c6b70,#8ba0a6)">{{c.resp}}</td>
+          </tr>
+        </sc-for>
+      </tbody></table>
+    </div>
+    <div style="display:grid;grid-template-columns:1.4fr 1fr;gap:14px">
+      <div style="background:light-dark(#ffffff,#10242b);border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:12px;padding:18px 20px">
+        <div style="display:flex;justify-content:space-between;align-items:baseline">
+          <div style="font-family:'Space Grotesk';font-size:15px;font-weight:600">Geração real × projetada</div>
+          <div style="font-size:12px;color:light-dark(#5c6b70,#8ba0a6)">Alerta automático de baixa performance</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:12px;margin-top:16px">
+          <sc-for list="{{geracao}}" as="g" hint-placeholder-count="5">
+            <div onClick="{{g.det}}" style="cursor:pointer">
+              <div style="display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:4px">
+                <span style="font-weight:600">{{g.n}}</span><span style="font-weight:700;color:{{g.c}}">{{g.pct}}</span>
+              </div>
+              <div style="height:9px;border-radius:99px;background:light-dark(#eef1f2,#17303a);position:relative">
+                <div style="height:9px;border-radius:99px;background:{{g.c}};width:{{g.w}}"></div>
+              </div>
+              <div style="font-size:11px;color:light-dark(#8a979b,#5f7883);margin-top:3px">{{g.d}}</div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <div style="background:light-dark(#ffffff,#10242b);border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:12px;padding:18px 20px">
+          <div style="font-family:'Space Grotesk';font-size:15px;font-weight:600">NPS pós-entrega</div>
+          <div style="display:flex;align-items:baseline;gap:10px;margin-top:8px">
+            <div style="font-family:'Space Grotesk';font-size:38px;font-weight:700;color:#16a34a">+72</div>
+            <div style="font-size:12px;color:light-dark(#5c6b70,#8ba0a6);line-height:1.5">18 respostas em 2026<br>84% promotores · 4% detratores</div>
+          </div>
+        </div>
+        <div style="background:light-dark(#ffffff,#10242b);border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:12px;padding:18px 20px">
+          <div style="font-family:'Space Grotesk';font-size:15px;font-weight:600">Contratos de O&M ativos</div>
+          <div style="display:flex;flex-direction:column;gap:8px;margin-top:12px">
+            <sc-for list="{{omContratos}}" as="c" hint-placeholder-count="3">
+              <div onClick="{{c.det}}" style="cursor:pointer;display:flex;justify-content:space-between;font-size:12.5px">
+                <span>{{c.n}}</span><span style="font-weight:700;font-family:'Space Grotesk'">{{c.v}}</span>
+              </div>
+            </sc-for>
+            <div style="border-top:1px solid light-dark(#eef1f2,#17303a);padding-top:8px;display:flex;justify-content:space-between;font-size:12.5px;font-weight:700">
+              <span>Receita recorrente/mês</span><span style="color:#16a34a">R$ 2.140</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</sc-if>
+<sc-if value="{{is_equipe}}" hint-placeholder-val="{{false}}">
+  <div style="padding:24px 26px;display:flex;flex-direction:column;gap:16px">
+    <div style="display:grid;grid-template-columns:1.3fr 1fr;gap:14px">
+      <div style="background:light-dark(#ffffff,#10242b);border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:12px;padding:18px 20px">
+        <div style="display:flex;justify-content:space-between;align-items:baseline">
+          <div style="font-family:'Space Grotesk';font-size:15px;font-weight:600">Metas do mês · vendedores</div>
+          <div style="font-size:12px;color:light-dark(#5c6b70,#8ba0a6)">kWp e R$ em tempo real</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:14px;margin-top:16px">
+          <sc-for list="{{metas}}" as="m" hint-placeholder-count="4">
+            <div onClick="{{m.det}}" style="cursor:pointer">
+              <div style="display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:4px">
+                <span style="font-weight:600">{{m.pos}} {{m.n}}</span>
+                <span style="color:light-dark(#5c6b70,#8ba0a6)">{{m.real}} de {{m.meta}} · <b style="color:{{m.c}}">{{m.pct}}</b></span>
+              </div>
+              <div style="height:9px;border-radius:99px;background:light-dark(#eef1f2,#17303a)"><div style="height:9px;border-radius:99px;background:{{m.c}};width:{{m.w}}"></div></div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+      <div style="background:light-dark(#ffffff,#10242b);border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:12px;padding:18px 20px">
+        <div style="font-family:'Space Grotesk';font-size:15px;font-weight:600">Log de auditoria</div>
+        <div style="font-size:12px;color:light-dark(#5c6b70,#8ba0a6);margin-top:2px">Quem criou, alterou ou excluiu — e quando</div>
+        <div style="display:flex;flex-direction:column;margin-top:8px">
+          <sc-for list="{{auditoria}}" as="a" hint-placeholder-count="4">
+            <div onClick="{{a.det}}" style="cursor:pointer;padding:9px 0;border-bottom:1px solid light-dark(#eef1f2,#17303a)">
+              <div style="font-size:12.5px"><b>{{a.u}}</b> {{a.t}}</div>
+              <div style="font-size:11px;color:light-dark(#8a979b,#5f7883);margin-top:2px">{{a.h}}</div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </div>
+    <div style="background:light-dark(#ffffff,#10242b);border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:12px;overflow:hidden">
+      <div style="padding:16px 20px 10px;display:flex;justify-content:space-between;align-items:baseline">
+        <div style="font-family:'Space Grotesk';font-size:15px;font-weight:600">Colaboradores e permissões</div>
+        <div onClick="{{invite}}" style="font-size:13px;font-weight:600;color:#f97316;cursor:pointer">+ Convidar colaborador</div>
+      </div>
+      <table style="width:100%;border-collapse:collapse">
+        <thead><tr>
+          <th style="text-align:left;padding:9px 20px;font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:light-dark(#5c6b70,#8ba0a6);font-weight:600;border-bottom:1px solid light-dark(#e3e8ea,#1d3640)">Nome</th>
+          <th style="text-align:left;padding:9px 20px;font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:light-dark(#5c6b70,#8ba0a6);font-weight:600;border-bottom:1px solid light-dark(#e3e8ea,#1d3640)">Função</th>
+          <th style="text-align:left;padding:9px 20px;font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:light-dark(#5c6b70,#8ba0a6);font-weight:600;border-bottom:1px solid light-dark(#e3e8ea,#1d3640)">Perfil de acesso</th>
+          <th style="text-align:left;padding:9px 20px;font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:light-dark(#5c6b70,#8ba0a6);font-weight:600;border-bottom:1px solid light-dark(#e3e8ea,#1d3640)">Módulos visíveis</th>
+          <th style="text-align:right;padding:9px 20px;font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:light-dark(#5c6b70,#8ba0a6);font-weight:600;border-bottom:1px solid light-dark(#e3e8ea,#1d3640)">Último acesso</th>
+        </tr></thead>
+        <tbody>
+          <sc-for list="{{colabs}}" as="c" hint-placeholder-count="6">
+            <tr onClick="{{c.det}}" style="cursor:pointer" style-hover="background:light-dark(#f7f9f9,#0e2029)">
+              <td style="padding:11px 20px;font-size:13px;border-top:1px solid light-dark(#eef1f2,#17303a);font-weight:600">{{c.n}}</td>
+              <td style="padding:11px 20px;font-size:13px;border-top:1px solid light-dark(#eef1f2,#17303a)">{{c.f}}</td>
+              <td style="padding:11px 20px;border-top:1px solid light-dark(#eef1f2,#17303a)"><span style="font-size:11.5px;font-weight:700;color:{{c.sc}};background:{{c.sb}};border-radius:99px;padding:4px 10px">{{c.p}}</span></td>
+              <td style="padding:11px 20px;font-size:12.5px;border-top:1px solid light-dark(#eef1f2,#17303a);color:light-dark(#5c6b70,#8ba0a6)">{{c.mod}}</td>
+              <td style="padding:11px 20px;font-size:12.5px;border-top:1px solid light-dark(#eef1f2,#17303a);text-align:right;color:light-dark(#8a979b,#5f7883)">{{c.ult}}</td>
+            </tr>
+          </sc-for>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</sc-if>
+<sc-if value="{{is_rel}}" hint-placeholder-val="{{false}}">
+  <div style="padding:24px 26px;display:flex;flex-direction:column;gap:16px">
+    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+      <div style="font-size:12px;color:light-dark(#5c6b70,#8ba0a6);margin-right:4px">Filtros:</div>
+      <sc-for list="{{relFiltros}}" as="f" hint-placeholder-count="5">
+        <div style="font-size:12px;font-weight:500;border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:99px;padding:6px 13px;cursor:pointer;color:light-dark(#44565b,#9db0b5)" style-hover="border-color:#f97316;color:#f97316">{{f}}</div>
+      </sc-for>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px">
+      <sc-for list="{{relatorios}}" as="r" hint-placeholder-count="6">
+        <div style="background:light-dark(#ffffff,#10242b);border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:12px;padding:18px 20px;display:flex;flex-direction:column;gap:10px" style-hover="border-color:#f97316">
+          <div style="font-family:'Space Grotesk';font-size:15px;font-weight:600">{{r.t}}</div>
+          <div style="font-size:12.5px;color:light-dark(#5c6b70,#8ba0a6);line-height:1.55;flex:1">{{r.d}}</div>
+          <div style="display:flex;gap:8px">
+            <div onClick="{{r.pdf}}" style="font-size:12px;font-weight:700;color:#dc2626;background:rgba(220,38,38,.1);border-radius:8px;padding:6px 12px;cursor:pointer">PDF</div>
+            <div onClick="{{r.xls}}" style="font-size:12px;font-weight:700;color:#16a34a;background:rgba(22,163,74,.12);border-radius:8px;padding:6px 12px;cursor:pointer">Excel</div>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+</sc-if>
+<sc-if value="{{is_config}}" hint-placeholder-val="{{false}}">
+  <div style="padding:24px 26px;display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start">
+    <div style="background:light-dark(#ffffff,#10242b);border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:12px;padding:18px 20px;display:flex;flex-direction:column;gap:4px">
+      <div style="font-family:'Space Grotesk';font-size:15px;font-weight:600">Dados da empresa</div>
+      <div style="display:flex;flex-direction:column;margin-top:8px">
+        <sc-for list="{{cfgEmpresaRows}}" as="r" hint-placeholder-count="4">
+          <div style="display:flex;justify-content:space-between;gap:14px;font-size:13px;padding:9px 0;border-bottom:1px solid light-dark(#eef1f2,#17303a)">
+            <span style="color:light-dark(#5c6b70,#8ba0a6)">{{r.l}}</span><span style="font-weight:600;text-align:right">{{r.v}}</span>
+          </div>
+        </sc-for>
+      </div>
+      <div onClick="{{cfgEmpresa}}" style="margin-top:12px;align-self:flex-start;font-size:12.5px;font-weight:600;color:#f97316;border:1px solid rgba(249,115,22,.4);border-radius:9px;padding:8px 14px;cursor:pointer" style-hover="background:rgba(249,115,22,.08)">Editar dados e logo</div>
+    </div>
+    <div style="background:light-dark(#ffffff,#10242b);border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:12px;padding:18px 20px">
+      <div style="font-family:'Space Grotesk';font-size:15px;font-weight:600">Notificações e alertas</div>
+      <div style="font-size:12px;color:light-dark(#5c6b70,#8ba0a6);margin-top:2px">O que dispara alerta no sino e por WhatsApp</div>
+      <div style="display:flex;flex-direction:column;gap:12px;margin-top:14px">
+        <sc-for list="{{cfgToggles}}" as="t" hint-placeholder-count="4">
+          <div style="display:flex;align-items:center;gap:12px">
+            <div onClick="{{t.tog}}" style="width:36px;height:20px;border-radius:99px;background:{{t.bg}};position:relative;cursor:pointer;flex-shrink:0">
+              <div style="position:absolute;top:2px;left:{{t.knob}};width:16px;height:16px;border-radius:99px;background:#fff;transition:left .15s"></div>
+            </div>
+            <div style="font-size:13px">{{t.n}}</div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+    <div style="background:light-dark(#ffffff,#10242b);border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:12px;padding:18px 20px;display:flex;flex-direction:column;gap:4px">
+      <div style="font-family:'Space Grotesk';font-size:15px;font-weight:600">Orçamento e kits</div>
+      <div style="display:flex;flex-direction:column;margin-top:8px">
+        <sc-for list="{{cfgKitsRows}}" as="r" hint-placeholder-count="4">
+          <div style="display:flex;justify-content:space-between;gap:14px;font-size:13px;padding:9px 0;border-bottom:1px solid light-dark(#eef1f2,#17303a)">
+            <span style="color:light-dark(#5c6b70,#8ba0a6)">{{r.l}}</span><span style="font-weight:600;text-align:right">{{r.v}}</span>
+          </div>
+        </sc-for>
+      </div>
+      <div onClick="{{cfgKits}}" style="margin-top:12px;align-self:flex-start;font-size:12.5px;font-weight:600;color:#f97316;border:1px solid rgba(249,115,22,.4);border-radius:9px;padding:8px 14px;cursor:pointer" style-hover="background:rgba(249,115,22,.08)">Editar parâmetros de cálculo</div>
+    </div>
+    <div style="background:light-dark(#ffffff,#10242b);border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:12px;padding:18px 20px">
+      <div style="font-family:'Space Grotesk';font-size:15px;font-weight:600">Aparência e acesso</div>
+      <div style="display:flex;flex-direction:column;gap:10px;margin-top:14px">
+        <div onClick="{{toggleDark}}" style="display:flex;justify-content:space-between;align-items:center;font-size:13px;padding:10px 14px;border-radius:10px;background:light-dark(#f7f9f9,#0e2029);cursor:pointer" style-hover="outline:1px solid #f97316">
+          <span>Tema da interface</span><span style="font-weight:700;color:#f97316">{{darkLabel}}</span>
+        </div>
+        <div onClick="{{cfgSenha}}" style="display:flex;justify-content:space-between;align-items:center;font-size:13px;padding:10px 14px;border-radius:10px;background:light-dark(#f7f9f9,#0e2029);cursor:pointer" style-hover="outline:1px solid #f97316">
+          <span>Alterar senha de acesso</span><span style="color:light-dark(#9aa8ac,#4c6570)">›</span>
+        </div>
+        <div onClick="{{cfgPerm}}" style="display:flex;justify-content:space-between;align-items:center;font-size:13px;padding:10px 14px;border-radius:10px;background:light-dark(#f7f9f9,#0e2029);cursor:pointer" style-hover="outline:1px solid #f97316">
+          <span>Permissões por perfil</span><span style="color:light-dark(#9aa8ac,#4c6570)">›</span>
+        </div>
+        <div onClick="{{cfgExport}}" style="display:flex;justify-content:space-between;align-items:center;font-size:13px;padding:10px 14px;border-radius:10px;background:light-dark(#f7f9f9,#0e2029);cursor:pointer" style-hover="outline:1px solid #f97316">
+          <span>Backup — exportar todos os dados</span><span style="color:light-dark(#9aa8ac,#4c6570)">›</span>
+        </div>
+      </div>
+    </div>
+    <div style="grid-column:1/-1;background:light-dark(#ffffff,#10242b);border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:12px;padding:18px 20px">
+      <div style="font-family:'Space Grotesk';font-size:15px;font-weight:600">Integrações</div>
+      <div style="font-size:12px;color:light-dark(#5c6b70,#8ba0a6);margin-top:2px">As opcionais dependem de plataformas de terceiros com mensalidade própria, paga direto ao fornecedor</div>
+      <div style="display:flex;flex-direction:column;margin-top:8px">
+        <sc-for list="{{integracoes}}" as="i" hint-placeholder-count="5">
+          <div style="display:flex;align-items:center;gap:14px;padding:11px 0;border-bottom:1px solid light-dark(#eef1f2,#17303a)">
+            <div style="flex:1">
+              <div style="font-size:13.5px;font-weight:600">{{i.n}}</div>
+              <div style="font-size:12px;color:light-dark(#8a979b,#5f7883)">{{i.d}}</div>
+            </div>
+            <span style="font-size:11.5px;font-weight:700;color:{{i.sc}};background:{{i.sb}};border-radius:99px;padding:4px 10px">{{i.s}}</span>
+            <div onClick="{{i.act}}" style="font-size:12px;font-weight:600;color:#f97316;cursor:pointer">Configurar</div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </div>
+</sc-if>
+<sc-if value="{{is_cliente}}" hint-placeholder-val="{{false}}">
+  <div style="padding:24px 26px;display:flex;flex-direction:column;gap:16px">
+    <div style="display:flex;align-items:center;gap:14px">
+      <div onClick="{{voltarCrm}}" style="cursor:pointer;font-size:12.5px;font-weight:600;color:light-dark(#5c6b70,#8ba0a6);border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:9px;padding:7px 12px" style-hover="border-color:#f97316;color:#f97316">‹ Voltar ao funil</div>
+      <div style="width:44px;height:44px;border-radius:12px;background:rgba(249,115,22,.13);color:#f97316;display:grid;place-items:center;font-family:'Space Grotesk';font-weight:700;font-size:16px">{{cliIni}}</div>
+      <div>
+        <div style="font-family:'Space Grotesk';font-size:19px;font-weight:600">{{cliNome}}</div>
+        <div style="font-size:12.5px;color:light-dark(#5c6b70,#8ba0a6)">{{cliInfo}}</div>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1.4fr 1fr;gap:14px;align-items:start">
+      <div style="background:light-dark(#ffffff,#10242b);border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:12px;padding:18px 20px">
+        <div style="font-family:'Space Grotesk';font-size:15px;font-weight:600">Contato e instalação</div>
+        <div style="display:flex;flex-direction:column;margin-top:8px">
+          <sc-for list="{{cliContato}}" as="r" hint-placeholder-count="5">
+            <div style="display:flex;justify-content:space-between;gap:14px;font-size:13px;padding:9px 0;border-bottom:1px solid light-dark(#eef1f2,#17303a)">
+              <span style="color:light-dark(#5c6b70,#8ba0a6);white-space:nowrap">{{r.l}}</span><span style="font-weight:600;text-align:right">{{r.v}}</span>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+      <div style="background:light-dark(#ffffff,#10242b);border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:12px;padding:18px 20px">
+        <div style="font-family:'Space Grotesk';font-size:15px;font-weight:600">Histórico do cliente</div>
+        <div style="font-size:12px;color:light-dark(#5c6b70,#8ba0a6);margin-top:2px">Do lead ao pós-venda, tudo em uma linha do tempo</div>
+        <div style="display:flex;flex-direction:column;gap:0;margin-top:14px">
+          <sc-for list="{{cliTimeline}}" as="e" hint-placeholder-count="6">
+            <div style="display:flex;gap:12px">
+              <div style="display:flex;flex-direction:column;align-items:center">
+                <div style="width:10px;height:10px;border-radius:99px;background:#f97316;flex-shrink:0;margin-top:4px"></div>
+                <div style="width:2px;flex:1;background:light-dark(#eef1f2,#17303a)"></div>
+              </div>
+              <div style="padding-bottom:16px">
+                <div style="font-size:11px;font-weight:700;color:light-dark(#8a979b,#5f7883)">{{e.d}}</div>
+                <div style="font-size:13.5px;font-weight:600;margin-top:1px">{{e.t}}</div>
+                <div style="font-size:12px;color:light-dark(#5c6b70,#8ba0a6);margin-top:1px">{{e.s}}</div>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+      <div style="background:light-dark(#ffffff,#10242b);border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:12px;padding:18px 20px">
+        <div style="font-family:'Space Grotesk';font-size:15px;font-weight:600">Documentos</div>
+        <div style="display:flex;flex-direction:column;margin-top:8px">
+          <sc-for list="{{cliDocs}}" as="r" hint-placeholder-count="4">
+            <div style="display:flex;justify-content:space-between;gap:14px;font-size:13px;padding:9px 0;border-bottom:1px solid light-dark(#eef1f2,#17303a)">
+              <span style="font-weight:600;color:#f97316;cursor:pointer">{{r.l}}</span><span style="color:light-dark(#8a979b,#5f7883)">{{r.v}}</span>
+            </div>
+          </sc-for>
+        </div>
+        <div style="margin-top:14px;padding:12px;border-radius:10px;background:light-dark(#f7f9f9,#0e2029);font-size:12px;line-height:1.5;color:light-dark(#5c6b70,#8ba0a6)">Propostas, contratos, obras e chamados deste cliente ficam vinculados ao cadastro automaticamente.</div>
+      </div>
+    </div>
+  </div>
+</sc-if>
+<!--SCREENS-->
+    </div>
+  </div>
+  <sc-if value="{{notifOpen}}" hint-placeholder-val="{{false}}">
+    <div onClick="{{toggleNotif}}" style="position:fixed;inset:0;background:rgba(8,20,25,.35);z-index:40"></div>
+    <div style="position:fixed;top:0;right:0;bottom:0;width:350px;background:light-dark(#ffffff,#0e2029);border-left:1px solid light-dark(#e3e8ea,#1d3640);z-index:50;display:flex;flex-direction:column;box-shadow:-12px 0 40px rgba(0,0,0,.15)">
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid light-dark(#e3e8ea,#1d3640)">
+        <div style="font-family:'Space Grotesk';font-size:15px;font-weight:600">Central de alertas</div>
+        <div onClick="{{toggleNotif}}" style="cursor:pointer;font-size:18px;color:light-dark(#5c6b70,#8ba0a6);padding:2px 6px" style-hover="color:#f97316">×</div>
+      </div>
+      <div style="flex:1;overflow-y:auto;padding:14px 20px;display:flex;flex-direction:column;gap:14px">
+        <sc-for list="{{alertas}}" as="a" hint-placeholder-count="6">
+          <div style="display:flex;gap:10px;padding:12px;border-radius:10px;background:light-dark(#f7f9f9,#10242b);border:1px solid light-dark(#e9eef0,#1d3640)">
+            <div style="width:8px;height:8px;border-radius:99px;background:{{a.c}};margin-top:5px;flex-shrink:0"></div>
+            <div>
+              <div style="font-size:13px;font-weight:600">{{a.t}}</div>
+              <div style="font-size:12px;color:light-dark(#5c6b70,#8ba0a6);line-height:1.45;margin-top:2px">{{a.d}}</div>
+              <div style="font-size:11px;color:light-dark(#9aa8ac,#4c6570);margin-top:4px">{{a.h}}</div>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+      <div style="padding:14px 20px;border-top:1px solid light-dark(#e3e8ea,#1d3640)">
+        <div onClick="{{clearAlertas}}" style="cursor:pointer;text-align:center;font-size:13px;font-weight:600;color:#f97316;border:1px solid rgba(249,115,22,.4);border-radius:9px;padding:9px" style-hover="background:rgba(249,115,22,.08)">Marcar todas como lidas</div>
+      </div>
+    </div>
+  </sc-if>
+  <sc-if value="{{toastOn}}" hint-placeholder-val="{{false}}">
+    <div style="position:fixed;bottom:26px;left:50%;transform:translateX(-50%);z-index:80;background:#0c2b33;color:#fff;font-size:13px;font-weight:600;border-radius:99px;padding:11px 20px;box-shadow:0 12px 32px rgba(0,0,0,.3);display:flex;align-items:center;gap:9px;white-space:nowrap">
+      <span style="color:#f97316">●</span><span>{{toast}}</span>
+    </div>
+  </sc-if>
+  <sc-if value="{{modalDet}}" hint-placeholder-val="{{false}}">
+    <div onClick="{{closeModal}}" style="position:fixed;inset:0;background:rgba(8,20,25,.45);z-index:60;display:grid;place-items:center">
+      <div onClick="{{stop}}" style="width:400px;background:light-dark(#ffffff,#10242b);border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:14px;padding:22px 24px;display:flex;flex-direction:column;gap:6px;box-shadow:0 24px 60px rgba(0,0,0,.3)">
+        <div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start">
+          <div style="font-family:'Space Grotesk';font-size:17px;font-weight:600;line-height:1.3">{{detTitle}}</div>
+          <div onClick="{{closeModal}}" style="cursor:pointer;font-size:18px;color:light-dark(#5c6b70,#8ba0a6);padding:0 4px" style-hover="color:#f97316">×</div>
+        </div>
+        <div style="font-size:12.5px;color:light-dark(#5c6b70,#8ba0a6)">{{detSub}}</div>
+        <div style="display:flex;flex-direction:column;margin-top:10px">
+          <sc-for list="{{detRows}}" as="r" hint-placeholder-count="4">
+            <div style="display:flex;justify-content:space-between;gap:14px;font-size:13px;padding:9px 0;border-bottom:1px solid light-dark(#eef1f2,#17303a)">
+              <span style="color:light-dark(#5c6b70,#8ba0a6);white-space:nowrap">{{r.l}}</span><span style="font-weight:600;text-align:right">{{r.v}}</span>
+            </div>
+          </sc-for>
+        </div>
+        <sc-if value="{{detAcaoOn}}" hint-placeholder-val="{{false}}">
+          <div onClick="{{detAcaoRun}}" style="margin-top:14px;text-align:center;font-size:13px;font-weight:600;background:#f97316;color:#fff;border-radius:9px;padding:10px;cursor:pointer" style-hover="background:#ea580c">{{detAcaoLabel}}</div>
+        </sc-if>
+      </div>
+    </div>
+  </sc-if>
+  <sc-if value="{{modalLead}}" hint-placeholder-val="{{false}}">
+    <div onClick="{{closeModal}}" style="position:fixed;inset:0;background:rgba(8,20,25,.45);z-index:60;display:grid;place-items:center">
+      <div onClick="{{stop}}" style="width:400px;background:light-dark(#ffffff,#10242b);border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:14px;padding:22px 24px;display:flex;flex-direction:column;gap:12px;box-shadow:0 24px 60px rgba(0,0,0,.3)">
+        <div style="font-family:'Space Grotesk';font-size:17px;font-weight:600">Novo lead</div>
+        <input onChange="{{fNome}}" placeholder="Nome do lead ou empresa" style="font-size:13.5px;font-family:'Instrument Sans';border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:9px;padding:10px 12px;background:light-dark(#f7f9f9,#0e2029);color:inherit;outline-color:#f97316">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <input onChange="{{fCidade}}" placeholder="Cidade" style="font-size:13.5px;font-family:'Instrument Sans';border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:9px;padding:10px 12px;background:light-dark(#f7f9f9,#0e2029);color:inherit;outline-color:#f97316">
+          <input onChange="{{fTipo}}" placeholder="Tipo (Residencial…)" style="font-size:13.5px;font-family:'Instrument Sans';border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:9px;padding:10px 12px;background:light-dark(#f7f9f9,#0e2029);color:inherit;outline-color:#f97316">
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <input onChange="{{fValor}}" placeholder="Valor estimado (R$)" style="font-size:13.5px;font-family:'Instrument Sans';border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:9px;padding:10px 12px;background:light-dark(#f7f9f9,#0e2029);color:inherit;outline-color:#f97316">
+          <input onChange="{{fOrigem}}" placeholder="Origem (Indicação…)" style="font-size:13.5px;font-family:'Instrument Sans';border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:9px;padding:10px 12px;background:light-dark(#f7f9f9,#0e2029);color:inherit;outline-color:#f97316">
+        </div>
+        <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:4px">
+          <div onClick="{{closeModal}}" style="font-size:13px;font-weight:600;color:light-dark(#5c6b70,#8ba0a6);border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:9px;padding:9px 16px;cursor:pointer">Cancelar</div>
+          <div onClick="{{saveLead}}" style="font-size:13px;font-weight:600;background:#f97316;color:#fff;border-radius:9px;padding:9px 16px;cursor:pointer" style-hover="background:#ea580c">Cadastrar lead</div>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+  <sc-if value="{{modalOrc}}" hint-placeholder-val="{{false}}">
+    <div onClick="{{closeModal}}" style="position:fixed;inset:0;background:rgba(8,20,25,.45);z-index:60;display:grid;place-items:center">
+      <div onClick="{{stop}}" style="width:400px;background:light-dark(#ffffff,#10242b);border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:14px;padding:22px 24px;display:flex;flex-direction:column;gap:12px;box-shadow:0 24px 60px rgba(0,0,0,.3)">
+        <div style="font-family:'Space Grotesk';font-size:17px;font-weight:600">Novo orçamento</div>
+        <input onChange="{{fNome}}" placeholder="Cliente" style="font-size:13.5px;font-family:'Instrument Sans';border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:9px;padding:10px 12px;background:light-dark(#f7f9f9,#0e2029);color:inherit;outline-color:#f97316">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <input type="number" onChange="{{fConsumo}}" placeholder="Consumo (kWh/mês)" style="font-size:13.5px;font-family:'Instrument Sans';border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:9px;padding:10px 12px;background:light-dark(#f7f9f9,#0e2029);color:inherit;outline-color:#f97316">
+          <input onChange="{{fCidade}}" placeholder="Cidade" style="font-size:13.5px;font-family:'Instrument Sans';border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:9px;padding:10px 12px;background:light-dark(#f7f9f9,#0e2029);color:inherit;outline-color:#f97316">
+        </div>
+        <div style="font-size:12px;color:light-dark(#8a979b,#5f7883);line-height:1.5">O dimensionamento usa a irradiação da cidade e o fator de perdas configurado. Os 3 cenários são gerados automaticamente.</div>
+        <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:4px">
+          <div onClick="{{closeModal}}" style="font-size:13px;font-weight:600;color:light-dark(#5c6b70,#8ba0a6);border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:9px;padding:9px 16px;cursor:pointer">Cancelar</div>
+          <div onClick="{{saveOrc}}" style="font-size:13px;font-weight:600;background:#f97316;color:#fff;border-radius:9px;padding:9px 16px;cursor:pointer" style-hover="background:#ea580c">Dimensionar</div>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+  <sc-if value="{{modalPdf}}" hint-placeholder-val="{{false}}">
+    <div onClick="{{closeModal}}" style="position:fixed;inset:0;background:rgba(8,20,25,.55);z-index:60;display:grid;place-items:center;padding:24px">
+      <div onClick="{{stop}}" style="width:640px;max-height:88vh;overflow-y:auto;background:light-dark(#ffffff,#10242b);border-radius:16px;box-shadow:0 30px 80px rgba(0,0,0,.4);display:flex;flex-direction:column">
+        <div style="background:#0c2b33;color:#fff;padding:26px 30px;border-radius:16px 16px 0 0">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div style="display:flex;align-items:center;gap:9px">
+              <div style="width:26px;height:26px;border-radius:7px;background:#f97316;display:grid;place-items:center"><svg width="17" height="17" viewBox="0 0 48 48" fill="none"><circle cx="24" cy="9.5" r="4.5" fill="#ffffff"></circle><path d="M8 15 L16 15 L26.5 42 L20 42 Z" fill="#ffffff"></path><path d="M40 15 L32 15 L21.5 42 L28 42 Z" fill="#ffffff" opacity="0.82"></path></svg></div>
+              <div style="font-family:'Space Grotesk';font-weight:700;font-size:17px">Voltua Energia</div>
+            </div>
+            <div style="font-size:12px;color:rgba(255,255,255,.6)">Proposta {{pdfId}}</div>
+          </div>
+          <div style="font-family:'Space Grotesk';font-size:24px;font-weight:600;margin-top:18px">Proposta de sistema fotovoltaico</div>
+          <div style="font-size:13px;color:rgba(255,255,255,.7);margin-top:4px">{{pdfCli}} · {{pdfPot}} · válida por 15 dias</div>
+        </div>
+        <div style="padding:24px 30px;display:flex;flex-direction:column;gap:18px">
+          <div>
+            <div style="font-family:'Space Grotesk';font-size:14px;font-weight:600">Geração estimada mês a mês</div>
+            <div style="display:flex;align-items:flex-end;gap:7px;height:110px;margin-top:12px">
+              <sc-for list="{{pdfGer}}" as="g" hint-placeholder-count="12">
+                <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%;justify-content:flex-end">
+                  <div style="width:100%;border-radius:4px 4px 2px 2px;background:#f97316;opacity:.85;height:{{g.h}}"></div>
+                  <div style="font-size:9.5px;color:light-dark(#8a979b,#5f7883)">{{g.m}}</div>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column">
+            <sc-for list="{{pdfStats}}" as="r" hint-placeholder-count="5">
+              <div style="display:flex;justify-content:space-between;font-size:13px;padding:9px 0;border-bottom:1px solid light-dark(#eef1f2,#17303a)">
+                <span style="color:light-dark(#5c6b70,#8ba0a6)">{{r.l}}</span><span style="font-weight:700;font-family:'Space Grotesk'">{{r.v}}</span>
+              </div>
+            </sc-for>
+          </div>
+          <div style="padding:13px 16px;border-radius:10px;background:rgba(22,163,74,.1);border:1px solid rgba(22,163,74,.3);font-size:12.5px;line-height:1.55;color:light-dark(#14532d,#86efac)">Em 25 anos, o sistema gera uma economia acumulada estimada de <b>R$ 312.400</b> — o investimento de {{pdfVal}} se paga em cerca de 3 anos.</div>
+          <div style="display:flex;gap:10px">
+            <div onClick="{{pdfBaixar}}" style="flex:1;text-align:center;font-size:13px;font-weight:600;background:#f97316;color:#fff;border-radius:9px;padding:11px;cursor:pointer" style-hover="background:#ea580c">Baixar PDF</div>
+            <div onClick="{{pdfZap}}" style="flex:1;text-align:center;font-size:13px;font-weight:600;color:#16a34a;border:1px solid rgba(22,163,74,.4);border-radius:9px;padding:11px;cursor:pointer" style-hover="background:rgba(22,163,74,.08)">Enviar por WhatsApp</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+  <sc-if value="{{modalProp}}" hint-placeholder-val="{{false}}">
+    <div onClick="{{closeModal}}" style="position:fixed;inset:0;background:rgba(8,20,25,.45);z-index:60;display:grid;place-items:center">
+      <div onClick="{{stop}}" style="width:400px;background:light-dark(#ffffff,#10242b);border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:14px;padding:22px 24px;display:flex;flex-direction:column;gap:12px;box-shadow:0 24px 60px rgba(0,0,0,.3)">
+        <div style="font-family:'Space Grotesk';font-size:17px;font-weight:600">Nova proposta</div>
+        <input onChange="{{fNome}}" placeholder="Cliente" style="font-size:13.5px;font-family:'Instrument Sans';border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:9px;padding:10px 12px;background:light-dark(#f7f9f9,#0e2029);color:inherit;outline-color:#f97316">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <input onChange="{{fPot}}" placeholder="Potência (kWp)" style="font-size:13.5px;font-family:'Instrument Sans';border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:9px;padding:10px 12px;background:light-dark(#f7f9f9,#0e2029);color:inherit;outline-color:#f97316">
+          <input onChange="{{fValor}}" placeholder="Valor (R$)" style="font-size:13.5px;font-family:'Instrument Sans';border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:9px;padding:10px 12px;background:light-dark(#f7f9f9,#0e2029);color:inherit;outline-color:#f97316">
+        </div>
+        <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:4px">
+          <div onClick="{{closeModal}}" style="font-size:13px;font-weight:600;color:light-dark(#5c6b70,#8ba0a6);border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:9px;padding:9px 16px;cursor:pointer">Cancelar</div>
+          <div onClick="{{saveProp}}" style="font-size:13px;font-weight:600;background:#f97316;color:#fff;border-radius:9px;padding:9px 16px;cursor:pointer" style-hover="background:#ea580c">Criar rascunho</div>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+  <sc-if value="{{modalCard}}" hint-placeholder-val="{{false}}">
+    <div onClick="{{closeModal}}" style="position:fixed;inset:0;background:rgba(8,20,25,.45);z-index:60;display:grid;place-items:center">
+      <div onClick="{{stop}}" style="width:380px;background:light-dark(#ffffff,#10242b);border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:14px;padding:22px 24px;display:flex;flex-direction:column;gap:8px;box-shadow:0 24px 60px rgba(0,0,0,.3)">
+        <div style="font-family:'Space Grotesk';font-size:17px;font-weight:600">{{cardNome}}</div>
+        <div style="font-size:12.5px;color:light-dark(#5c6b70,#8ba0a6);line-height:1.5">{{cardInfo}}</div>
+        <div style="font-size:12px;margin-top:4px">Etapa atual: <span style="font-weight:700;color:#f97316">{{cardEtapa}}</span></div>
+        <div style="display:flex;gap:10px;margin-top:12px">
+          <div onClick="{{movePrev}}" style="flex:1;text-align:center;font-size:13px;font-weight:600;color:light-dark(#5c6b70,#8ba0a6);border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:9px;padding:9px;cursor:pointer" style-hover="border-color:#f97316;color:#f97316">‹ Etapa anterior</div>
+          <div onClick="{{moveNext}}" style="flex:1;text-align:center;font-size:13px;font-weight:600;background:#f97316;color:#fff;border-radius:9px;padding:9px;cursor:pointer" style-hover="background:#ea580c">Avançar etapa ›</div>
+        </div>
+        <div onClick="{{cardZap}}" style="text-align:center;font-size:13px;font-weight:600;color:#16a34a;border:1px solid rgba(22,163,74,.4);border-radius:9px;padding:9px;cursor:pointer;margin-top:2px" style-hover="background:rgba(22,163,74,.08)">Chamar no WhatsApp</div>
+        <div onClick="{{openCliente}}" style="text-align:center;font-size:13px;font-weight:600;color:light-dark(#5c6b70,#8ba0a6);border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:9px;padding:9px;cursor:pointer" style-hover="border-color:#f97316;color:#f97316">Abrir cadastro completo</div>
+      </div>
+    </div>
+  </sc-if>
+</sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;modoEscuro&quot;: {&quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: false, &quot;tsType&quot;: &quot;boolean&quot;, &quot;section&quot;: &quot;Aparência&quot;}, &quot;mostrarMapa&quot;: {&quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: true, &quot;tsType&quot;: &quot;boolean&quot;, &quot;section&quot;: &quot;Dashboard&quot;}}">
+class Component extends DCLogic {
+  state = { screen: 'login', darkSet: null, notif: false, user: { nome: 'Usuário', perfil: 'Visualizador' }, toast: '', modal: null, card: null, consumo: 650, funil: null, props: null, parc: null, chkDone: null, alertasOff: false, checkedOut: false, form: {}, detail: null, q: '', periodo: 'Mês', perIni: '', perFim: '', cfgT: null, pdfP: null, cliSel: null, authEmail: '', authPassword: '', authLoading: true, authError: '' };
+  componentDidMount() { this.restoreSession(); }
+  async sb() {
+    for (let i = 0; i < 100 && !window.voltuaSupabase; i++) await new Promise(r => setTimeout(r, 30));
+    if (!window.voltuaSupabase) throw new Error('Cliente Supabase não carregado. Execute o projeto com npm run dev.');
+    return window.voltuaSupabase;
+  }
+  roleName = { admin: 'Administrador', commercial: 'Comercial / Vendedor', engineering: 'Engenharia / Projetos', installer: 'Instalador / Campo', finance: 'Financeiro', viewer: 'Visualizador' };
+  async enterSession(session) {
+    const sb = await this.sb();
+    const [{ data: profile }, { data: membership, error }] = await Promise.all([
+      sb.from('profiles').select('full_name').eq('id', session.user.id).single(),
+      sb.from('organization_members').select('role,organization_id').eq('user_id', session.user.id).eq('active', true).limit(1).maybeSingle()
+    ]);
+    if (error || !membership) throw new Error('Usuário sem acesso a uma organização. Peça ao administrador para adicioná-lo à equipe.');
+    const perfil = this.roleName[membership.role] || 'Visualizador';
+    this.setState({ screen: perfil === 'Instalador / Campo' ? 'campo' : 'dash', user: { nome: profile?.full_name || session.user.email, perfil }, organizationId: membership.organization_id, authLoading: false, authError: '', authPassword: '' });
+  }
+  async restoreSession() {
+    try { const sb = await this.sb(); const { data } = await sb.auth.getSession(); if (data.session) await this.enterSession(data.session); else this.setState({ screen: 'login', authLoading: false }); }
+    catch (e) { this.setState({ screen: 'login', authLoading: false, authError: e.message }); }
+  }
+  async signIn() {
+    if (!this.state.authEmail || !this.state.authPassword) return this.setState({ authError: 'Informe e-mail e senha.' });
+    this.setState({ authLoading: true, authError: '' });
+    try { const sb = await this.sb(); const { data, error } = await sb.auth.signInWithPassword({ email: this.state.authEmail.trim(), password: this.state.authPassword }); if (error) throw error; await this.enterSession(data.session); }
+    catch (e) { this.setState({ screen: 'login', authLoading: false, authError: e.message === 'Invalid login credentials' ? 'E-mail ou senha inválidos.' : e.message }); }
+  }
+  async signOut() { try { const sb = await this.sb(); await sb.auth.signOut(); } finally { this.setState({ screen: 'login', organizationId: null, authPassword: '', notif: false }); } }
+  permMap = { 'Comercial / Vendedor': ['dash', 'crm', 'orc', 'prop', 'contr', 'cliente', 'equipe', 'rel'], 'Engenharia / Projetos': ['dash', 'homol', 'obras', 'campo', 'compras', 'estoque'], 'Instalador / Campo': ['campo'], 'Financeiro': ['dash', 'fin', 'cobr', 'rel'], 'Visualizador': ['dash', 'rel'] };
+  allowed(id) { const m = this.permMap[this.state.user.perfil]; return !m || m.indexOf(id) >= 0; }
+  nav(id) { if (!this.allowed(id)) { this.toastMsg('Seu perfil não tem acesso a este módulo'); return; } this.setState({ screen: id, notif: false }); }
+  openDet(t, sub, rows, acao) { this.setState({ modal: 'det', detail: { t, sub, rows: rows.filter(r => r && r[1] !== undefined && r[1] !== null && r[1] !== ''), acao } }); }
+  detMap(list, fn) { return list.map((x, i) => Object.assign({}, x, { det: () => this.openDet(...fn(x, i)) })); }
+  toastMsg(m) { clearTimeout(this._tt); this.setState({ toast: m }); this._tt = setTimeout(() => this.setState({ toast: '' }), 2800); }
+  zap(t) { window.open('https://wa.me/?text=' + encodeURIComponent(t), '_blank'); }
+  stm(n, c) { return { s: n, sc: c, sb: c + '1f' }; }
+  mkC(n, c, tipo, v, o, oc, f) { return { n, c, tipo, v, o, oc, f }; }
+  ff(k) { return e => this.setState({ form: Object.assign({}, this.state.form, { [k]: e.target.value }) }); }
+  getFunil() { return this.state.funil ?? this.funilBase(); }
+  mapFunil(cols) { return cols.map((c, ci) => Object.assign({}, c, { over: e => e.preventDefault(), drop: e => { e.preventDefault(); this.dropTo(ci); }, cards: c.cards.map((k, ki) => Object.assign({}, k, { open: () => this.setState({ modal: 'card', card: [ci, ki] }), drag: () => { this._drag = [ci, ki]; } })) })); }
+  dropTo(ci2) { const d = this._drag; this._drag = null; if (!d || d[0] === ci2) return; const f = this.cloneFunil(); const k = f[d[0]].cards.splice(d[1], 1)[0]; f[d[0]].q--; f[ci2].q++; f[ci2].cards.push(k); this.setState({ funil: f }); this.toastMsg(k.n + ' movido para "' + f[ci2].n + '"'); }
+  cloneFunil() { return this.getFunil().map(c => Object.assign({}, c, { cards: c.cards.slice() })); }
+  moveCard(dir) {
+    const [ci, ki] = this.state.card, f = this.cloneFunil(), ni = ci + dir;
+    if (ni < 0 || ni >= f.length) return;
+    const k = f[ci].cards.splice(ki, 1)[0]; f[ci].q--; f[ni].q++; f[ni].cards.unshift(k);
+    this.setState({ funil: f, modal: null, card: null }); this.toastMsg(k.n + ' movido para "' + f[ni].n + '"');
+  }
+  addLead() {
+    const fm = this.state.form; if (!fm.nome) { this.toastMsg('Informe o nome do lead'); return; }
+    const f = this.cloneFunil();
+    f[0].cards.unshift(this.mkC(fm.nome, fm.cidade || 'Fortaleza', fm.tipo || 'Residencial', fm.valor || 'R$ —', fm.origem || 'Indicação', '#16a34a', 'agora')); f[0].q++;
+    this.setState({ funil: f, modal: null, form: {} }); this.toastMsg('Lead cadastrado no funil');
+  }
+  getProps() { return this.state.props ?? this.propsBase(); }
+  addProp() {
+    const fm = this.state.form; if (!fm.nome) { this.toastMsg('Informe o cliente da proposta'); return; }
+    const p = [Object.assign({ id: '#PR-1050', cli: fm.nome, data: 'agora', pot: (fm.pot || '6,84') + ' kWp', v: fm.valor || 'R$ 32.400', ver: 'v1' }, this.stm('Rascunho', this.GY))].concat(this.getProps());
+    this.setState({ props: p, modal: null, form: {} }); this.toastMsg('Proposta #PR-1050 criada como rascunho');
+  }
+  getParc() { return this.state.parc ?? this.parcBase(); }
+  baixa(i) {
+    const p = this.getParc().map(x => Object.assign({}, x));
+    Object.assign(p[i], this.stm('Paga', this.G), { venc: 'pago hoje', vc: this.G, acao: 'Recibo' });
+    this.setState({ parc: p }); this.toastMsg('Baixa registrada — recibo vinculado à parcela');
+  }
+  getChk() { return this.state.chkDone ?? [1, 1, 1, 1, 1, 0, 0, 0]; }
+  calcCen(c) {
+    const mk = (mods, tipo, rec) => {
+      const kwp = mods * 0.57, ger = Math.round(mods * 80), preco = Math.round(mods * 2700 / 100) * 100;
+      const inv = [3, 5, 8, 10, 15, 20, 25, 30, 40, 50, 75].find(x => x >= kwp) || Math.ceil(kwp);
+      const pay = (preco / (Math.min(ger, c * 1.05) * 1.2 * 12)).toFixed(1).replace('.', ',');
+      return { tipo, kwp: kwp.toFixed(2).replace('.', ',') + ' kWp', mod: mods + ' módulos 570W bifacial', inv: 'Inversor ' + inv + ' kW mono 220V', area: 'Área ocupada: ' + Math.ceil(mods * 2.6) + ' m²', ger: 'Geração: ' + ger.toLocaleString('pt-BR') + ' kWh/mês', preco: 'R$ ' + preco.toLocaleString('pt-BR'), pay: pay + ' anos', rec, bc: rec ? '#f97316' : 'light-dark(#e3e8ea,#1d3640)' };
+    };
+    const base = Math.max(1, Math.ceil(c / 80));
+    return [mk(Math.max(1, Math.round(base * 0.8)), 'Cenário econômico', false), mk(Math.round(base * 1.15), 'Cenário ideal', true), mk(Math.round(base * 1.5), 'Cenário expansão', false)];
+  }
+  titles = {
+    dash: ['Dashboard', 'Visão geral · Agosto 2026'], crm: ['CRM e Funil Comercial', 'Módulo 01'],
+    orc: ['Orçamento e Dimensionamento', 'Módulo 02'], prop: ['Propostas Comerciais', 'Módulo 03'],
+    contr: ['Contratos e Assinatura', 'Módulo 04'], homol: ['Projetos e Homologação', 'Módulo 05'],
+    obras: ['Obras e Execução', 'Módulo 06'], campo: ['App do Instalador', 'Módulo 07 · visão mobile'],
+    compras: ['Compras e Fornecedores', 'Módulo 08'], estoque: ['Estoque e Almoxarifado', 'Módulo 09'],
+    frota: ['Patrimônio e Frota', 'Módulo 10'], fin: ['Gestão Financeira', 'Módulo 11'],
+    cobr: ['Cobranças e Recebimentos', 'Módulo 12'], om: ['Pós-venda e O&M', 'Módulo 13'],
+    equipe: ['Equipe, Metas e Permissões', 'Módulo 14'], rel: ['Relatórios e Exportações', 'Módulo 16'], config: ['Configurações', 'Empresa, cálculo, alertas e integrações']
+  };
+  navDef = [
+    ['Visão geral', [['dash', '15', 'Dashboard']]],
+    ['Comercial', [['crm', '01', 'CRM e Funil'], ['orc', '02', 'Orçamentos'], ['prop', '03', 'Propostas'], ['contr', '04', 'Contratos']]],
+    ['Operações', [['homol', '05', 'Homologação'], ['obras', '06', 'Obras'], ['campo', '07', 'App do Instalador'], ['compras', '08', 'Compras'], ['estoque', '09', 'Estoque'], ['frota', '10', 'Patrimônio e Frota']]],
+    ['Financeiro', [['fin', '11', 'Financeiro'], ['cobr', '12', 'Cobranças']]],
+    ['Pós-venda', [['om', '13', 'O&M e Assistência']]],
+    ['Gestão', [['equipe', '14', 'Equipe e Metas'], ['rel', '16', 'Relatórios'], ['config', '17', 'Configurações']]]
+  ];
+  perfisDef = [
+    ['Administrador', 'Acesso total: módulos, financeiro e configurações', 'AD'],
+    ['Comercial / Vendedor', 'Clientes, funil, orçamentos e propostas', 'CV'],
+    ['Engenharia / Projetos', 'Obras, homologações e documentação técnica', 'EP'],
+    ['Instalador / Campo', 'Obras designadas, checklist e fotos', 'IC'],
+    ['Financeiro', 'Contas, fluxo de caixa e cobranças', 'FI'],
+    ['Visualizador', 'Dashboards e relatórios (somente leitura)', 'VI']
+  ];
+  G = '#16a34a'; A = '#d97706'; R = '#dc2626'; B = '#2563eb'; GY = '#64748b'; O = '#f97316';
+  pill(c) { return { c, bg: c + '1f' }; }
+  renderVals() {
+    const S = this.state, G = this.G, A = this.A, R = this.R, B = this.B, GY = this.GY, O = this.O;
+    const dark = S.darkSet === null ? (this.props.modoEscuro ?? false) : S.darkSet;
+    document.body.style.colorScheme = dark ? 'dark' : 'light';
+    const st = (n, c) => ({ s: n, sc: c, sb: c + '1f' });
+    const card = this.state.card, selK = card ? this.getFunil()[card[0]].cards[card[1]] : null;
+    const ql = S.q.toLowerCase();
+    const results = S.q ? this.idx().filter(x => (x.t + ' ' + x.sub).toLowerCase().includes(ql)).slice(0, 7) : [];
+    const perLabel = S.periodo === 'Dia' ? 'Hoje, 28/08/2026' : S.periodo === 'Semana' ? 'Semana 24–30/08' : S.periodo === 'Personalizado' ? (S.perIni && S.perFim ? S.perIni.split('-').reverse().join('/') + ' – ' + S.perFim.split('-').reverse().join('/') : 'Período personalizado') : 'Agosto 2026';
+    const perK = ({ 'Dia': { prop: '2', kwp: '9,6', d1: '+1 vs ontem', d2: 'instalados hoje' }, 'Semana': { prop: '9', kwp: '52,3', d1: '+3 vs semana anterior', d2: 'nesta semana' }, 'Personalizado': { prop: '18', kwp: '121,4', d1: 'no período selecionado', d2: 'no período selecionado' } })[S.periodo] || { prop: '32', kwp: '214,6', d1: '+18% vs julho', d2: '+31,2 kWp na semana' };
+    const vals = {
+      showMapa: this.props.mostrarMapa ?? true,
+      isLogin: S.screen === 'login', isApp: S.screen !== 'login',
+      authEmail: S.authEmail, authPassword: S.authPassword, authError: S.authError, authErrorOn: !!S.authError,
+      authLoading: S.authLoading, authButton: S.authLoading ? 'Entrando…' : 'Entrar',
+      setAuthEmail: e => this.setState({ authEmail: e.target.value }), setAuthPassword: e => this.setState({ authPassword: e.target.value }),
+      authKeyDown: e => { if (e.key === 'Enter') this.signIn(); }, login: () => this.signIn(),
+      notifOpen: S.notif, notifCount: S.alertasOff ? 0 : 6,
+      toast: S.toast, toastOn: !!S.toast,
+      modalLead: S.modal === 'lead', modalProp: S.modal === 'prop', modalCard: S.modal === 'card' && !!selK,
+      openLead: () => this.setState({ modal: 'lead', form: {} }),
+      openProp: () => this.setState({ modal: 'prop', form: {} }),
+      modalOrc: S.modal === 'orc',
+      modalPdf: S.modal === 'pdf' && !!S.pdfP,
+      pdfId: S.pdfP ? S.pdfP.id : '', pdfCli: S.pdfP ? S.pdfP.cli : '', pdfPot: S.pdfP ? S.pdfP.pot : '', pdfVal: S.pdfP ? S.pdfP.v : '',
+      pdfGer: [['Jan', 92], ['Fev', 88], ['Mar', 84], ['Abr', 80], ['Mai', 78], ['Jun', 82], ['Jul', 90], ['Ago', 96], ['Set', 100], ['Out', 99], ['Nov', 97], ['Dez', 95]].map(x => ({ m: x[0], h: x[1] + '%' })),
+      pdfStats: [['Investimento', S.pdfP ? S.pdfP.v : ''], ['Economia mensal estimada', 'R$ 890'], ['Payback', '3,1 anos'], ['Economia acumulada em 25 anos', 'R$ 312.400'], ['Valorização estimada do imóvel', '+ 6%']].map(x => ({ l: x[0], v: x[1] })),
+      pdfBaixar: () => this.toastMsg('PDF baixado — pronto para imprimir ou enviar'),
+      pdfZap: () => S.pdfP && this.zap('Olá! Segue sua proposta ' + S.pdfP.id + ' da Voltua Energia (' + S.pdfP.pot + ' · ' + S.pdfP.v + ')'),
+      is_cliente: S.screen === 'cliente',
+      cliNome: S.cliSel ? S.cliSel.n : 'Cliente',
+      cliIni: S.cliSel ? S.cliSel.n.split(' ').map(w => w[0]).slice(0, 2).join('') : '--',
+      cliInfo: S.cliSel ? S.cliSel.tipo + ' · ' + S.cliSel.c + ' · origem: ' + S.cliSel.o + ' · potencial ' + S.cliSel.v : '',
+      cliContato: [['Telefone / WhatsApp', '(85) 9 9640-1128'], ['E-mail', 'contato@cliente.com.br'], ['Endereço', 'Rua das Acácias, 142'], ['Concessionária', 'Enel CE'], ['Padrão de entrada', 'Bifásico 220V']].map(x => ({ l: x[0], v: x[1] })),
+      cliTimeline: [
+        { d: '12/08', t: 'Lead criado', s: 'Origem registrada no funil comercial' },
+        { d: '15/08', t: 'Visita técnica realizada', s: 'Fotos do telhado e padrão de entrada anexadas' },
+        { d: '18/08', t: 'Proposta enviada', s: 'Visualizada 3 vezes pelo cliente' },
+        { d: '19/08', t: 'Contrato assinado', s: 'Aceite com IP, data e hora · 2/2 assinaturas' },
+        { d: '22/08', t: 'Obra aberta', s: 'Equipe A alocada · material reservado no estoque' },
+        { d: 'hoje', t: 'Em execução', s: 'Checklist de campo 5/8 · fotos por etapa no app' }
+      ],
+      cliDocs: [['Proposta comercial (PDF)', '18/08'], ['Contrato assinado', '19/08'], ['ART e projeto', '20/08'], ['Fotos da visita técnica', '15/08']].map(x => ({ l: x[0], v: x[1] })),
+      voltarCrm: () => this.nav('crm'),
+      openCliente: () => { if (selK) this.setState({ screen: 'cliente', modal: null, card: null, cliSel: selK, notif: false }); },
+      openOrc: () => this.setState({ modal: 'orc', form: {} }),
+      fConsumo: this.ff('consumo'),
+      saveOrc: () => {
+        const fm = this.state.form; if (!fm.nome) { this.toastMsg('Informe o cliente do orçamento'); return; }
+        this.setState({ modal: null, consumo: parseInt(fm.consumo) || this.state.consumo, orcCli: fm.nome + (fm.cidade ? ' · ' + fm.cidade : ''), form: {} });
+        this.toastMsg('Orçamento dimensionado para ' + fm.nome);
+      },
+      closeModal: () => this.setState({ modal: null, card: null }),
+      stop: e => e.stopPropagation(),
+      modalDet: S.modal === 'det' && !!S.detail,
+      detTitle: S.detail ? S.detail.t : '', detSub: S.detail ? S.detail.sub : '',
+      detRows: S.detail ? S.detail.rows.map(r => ({ l: r[0], v: String(r[1]) })) : [],
+      detAcaoOn: !!(S.detail && S.detail.acao),
+      detAcaoLabel: S.detail && S.detail.acao ? S.detail.acao[0] : '',
+      detAcaoRun: () => { const a = S.detail && S.detail.acao; this.setState({ modal: null, detail: null }); if (a) a[1](); },
+      fNome: this.ff('nome'), fCidade: this.ff('cidade'), fValor: this.ff('valor'), fOrigem: this.ff('origem'), fTipo: this.ff('tipo'), fPot: this.ff('pot'),
+      saveLead: () => this.addLead(), saveProp: () => this.addProp(),
+      cardNome: selK ? selK.n : '', cardInfo: selK ? selK.c + ' · ' + selK.tipo + ' · ' + selK.v + ' · origem: ' + selK.o : '',
+      cardEtapa: card ? this.getFunil()[card[0]].n : '',
+      movePrev: () => this.moveCard(-1), moveNext: () => this.moveCard(1),
+      cardZap: () => selK && this.zap('Olá ' + selK.n.split(' ')[0] + '! Aqui é da Voltua Energia, tudo bem?'),
+      clearAlertas: () => { this.setState({ alertasOff: true, notif: false }); this.toastMsg('Alertas marcados como lidos'); },
+      newContr: () => this.toastMsg('Contrato gerado a partir da proposta aceita — sem redigitar dados'),
+      newPed: () => this.toastMsg('Solicitação de compra criada a partir da necessidade da obra'),
+      newCobr: () => this.toastMsg('Cobrança PIX gerada e vinculada à parcela'),
+      invite: () => this.toastMsg('Convite enviado — o colaborador define a senha no primeiro acesso'),
+      dimensionar: () => this.toastMsg('Cenários recalculados para ' + S.consumo + ' kWh/mês'),
+      consumoVal: S.consumo, setConsumo: e => this.setState({ consumo: parseInt(e.target.value) || 0 }),
+      checkoutFn: () => { if (this.getChk().some(x => !x)) { this.toastMsg('Conclua o checklist antes do check-out'); } else { this.setState({ checkedOut: true }); this.toastMsg('Check-out registrado · 16:42 · GPS -3.890, -38.455'); } },
+      scanFn: () => this.toastMsg('Câmera aberta para leitura do código de barras'),
+      photoFn: () => this.toastMsg('Foto adicionada à etapa "Durante"'),
+      chkCount: this.getChk().filter(Boolean).length + '/8',
+      checkoutStyle: S.checkedOut,
+      userNome: S.user.nome, userPerfil: S.user.perfil,
+      userIni: S.user.nome.split(' ').map(w => w[0]).slice(0, 2).join(''),
+      screenTitle: S.screen === 'cliente' ? (S.cliSel ? S.cliSel.n : 'Cliente') : (this.titles[S.screen] || [''])[0],
+      screenSub: S.screen === 'cliente' ? 'Cadastro completo do cliente' : S.screen === 'dash' ? 'Visão geral · ' + perLabel : (this.titles[S.screen] || ['', ''])[1],
+      qVal: S.q, setQ: e => this.setState({ q: e.target.value }),
+      searchOpen: !!S.q,
+      searchResults: results.map(x => Object.assign({}, x, { go: () => { this.nav(x.sc); this.setState({ q: '' }); this.toastMsg('Aberto em: ' + (this.titles[x.sc] || [''])[0]); } })),
+      searchEmpty: !!S.q && results.length === 0,
+      periodos: ['Dia', 'Semana', 'Mês', 'Personalizado'].map(p => ({ n: p, go: () => { this.setState({ periodo: p }); if (p !== 'Personalizado') this.toastMsg('Exibindo dados do período: ' + p); }, bg: S.periodo === p ? '#f97316' : 'transparent', cl: S.periodo === p ? '#fff' : 'light-dark(#5c6b70,#8ba0a6)' })),
+      isCustom: S.periodo === 'Personalizado',
+      setIni: e => this.setState({ perIni: e.target.value }), setFim: e => this.setState({ perFim: e.target.value }),
+      aplicarPer: () => this.toastMsg(S.perIni && S.perFim ? 'Período aplicado: ' + S.perIni.split('-').reverse().join('/') + ' a ' + S.perFim.split('-').reverse().join('/') : 'Selecione as duas datas'),
+      darkLabel: dark ? '☾ Modo escuro' : '☀ Modo claro',
+      toggleDark: () => this.setState({ darkSet: !dark }),
+      toggleNotif: () => this.setState(s => ({ notif: !s.notif })),
+      logout: () => this.signOut(),
+      perfis: this.perfisDef.map(([nome, desc, ini]) => ({
+        nome, desc, ini,
+        go: () => this.setState({ user: { nome: nome === 'Administrador' ? 'Mykael Soares' : nome.split(' / ')[0] + ' Demo', perfil: nome }, screen: nome.startsWith('Instalador') ? 'campo' : 'dash' })
+      })),
+      navGroups: this.navDef.map(([label, items]) => ({
+        label,
+        items: items.filter(([id]) => this.allowed(id)).map(([id, num, lb]) => {
+          const on = S.screen === id;
+          return { num, label: lb, go: () => this.nav(id), bg: on ? 'rgba(249,115,22,.16)' : 'transparent', cl: on ? '#fff' : 'rgba(255,255,255,.72)', numc: on ? '#f9a35b' : 'rgba(255,255,255,.35)' };
+        })
+      })).filter(g => g.items.length),
+      kpis: this.detMap([
+        { l: 'Propostas', v: perK.prop, d: perK.d1, dc: G },
+        { l: 'kWp vendidos', v: perK.kwp, d: perK.d2, dc: G },
+        { l: 'Obras em andamento', v: '9', d: '2 em atraso', dc: R },
+        { l: 'Saldo em caixa', v: 'R$ 182.450', d: 'Projeção 30d: R$ 214 mil', dc: GY },
+        { l: 'A receber', v: 'R$ 96.300', d: 'R$ 8.120 em atraso', dc: A }
+      ], k => [k.l, 'Indicador · Agosto 2026', [['Valor atual', k.v], ['Detalhe', k.d]]]),
+      vendas: (S.periodo === 'Dia' || S.periodo === 'Semana'
+        ? [['Sex', 21, 9.6], ['Sáb', 8, 4.1], ['Dom', 2, 0.9], ['Seg', 14, 6.8], ['Ter', 18, 8.4], ['Qua', 12, 5.7], ['Qui', 16, 7.9], ['Hoje', 22, 9.6]]
+        : [['Jan', 86, 41], ['Fev', 112, 54], ['Mar', 98, 47], ['Abr', 134, 63], ['Mai', 121, 58], ['Jun', 158, 76], ['Jul', 149, 71], ['Ago', 176, 84]]
+      ).map(([m, r, k], i, arr) => ({ m, val: k + ' kWp', h: Math.max(3, Math.round(r / Math.max.apply(null, arr.map(x => x[1])) * 100)) + '%', cor: i === arr.length - 1 ? '#f97316' : 'light-dark(#0c2b33,#2a4550)' })),
+      vendasSub: S.periodo === 'Dia' || S.periodo === 'Semana' ? 'kWp por dia · últimos 8 dias' : 'R$ e kWp · 2026',
+      funilResumo: [['Lead', 48], ['Qualificado', 31], ['Visita Técnica', 22], ['Proposta Enviada', 18], ['Negociação', 11], ['Fechado', 8]].map(([n, q]) => ({ n, q: q + (n === 'Fechado' ? ' · 17%' : ''), w: Math.round(q / 48 * 100) + '%' })),
+      alertas: S.alertasOff ? [] : [
+        { t: 'Homologação vencendo', d: 'Parecer de acesso Enel CE vence em 3 dias · Cond. Vila Verde', c: R, h: 'há 20 min' },
+        { t: 'Estoque abaixo do mínimo', d: 'Módulo 570W Bifacial: 12 un (mínimo 20)', c: A, h: 'há 1 h' },
+        { t: 'Obra atrasada', d: 'Sítio Boa Luz — etapa de instalação com +4 dias', c: R, h: 'há 2 h' },
+        { t: 'Contas a vencer', d: 'R$ 18.240 vencem nos próximos 7 dias', c: A, h: 'há 3 h' },
+        { t: 'Contrato sem assinatura', d: 'Marcos Paiva — pendente há 6 dias', c: B, h: 'ontem' },
+        { t: 'NPS recebido', d: 'Ana Rocha avaliou a entrega com nota 10', c: G, h: 'ontem' }
+      ],
+      movs: this.detMap([
+        { d: 'Hoje · 10:42', t: 'Recebimento parcela 2/6 — Ana Rocha', v: '+ R$ 7.400', c: G },
+        { d: 'Hoje · 09:15', t: 'Pagamento distribuidora — pedido PC-88', v: '− R$ 21.350', c: R },
+        { d: 'Ontem', t: 'Sinal de contrato — Cond. Vila Verde', v: '+ R$ 15.900', c: G },
+        { d: '26/08', t: 'Combustível frota — Fiorino BRA-2E19', v: '− R$ 640', c: R }
+      ], m => ['Movimentação financeira', m.d, [['Descrição', m.t], ['Valor', m.v]], ['Abrir no financeiro', () => this.nav('fin')]]),
+      st
+    };
+    return Object.assign(vals, this.extraVals(st));
+  }
+  extraVals(st) {
+    const S = this.state, G = this.G, A = this.A, R = this.R, B = this.B, GY = this.GY, O = this.O;
+    const scr = {}; ['dash','crm','orc','prop','contr','homol','obras','campo','compras','estoque','frota','fin','cobr','om','equipe','rel','config'].forEach(k => scr['is_' + k] = S.screen === k);
+    const TXT = 'light-dark(#16262b,#e8eef0)', MUT = 'light-dark(#8a979b,#5f7883)';
+    return Object.assign(scr, {
+      funilCols: this.mapFunil(this.getFunil()),
+      atividades: this.detMap([
+        { h: 'Hoje 14:00', hc: O, hb: 'rgba(249,115,22,.13)', t: 'Follow-up proposta — Fazenda Ipê', d: 'Proposta visualizada 3× ontem, ligar para fechar', r: 'Diego Ferraz' },
+        { h: 'Hoje 16:30', hc: O, hb: 'rgba(249,115,22,.13)', t: 'Ligação de qualificação — Sítio Santa Fé', d: 'Confirmar consumo médio e padrão de entrada', r: 'Larissa Nunes' },
+        { h: 'Amanhã 09:00', hc: GY, hb: 'rgba(100,116,139,.13)', t: 'Visita técnica — Mercadinho União', d: 'Levar drone: telhado metálico, 2 águas', r: 'Diego Ferraz' },
+        { h: '30/08 10:00', hc: GY, hb: 'rgba(100,116,139,.13)', t: 'Visita técnica — Ana Beatriz Melo', d: 'Fotos do telhado, estrutura e padrão de entrada', r: 'Larissa Nunes' }
+      ], a => [a.t, a.h + ' · responsável: ' + a.r, [['Detalhe', a.d]], ['Concluir atividade', () => this.toastMsg('Atividade concluída e registrada no histórico')]]),
+      canais: [
+        { n: 'Indicação', q: 16, pct: '34% conv.', w: '100%', cor: '#16a34a' },
+        { n: 'Instagram', q: 14, pct: '12% conv.', w: '87%', cor: '#e1306c' },
+        { n: 'Google', q: 11, pct: '18% conv.', w: '69%', cor: '#2563eb' },
+        { n: 'Feiras e eventos', q: 7, pct: '9% conv.', w: '44%', cor: '#7c3aed' }
+      ],
+      orcEntrada: [
+        { l: 'Cliente', v: S.orcCli || 'Marcos Paiva · Residencial' },
+        { l: 'Valor da conta de luz', v: 'R$ 780,00' },
+        { l: 'Cidade / Irradiação', v: 'Fortaleza-CE · 5,7 kWh/m²·dia' },
+        { l: 'Tipo de kit', v: 'On-grid · telhado cerâmico' }
+      ],
+      cenarios: this.calcCen(S.consumo),
+      custos: [
+        { n: 'Equipamentos (kit fotovoltaico)', v: 'R$ 18.900' }, { n: 'Estrutura de fixação', v: 'R$ 2.400' },
+        { n: 'Mão de obra de instalação', v: 'R$ 4.200' }, { n: 'ART + projeto e homologação', v: 'R$ 950' },
+        { n: 'Frete', v: 'R$ 780' }, { n: 'Impostos', v: 'R$ 1.870' }, { n: 'Margem (10,2%)', v: 'R$ 3.300' }
+      ],
+      financ: [
+        { n: 'Entrada (10%)', v: 'R$ 3.240' }, { n: 'Financiado em 60×', v: 'R$ 812/mês' }, { n: 'Conta de luz atual', v: 'R$ 780/mês' }
+      ],
+      propostas: this.getProps().map(p => Object.assign({}, p, {
+        pdf: e => { e.stopPropagation(); this.setState({ modal: 'pdf', pdfP: p }); },
+        zap: e => { e.stopPropagation(); this.zap('Olá! Segue sua proposta ' + p.id + ' da Voltua Energia: https://voltua.app/p/' + p.id.slice(4)); },
+        det: () => this.openDet(p.id + ' — ' + p.cli, 'Proposta comercial · criada ' + p.data, [['Potência', p.pot], ['Valor', p.v], ['Versão', p.ver], ['Status', p.s]], ['Enviar por WhatsApp', () => this.zap('Olá! Segue sua proposta ' + p.id + ' da Voltua Energia')])
+      })),
+      propStats: [
+        { l: 'Enviadas no mês', v: '32' }, { l: 'Taxa de aceite', v: '25%' }, { l: 'Ticket médio', v: 'R$ 48.900' }, { l: 'Tempo médio até aceite', v: '4,2 dias' }
+      ],
+      contratos: [
+        Object.assign({ id: 'CT-315', cli: 'Cond. Vila Verde', obra: '38,0 kWp · Fortaleza', v: 'R$ 106.000', parc: 'Sinal + 5 parcelas', ass: '2/2', dias: 'assinado em 22/08', acao: 'Ver PDF' }, st('Assinado', G)),
+        Object.assign({ id: 'CT-314', cli: 'Marcos Paiva', obra: '6,84 kWp · Fortaleza', v: 'R$ 32.400', parc: 'Sinal + 3 parcelas', ass: '1/2', dias: 'pendente há 6 dias', acao: 'Reenviar' }, st('Aguardando', A)),
+        Object.assign({ id: 'CT-313', cli: 'Fazenda Ipê', obra: '54,7 kWp · Canindé', v: 'R$ 118.400', parc: 'Sinal + 6 parcelas', ass: '0/2', dias: 'pendente há 8 dias', acao: 'Reenviar' }, st('Aguardando', A)),
+        Object.assign({ id: 'CT-311', cli: 'Ana Rocha', obra: '6,84 kWp · Eusébio', v: 'R$ 32.400', parc: 'Sinal + 6 parcelas', ass: '2/2', dias: 'assinado em 19/08', acao: 'Ver PDF' }, st('Assinado', G)),
+        Object.assign({ id: 'CT-308', cli: 'Mercadinho São José', obra: '11,4 kWp · Caucaia', v: 'R$ 44.600', parc: 'À vista (PIX)', ass: '2/2', dias: 'assinado em 12/08', acao: 'Ver PDF' }, st('Concluído', GY))
+      ].map(c => Object.assign({}, c, {
+        act: e => { e.stopPropagation(); this.toastMsg(c.acao === 'Ver PDF' ? 'Contrato ' + c.id + ' aberto em PDF' : 'Contrato ' + c.id + ' reenviado para assinatura por WhatsApp'); },
+        det: () => this.openDet('Contrato ' + c.id, c.cli + ' · ' + c.obra, [['Valor', c.v], ['Parcelamento', c.parc], ['Assinaturas', c.ass], ['Situação', c.dias], ['Status', c.s]], ['Ver contrato em PDF', () => this.toastMsg('Contrato ' + c.id + ' aberto em PDF')])
+      })),
+      homolEtapas: [
+        { n: 'Projeto', q: 2, c: TXT }, { n: 'Protocolo', q: 1, c: TXT }, { n: 'Em Análise', q: 3, c: B },
+        { n: 'Parecer Aprovado', q: 1, c: G }, { n: 'Vistoria', q: 2, c: A }, { n: 'Troca de Medidor', q: 1, c: A }, { n: 'Homologado', q: 14, c: G }
+      ],
+      homols: this.detMap([
+        Object.assign({ obra: 'Cond. Vila Verde', conc: 'Enel CE', prot: 'EN-2026-48812', prazo: 'vence em 3 dias', pc: R, docs: '9/9' }, st('Em Análise', B)),
+        Object.assign({ obra: 'Ana Rocha', conc: 'Enel CE', prot: 'EN-2026-48796', prazo: 'vistoria 02/09', pc: A, docs: '9/9' }, st('Vistoria', A)),
+        Object.assign({ obra: 'Sítio Boa Luz', conc: 'Enel CE', prot: 'EN-2026-48701', prazo: '12 dias restantes', pc: TXT, docs: '9/9' }, st('Em Análise', B)),
+        Object.assign({ obra: 'Mercadinho São José', conc: 'Enel CE', prot: 'EN-2026-48644', prazo: 'aguardando agenda', pc: A, docs: '9/9' }, st('Troca de Medidor', A)),
+        Object.assign({ obra: 'Fazenda Ipê', conc: 'Enel CE', prot: '—', prazo: 'exigência: até 05/09', pc: R, docs: '7/9' }, st('Projeto', GY))
+      ], h => ['Homologação — ' + h.obra, h.conc + ' · protocolo ' + h.prot, [['Etapa', h.s], ['Prazo', h.prazo], ['Documentação', h.docs]], ['Ver documentos do processo', () => this.toastMsg('Documentos do processo abertos')]]),
+      homolDocs: [
+        { n: 'ART do responsável técnico', m: '✓', bg: 'rgba(22,163,74,.15)', cl: G, bd: 'rgba(22,163,74,.3)' },
+        { n: 'Diagrama unifilar', m: '✓', bg: 'rgba(22,163,74,.15)', cl: G, bd: 'rgba(22,163,74,.3)' },
+        { n: 'Memorial descritivo', m: '✓', bg: 'rgba(22,163,74,.15)', cl: G, bd: 'rgba(22,163,74,.3)' },
+        { n: 'Formulário de solicitação de acesso', m: '✓', bg: 'rgba(22,163,74,.15)', cl: G, bd: 'rgba(22,163,74,.3)' },
+        { n: 'Certificado Inmetro do inversor', m: '', bg: 'transparent', cl: GY, bd: 'light-dark(#c3ced2,#2a4550)' },
+        { n: 'Procuração do titular da UC', m: '', bg: 'transparent', cl: GY, bd: 'light-dark(#c3ced2,#2a4550)' }
+      ],
+      concPrazos: [
+        { n: 'Enel CE', d: '34 dias em média · 14 homologações', w: '68%', cor: '#f97316' },
+        { n: 'Equatorial PI', d: '41 dias em média · 4 homologações', w: '82%', cor: '#0c9488' },
+        { n: 'Enel RN', d: '50 dias em média · 2 homologações', w: '100%', cor: '#7c3aed' }
+      ],
+      obrasList: this.detMap([
+        { n: 'Cond. Vila Verde', cid: 'Fortaleza', kwp: '38,0 kWp', eq: 'Equipe A + B', vei: 'Iveco Daily', prazo: '18/09', pc: TXT, ...st('Instalação', A), etapas: this.et(3) },
+        { n: 'Residência Ana Rocha', cid: 'Eusébio', kwp: '6,84 kWp', eq: 'Equipe A', vei: 'Fiorino', prazo: '05/09', pc: TXT, ...st('Instalação', A), etapas: this.et(3) },
+        { n: 'Sítio Boa Luz', cid: 'Sobral', kwp: '16,5 kWp', eq: 'Equipe B', vei: 'Saveiro', prazo: '30/08 · +4 dias', pc: R, ...st('Atrasada', R), etapas: this.et(2) },
+        { n: 'Mercadinho São José', cid: 'Caucaia', kwp: '11,4 kWp', eq: 'Equipe B', vei: 'Saveiro', prazo: '02/09', pc: TXT, ...st('Comissionamento', B), etapas: this.et(4) },
+        { n: 'Residência P. Albuquerque', cid: 'Maracanaú', kwp: '5,7 kWp', eq: 'Equipe A', vei: 'Fiorino', prazo: 'entregue 22/08', pc: G, ...st('Entregue', G), etapas: this.et(5) }
+      ], o => ['Obra — ' + o.n, o.cid + ' · ' + o.kwp, [['Etapa atual', o.s], ['Equipe', o.eq], ['Veículo', o.vei], ['Entrega', o.prazo]], ['Abrir cronograma da obra', () => this.toastMsg('Cronograma completo da obra ' + o.n)]]),
+      checklist: this.chk(),
+      campoFeats: [
+        { t: 'Obras designadas', d: 'o instalador só vê o que é dele, nada além' },
+        { t: 'Checklist passo a passo', d: 'nenhuma etapa esquecida, tudo com marcação de conclusão' },
+        { t: 'Fotos por etapa', d: 'antes, durante e depois, direto do celular' },
+        { t: 'Nº de série', d: 'leitura de código de barras dos módulos e inversores' },
+        { t: 'Check-in/out com localização', d: 'data, hora e GPS de cada visita à obra' },
+        { t: 'Horas e ocorrências', d: 'apontamento de campo que alimenta o custo real da obra' }
+      ],
+      pedidos: this.detMap([
+        Object.assign({ id: 'PC-91', forn: 'Aldo Solar', prazo: '5 dias úteis', obra: 'Fazenda Ipê', itens: '96 módulos + 2 inversores', v: 'R$ 74.300' }, st('Cotado', B)),
+        Object.assign({ id: 'PC-90', forn: 'Fortlev Solar', prazo: '3 dias úteis', obra: 'Cond. Vila Verde', itens: 'Estrutura + cabos', v: 'R$ 8.120' }, st('Em Trânsito', A)),
+        Object.assign({ id: 'PC-89', forn: 'Soollar Distribuidora', prazo: '7 dias úteis', obra: 'Sítio Boa Luz', itens: 'Inversor 15 kW reposição', v: 'R$ 6.480' }, st('Aprovado', O)),
+        Object.assign({ id: 'PC-88', forn: 'Aldo Solar', prazo: 'entregue 27/08', obra: 'Mercadinho São José', itens: '20 módulos 570W', v: 'R$ 21.350' }, st('Recebido', G)),
+        Object.assign({ id: 'PC-87', forn: 'Fortlev Solar', prazo: '—', obra: 'Estoque mínimo', itens: 'Conectores MC4 + string box', v: 'R$ 1.940' }, st('Solicitado', GY))
+      ], p => ['Pedido ' + p.id, p.forn + ' · entrega: ' + p.prazo, [['Obra', p.obra], ['Itens', p.itens], ['Valor', p.v], ['Status', p.s]], ['Avançar status do pedido', () => this.toastMsg('Status do pedido ' + p.id + ' atualizado')]]),
+      cotacoes: this.detMap([
+        { n: 'Aldo Solar', v: 'R$ 18.900', cond: '28 dias · frete incluso', best: true, bd: '#16a34a' },
+        { n: 'Soollar Distribuidora', v: 'R$ 19.640', cond: '21 dias · frete R$ 480', best: false, bd: 'light-dark(#e3e8ea,#1d3640)' },
+        { n: 'Fortlev Solar', v: 'R$ 20.150', cond: 'à vista · frete incluso', best: false, bd: 'light-dark(#e3e8ea,#1d3640)' }
+      ], c => ['Cotação — ' + c.n, 'Kit 6,84 kWp · pedido PC-91', [['Preço', c.v], ['Condições', c.cond]], ['Aprovar esta cotação', () => this.toastMsg('Cotação de ' + c.n + ' aprovada — pedido gerado')]]),
+      estStats: [
+        { l: 'Valor em estoque', v: 'R$ 214.680', c: TXT }, { l: 'Itens abaixo do mínimo', v: '2', c: R },
+        { l: 'Reservado para obras', v: 'R$ 96.400', c: TXT }, { l: 'Parado há +90 dias', v: 'R$ 7.230', c: A }
+      ],
+      estItens: this.detMap([
+        Object.assign({ n: 'Módulo 570W Bifacial', sku: 'MOD-570-BF', min: 20, qt: 12, res: 24 }, st('Abaixo do mínimo', R)),
+        Object.assign({ n: 'Inversor 8 kW mono 220V', sku: 'INV-8K-M220', min: 4, qt: 6, res: 2 }, st('OK', G)),
+        Object.assign({ n: 'Inversor 5 kW mono 220V', sku: 'INV-5K-M220', min: 4, qt: 3, res: 1 }, st('Abaixo do mínimo', R)),
+        Object.assign({ n: 'Estrutura telhado cerâmico (kit 4 mód.)', sku: 'EST-CER-4', min: 10, qt: 26, res: 8 }, st('OK', G)),
+        Object.assign({ n: 'Cabo solar 6mm² (rolo 100m)', sku: 'CAB-6MM-100', min: 6, qt: 14, res: 3 }, st('OK', G)),
+        Object.assign({ n: 'String box 2E/1S', sku: 'STR-2E1S', min: 8, qt: 9, res: 0 }, st('Parado +90d', A))
+      ], i => [i.n, 'SKU ' + i.sku + ' · Depósito Matriz', [['Estoque mínimo', i.min], ['Disponível', i.qt], ['Reservado p/ obras', i.res], ['Situação', i.s]], ['Ver números de série', () => this.toastMsg('Séries rastreadas do item ' + i.sku)]]),
+      estMovs: this.detMap([
+        { tipo: 'SAÍDA', c: R, b: 'rgba(220,38,38,.1)', t: '12 módulos 570W → obra Ana Rocha', d: 'hoje 08:10' },
+        { tipo: 'ENTRADA', c: G, b: 'rgba(22,163,74,.12)', t: '20 módulos 570W ← pedido PC-88 (Aldo)', d: 'ontem 15:40' },
+        { tipo: 'RESERVA', c: B, b: 'rgba(37,99,235,.1)', t: '96 módulos p/ Fazenda Ipê (aguardando compra)', d: 'ontem 11:05' },
+        { tipo: 'TRANSF.', c: GY, b: 'rgba(100,116,139,.12)', t: '2 inversores 5 kW Matriz → Depósito Sobral', d: '25/08' }
+      ], m => ['Movimentação — ' + m.tipo, m.d, [['Detalhe', m.t]], ['Ver documento', () => this.toastMsg('Documento da movimentação aberto')]]),
+      consumoObra: this.detMap([
+        { n: 'Cond. Vila Verde', v: 'R$ 41.800' }, { n: 'Sítio Boa Luz', v: 'R$ 18.960' },
+        { n: 'Ana Rocha', v: 'R$ 14.320' }, { n: 'Mercadinho São José', v: 'R$ 12.780' }
+      ], c => ['Consumo de material', c.n + ' · agosto', [['Total consumido', c.v]], ['Ver itens consumidos', () => this.toastMsg('Itens consumidos na obra ' + c.n)]]),
+      veiculos: this.detMap([
+        Object.assign({ n: 'Fiorino 1.4', placa: 'BRA-2E19', km: '84.320 km', obra: 'Ana Rocha (Eusébio)', manut: 'revisão em 1.680 km', mc: A, comb: 'R$ 1.240' }, st('Em uso', B)),
+        Object.assign({ n: 'Saveiro Robust', placa: 'SDU-7A44', km: '61.905 km', obra: 'Sítio Boa Luz (Sobral)', manut: 'troca de óleo vencida', mc: R, comb: 'R$ 1.860' }, st('Manut. pendente', R)),
+        Object.assign({ n: 'Iveco Daily 35S14', placa: 'PHK-9C02', km: '112.480 km', obra: 'Cond. Vila Verde', manut: 'ok até 118.000 km', mc: G, comb: 'R$ 2.410' }, st('Em uso', B))
+      ], v => [v.n + ' · ' + v.placa, v.km, [['Obra atual', v.obra], ['Próx. manutenção', v.manut], ['Combustível no mês', v.comb], ['Status', v.s]], ['Registrar abastecimento', () => this.toastMsg('Abastecimento registrado — ' + v.placa)]]),
+      ferramentas: this.detMap([
+        Object.assign({ n: 'Parafusadeira de impacto Makita', pat: 'PAT-0041', resp: 'Equipe A · João', local: 'Obra Ana Rocha' }, st('Em campo', B)),
+        Object.assign({ n: 'Talha elétrica 500 kg', pat: 'PAT-0028', resp: 'Equipe B · Rafael', local: 'Obra Cond. Vila Verde' }, st('Em campo', B)),
+        Object.assign({ n: 'Multímetro / alicate solar Fluke', pat: 'PAT-0035', resp: '—', local: 'Almoxarifado Matriz' }, st('Disponível', G)),
+        Object.assign({ n: 'Andaime tubular (12 peças)', pat: 'PAT-0016', resp: 'Equipe B · Rafael', local: 'Obra Sítio Boa Luz' }, st('Em campo', B)),
+        Object.assign({ n: 'Furadeira de base magnética', pat: 'PAT-0009', resp: '—', local: 'Assistência (reparo)' }, st('Em manutenção', A))
+      ], f => [f.n, 'Patrimônio ' + f.pat, [['Responsável', f.resp], ['Local', f.local], ['Status', f.s]], ['Transferir responsável', () => this.toastMsg('Transferência registrada — ' + f.pat)]]),
+      finKpis: [
+        { l: 'Saldo em caixa', v: 'R$ 182.450', c: TXT, d: 'Conta PJ + reserva' },
+        { l: 'Projeção 30 dias', v: '+ R$ 31.900', c: G, d: 'R$ 68.400 entra · R$ 36.500 sai' },
+        { l: 'Projeção 60 dias', v: '+ R$ 54.200', c: G, d: 'inclui parcelas Vila Verde' },
+        { l: 'Projeção 90 dias', v: '+ R$ 47.800', c: G, d: 'considera compra Fazenda Ipê' }
+      ],
+      pagar: this.detMap([
+        { n: 'Aldo Solar — pedido PC-91', cat: 'Equipamentos · Fazenda Ipê', venc: '01/09', vc: A, v: 'R$ 74.300' },
+        { n: 'Folha de pagamento', cat: 'Pessoal · Matriz', venc: '05/09', vc: TXT, v: 'R$ 28.640' },
+        { n: 'ART CREA — 3 obras', cat: 'Projetos', venc: '03/09', vc: TXT, v: 'R$ 890' },
+        { n: 'Aluguel galpão + energia', cat: 'Estrutura', venc: '10/09', vc: TXT, v: 'R$ 4.850' }
+      ], p => [p.n, p.cat, [['Vencimento', p.venc], ['Valor', p.v]], ['Registrar pagamento', () => this.toastMsg('Pagamento registrado — título baixado')]]),
+      receber: this.detMap([
+        { n: 'Ana Rocha — parcela 3/6', cat: 'CT-311', venc: '02/09', vc: TXT, v: 'R$ 7.400' },
+        { n: 'Cond. Vila Verde — parcela 1/5', cat: 'CT-315', venc: '04/09', vc: TXT, v: 'R$ 18.020' },
+        { n: 'Mercadinho São José — saldo final', cat: 'CT-308', venc: 'venceu 26/08', vc: R, v: 'R$ 8.120' },
+        { n: 'O&M mensal — 4 contratos', cat: 'Recorrente', venc: '05/09', vc: TXT, v: 'R$ 2.140' }
+      ], p => [p.n, p.cat, [['Vencimento', p.venc], ['Valor', p.v]], ['Dar baixa no recebível', () => this.toastMsg('Baixa registrada no contas a receber')]]),
+      custoObras: this.detMap([
+        { n: 'Residência P. Albuquerque', contrato: 'R$ 27.900', orc: 'R$ 21.200', real: 'R$ 20.740', margem: '25,7%', mc: G },
+        { n: 'Mercadinho São José', contrato: 'R$ 44.600', orc: 'R$ 35.100', real: 'R$ 36.480', margem: '18,2%', mc: G },
+        { n: 'Ana Rocha', contrato: 'R$ 32.400', orc: 'R$ 26.100', real: 'R$ 24.980 (parcial)', margem: '22,9% proj.', mc: G },
+        { n: 'Sítio Boa Luz', contrato: 'R$ 58.900', orc: 'R$ 47.300', real: 'R$ 51.220 (parcial)', margem: '13,0% proj.', mc: A }
+      ], c => ['Custo × orçado — ' + c.n, 'Margem de contribuição real', [['Contrato', c.contrato], ['Custo orçado', c.orc], ['Custo real', c.real], ['Margem real', c.margem]], ['Ver lançamentos da obra', () => this.toastMsg('Lançamentos de custo da obra ' + c.n)]]),
+      dre: [
+        { n: 'Receita bruta', v: 'R$ 176.400', c: TXT, fw: 600 }, { n: '(−) Impostos', v: '− R$ 12.170', c: MUT, fw: 400 },
+        { n: '(−) Custos das obras', v: '− R$ 118.900', c: MUT, fw: 400 }, { n: '(−) Despesas operacionais', v: '− R$ 21.300', c: MUT, fw: 400 },
+        { n: '(−) Comissões', v: '− R$ 5.290', c: MUT, fw: 400 }, { n: 'Resultado do mês', v: 'R$ 18.740 · 10,6%', c: G, fw: 700 }
+      ],
+      comissoes: this.detMap([
+        { n: 'Diego Ferraz', d: '3 contratos · faixa 3%', v: 'R$ 3.180' },
+        { n: 'Larissa Nunes', d: '2 contratos · faixa 2,5%', v: 'R$ 1.610' },
+        { n: 'Mykael Soares', d: '1 contrato · faixa 1,5%', v: 'R$ 500' }
+      ], c => ['Comissão — ' + c.n, c.d, [['Valor no mês', c.v]], ['Ver regra de comissionamento', () => this.toastMsg('Regras por faixa de margem abertas')]]),
+      parcelas: this.getParc().map((p, i) => Object.assign({}, p, {
+        zap: e => { e.stopPropagation(); this.zap('Olá, ' + p.cli + '! Segue o link de pagamento da parcela ' + p.parc + ' (' + p.v + '): https://voltua.app/pix/' + p.ct); },
+        act: e => { e.stopPropagation(); if (p.s === 'Paga') { this.toastMsg('Recibo da parcela enviado ao cliente'); } else { this.baixa(i); } },
+        det: () => this.openDet(p.cli + ' · parcela ' + p.parc, 'Contrato ' + p.ct, [['Vencimento', p.venc], ['Valor', p.v], ['Meio de pagamento', p.meio], ['Status', p.s]], p.s === 'Paga' ? ['Enviar recibo', () => this.toastMsg('Recibo enviado ao cliente')] : ['Dar baixa nesta parcela', () => this.baixa(i)])
+      })),
+      cobrStats: [
+        { l: 'Recebido no mês', v: 'R$ 63.240', c: G }, { l: 'A vencer (30d)', v: 'R$ 68.400', c: TXT },
+        { l: 'Em atraso', v: 'R$ 8.120', c: R }, { l: 'Inadimplência', v: '2,3%', c: A }
+      ],
+      omStats: [
+        { l: 'Chamados abertos', v: '4', c: TXT, d: '1 com SLA crítico' }, { l: 'SLA cumprido (mês)', v: '94%', c: G, d: 'meta: 90%' },
+        { l: 'Sistemas monitorados', v: '23', c: TXT, d: 'geração informada mensalmente' }, { l: 'Garantias ativas', v: '61', c: TXT, d: 'módulos, inversores e serviço' }
+      ],
+      chamados: this.detMap([
+        { id: 'CH-31', cli: 'Sítio Santa Clara', t: 'Inversor offline desde ontem', pri: 'Alta', pc: '#fff', pb: R, sla: '3h restantes', slac: R, resp: 'Rafael Costa' },
+        { id: 'CH-30', cli: 'Mercadinho São José', t: 'Geração 18% abaixo do projetado', pri: 'Média', pc: A, pb: 'rgba(217,119,6,.15)', sla: '2 dias', slac: TXT, resp: 'João Batista' },
+        { id: 'CH-29', cli: 'Residência P. Albuquerque', t: 'Limpeza preventiva agendada', pri: 'Baixa', pc: GY, pb: 'rgba(100,116,139,.14)', sla: '05/09', slac: TXT, resp: 'Equipe A' },
+        { id: 'CH-28', cli: 'Clínica Vitalle', t: 'Troca de string box (garantia)', pri: 'Média', pc: A, pb: 'rgba(217,119,6,.15)', sla: 'amanhã', slac: A, resp: 'Rafael Costa' }
+      ], c => [c.id + ' — ' + c.cli, c.t, [['Prioridade', c.pri], ['SLA', c.sla], ['Responsável', c.resp]], ['Atualizar chamado', () => this.toastMsg('Chamado ' + c.id + ' atualizado')]]),
+      geracao: this.detMap([
+        { n: 'Cond. Jardins do Sol · 38 kWp', pct: '103%', w: '100%', c: G, d: '5.610 kWh gerados · 5.430 projetados' },
+        { n: 'Clínica Vitalle · 18,2 kWp', pct: '98%', w: '95%', c: G, d: '2.590 kWh gerados · 2.640 projetados' },
+        { n: 'Residência P. Albuquerque · 5,7 kWp', pct: '96%', w: '93%', c: G, d: '780 kWh gerados · 812 projetados' },
+        { n: 'Mercadinho São José · 11,4 kWp', pct: '82%', w: '79%', c: R, d: '1.330 kWh · alerta de baixa performance' }
+      ], g => ['Geração — ' + g.n, 'Real × projetada · agosto', [['Desempenho', g.pct], ['Detalhe', g.d]], ['Registrar geração do mês', () => this.toastMsg('Geração mensal registrada')]]),
+      omContratos: this.detMap([
+        { n: 'Clínica Vitalle · mensal', v: 'R$ 690' }, { n: 'Cond. Jardins do Sol · mensal', v: 'R$ 980' }, { n: 'Sítio Santa Clara · trimestral', v: 'R$ 470' }
+      ], c => ['Contrato de O&M', c.n, [['Faturamento', c.v]], ['Ver plano de manutenção', () => this.toastMsg('Plano de manutenção preventiva aberto')]]),
+      metas: this.detMap([
+        { pos: '1º', n: 'Diego Ferraz', real: '19,2 kWp', meta: '25 kWp', pct: '77%', w: '77%', c: G },
+        { pos: '2º', n: 'Larissa Nunes', real: '14,6 kWp', meta: '20 kWp', pct: '73%', w: '73%', c: G },
+        { pos: '3º', n: 'Mykael Soares', real: '8,4 kWp', meta: '15 kWp', pct: '56%', w: '56%', c: A }
+      ], m => ['Meta — ' + m.n, 'Posição ' + m.pos + ' no ranking', [['Realizado', m.real], ['Meta do mês', m.meta], ['Atingimento', m.pct]], ['Ajustar meta', () => this.toastMsg('Meta de ' + m.n + ' atualizada')]]),
+      auditoria: this.detMap([
+        { u: 'Diego Ferraz', t: 'criou a proposta #PR-1049 (Fazenda Ipê)', h: 'hoje · 11:20' },
+        { u: 'Camila Duarte', t: 'deu baixa na parcela 2/6 de Ana Rocha', h: 'hoje · 10:42' },
+        { u: 'João Batista', t: 'concluiu 5 itens do checklist — obra Ana Rocha', h: 'hoje · 09:55' },
+        { u: 'Mykael Soares', t: 'alterou a margem padrão do kit on-grid: 10% → 10,2%', h: 'ontem · 17:12' }
+      ], a => ['Auditoria — ' + a.u, a.h, [['Ação registrada', a.t]]]),
+      colabs: this.detMap([
+        Object.assign({ n: 'Mykael Soares', f: 'Diretor', p: 'Administrador', mod: 'Todos os 16 módulos', ult: 'agora' }, st('Administrador', O)),
+        Object.assign({ n: 'Diego Ferraz', f: 'Vendedor sênior', p: 'Comercial', mod: 'CRM, Orçamentos, Propostas, Metas', ult: 'há 12 min' }, st('Comercial', B)),
+        Object.assign({ n: 'Larissa Nunes', f: 'Vendedora', p: 'Comercial', mod: 'CRM, Orçamentos, Propostas, Metas', ult: 'há 1 h' }, st('Comercial', B)),
+        Object.assign({ n: 'Eng. Paulo Viana', f: 'Engenheiro eletricista', p: 'Engenharia', mod: 'Homologação, Obras, Documentos', ult: 'há 25 min' }, st('Engenharia', GY)),
+        Object.assign({ n: 'João Batista', f: 'Instalador líder', p: 'Instalador', mod: 'Apenas obras designadas (app)', ult: 'há 3 min' }, st('Campo', A)),
+        Object.assign({ n: 'Camila Duarte', f: 'Analista financeira', p: 'Financeiro', mod: 'Financeiro, Cobranças, Relatórios', ult: 'há 40 min' }, st('Financeiro', G))
+      ], c => [c.n, c.f, [['Perfil de acesso', c.p], ['Módulos visíveis', c.mod], ['Último acesso', c.ult]], ['Editar permissões', () => this.toastMsg('Permissões de ' + c.n + ' abertas')]]),
+      cfgEmpresaRows: [{ l: 'Razão social', v: 'Voltua Energia Solar LTDA' }, { l: 'CNPJ', v: '65.946.523/0001-70' }, { l: 'Cidade-sede', v: 'Fortaleza-CE' }, { l: 'Concessionária padrão', v: 'Enel CE' }, { l: 'Filiais', v: 'Matriz + Depósito Sobral' }],
+      cfgKitsRows: [{ l: 'Margem padrão dos kits', v: '10,2%' }, { l: 'Fator de perdas', v: '18%' }, { l: 'Tarifa de referência', v: 'R$ 1,20/kWh' }, { l: 'Irradiação solar', v: 'Tabela regional embutida' }, { l: 'Módulo padrão', v: '570W bifacial' }],
+      cfgEmpresa: () => this.toastMsg('Dados da empresa abertos para edição'),
+      cfgKits: () => this.toastMsg('Parâmetros de cálculo abertos para edição'),
+      cfgSenha: () => this.toastMsg('Link de redefinição de senha enviado por e-mail'),
+      cfgPerm: () => { this.nav('equipe'); this.toastMsg('Permissões são gerenciadas em Equipe e Metas'); },
+      cfgExport: () => this.toastMsg('Backup completo exportado em Excel (.xlsx)'),
+      cfgToggles: ['Homologações com prazo vencendo', 'Estoque abaixo do mínimo', 'Contas a pagar e receber vencendo', 'Resposta de NPS recebida'].map((n, i) => { const on = (S.cfgT ?? [1, 1, 1, 0])[i]; return { n, bg: on ? '#16a34a' : 'light-dark(#cdd6d9,#2a4550)', knob: on ? '18px' : '2px', tog: () => { const d = (S.cfgT ?? [1, 1, 1, 0]).slice(); d[i] = d[i] ? 0 : 1; this.setState({ cfgT: d }); } }; }),
+      integracoes: [
+        { n: 'WhatsApp (link direto wa.me)', d: 'Envio de propostas, contratos e cobranças sem custo recorrente', ...st('Ativo', G) },
+        { n: 'PIX estático (QR Code)', d: 'Cobrança pela conta da empresa com baixa em um clique', ...st('Ativo', G) },
+        { n: 'Assinatura digital com validade jurídica', d: 'Aceite com IP, data e hora já ativo; plataforma paga é opcional', ...st('Opcional', GY) },
+        { n: 'Boleto bancário registrado', d: 'Depende de convênio com o banco', ...st('Opcional', GY) },
+        { n: 'API de monitoramento de inversores', d: 'Substitui o registro manual da geração mensal', ...st('Opcional', GY) }
+      ].map(x => Object.assign(x, { act: () => this.toastMsg(x.s === 'Ativo' ? x.n + ' já está ativa' : 'Integração opcional — contratada direto com o fornecedor') })),
+      relFiltros: ['Período: Agosto/2026', 'Filial: Todas', 'Vendedor: Todos', 'Concessionária: Todas', 'Status: Todos'],
+      relatorios: [
+        { t: 'Relatório comercial', d: 'Propostas, taxa de conversão e desempenho por vendedor e por canal de origem.' },
+        { t: 'Relatório de obras', d: 'Prazo médio, atrasos, custo real × orçado e margem por obra.' },
+        { t: 'Relatório financeiro', d: 'Entradas, saídas, inadimplência e fluxo de caixa por período e centro de custo.' },
+        { t: 'Estoque e consumo', d: 'Posição de estoque, movimentações e consumo de material por obra.' },
+        { t: 'Pós-venda e O&M', d: 'Chamados, SLA, garantias vigentes e evolução do NPS.' },
+        { t: 'Homologações', d: 'Etapas, prazos e histórico por concessionária para prever gargalos.' }
+      ].map(r => Object.assign({}, r, { pdf: () => this.toastMsg(r.t + ' exportado em PDF'), xls: () => this.toastMsg(r.t + ' exportado em Excel (.xlsx)') }))
+    });
+  }
+  funilBase() {
+    const card = this.mkC.bind(this);
+    return [
+      { n: 'Lead', q: 14, cards: [card('Carlos Menezes','Fortaleza','Residencial','R$ 26.800','Instagram','#e1306c','hoje'), card('Padaria Pão Real','Caucaia','Comercial','R$ 58.200','Google','#2563eb','ontem'), card('Renata Lima','Fortaleza','Residencial','R$ 31.400','Indicação','#16a34a','há 2d')] },
+      { n: 'Qualificado', q: 9, cards: [card('Sítio Santa Fé','Sobral','Rural','R$ 92.700','Feira','#7c3aed','hoje'), card('José Andrade','Maracanaú','Residencial','R$ 24.100','Indicação','#16a34a','há 1d')] },
+      { n: 'Visita Técnica', q: 6, cards: [card('Mercadinho União','Fortaleza','Comercial','R$ 47.900','Google','#2563eb','agendada 29/08'), card('Ana Beatriz Melo','Eusébio','Residencial','R$ 29.300','Instagram','#e1306c','agendada 30/08')] },
+      { n: 'Proposta Enviada', q: 8, cards: [card('Fazenda Ipê','Canindé','Rural','R$ 118.400','Indicação','#16a34a','visualizada'), card('Clínica Vitalle','Fortaleza','Comercial','R$ 63.800','Google','#2563eb','enviada há 1d')] },
+      { n: 'Negociação', q: 4, cards: [card('Marcos Paiva','Fortaleza','Residencial','R$ 32.400','Indicação','#16a34a','contraproposta')] },
+      { n: 'Fechado', q: 8, cards: [card('Ana Rocha','Eusébio','Residencial','R$ 32.400','Indicação','#16a34a','contrato ok'), card('Cond. Vila Verde','Fortaleza','Comercial','R$ 106.000','Google','#2563eb','contrato ok')] },
+      { n: 'Perdido', q: 5, cards: [card('Loja Mar Azul','Fortaleza','Comercial','R$ 41.200','Instagram','#e1306c','preço')] }
+    ];
+  }
+  propsBase() {
+    const st = this.stm.bind(this), G = this.G, A = this.A, R = this.R, B = this.B;
+    return [
+      Object.assign({ id: '#PR-1049', cli: 'Fazenda Ipê', data: 'hoje · 11:20', pot: '54,7 kWp', v: 'R$ 118.400', ver: 'v2' }, st('Visualizada', B)),
+      Object.assign({ id: '#PR-1048', cli: 'Clínica Vitalle', data: 'ontem', pot: '18,2 kWp', v: 'R$ 63.800', ver: 'v1' }, st('Enviada', A)),
+      Object.assign({ id: '#PR-1047', cli: 'Marcos Paiva', data: '25/08', pot: '6,84 kWp', v: 'R$ 32.400', ver: 'v3' }, st('Visualizada', B)),
+      Object.assign({ id: '#PR-1044', cli: 'Cond. Vila Verde', data: '21/08', pot: '38,0 kWp', v: 'R$ 106.000', ver: 'v2' }, st('Aceita', G)),
+      Object.assign({ id: '#PR-1042', cli: 'Ana Rocha', data: '18/08', pot: '6,84 kWp', v: 'R$ 32.400', ver: 'v1' }, st('Aceita', G)),
+      Object.assign({ id: '#PR-1039', cli: 'Loja Mar Azul', data: '14/08', pot: '12,5 kWp', v: 'R$ 41.200', ver: 'v2' }, st('Recusada', R))
+    ];
+  }
+  parcBase() {
+    const st = this.stm.bind(this), G = this.G, A = this.A, R = this.R, TXT = 'light-dark(#16262b,#e8eef0)';
+    return [
+      Object.assign({ cli: 'Ana Rocha', ct: 'CT-311', parc: '3/6', venc: '02/09', vc: TXT, v: 'R$ 7.400', meio: 'PIX QR', acao: 'Dar baixa' }, st('Pendente', A)),
+      Object.assign({ cli: 'Mercadinho São José', ct: 'CT-308', parc: 'Saldo final', venc: '26/08', vc: R, v: 'R$ 8.120', meio: 'Boleto', acao: 'Dar baixa' }, st('Atrasada', R)),
+      Object.assign({ cli: 'Cond. Vila Verde', ct: 'CT-315', parc: '1/5', venc: '04/09', vc: TXT, v: 'R$ 18.020', meio: 'PIX QR', acao: 'Dar baixa' }, st('Pendente', A)),
+      Object.assign({ cli: 'Ana Rocha', ct: 'CT-311', parc: '2/6', venc: 'pago 28/08', vc: G, v: 'R$ 7.400', meio: 'PIX QR', acao: 'Recibo' }, st('Paga', G)),
+      Object.assign({ cli: 'Cond. Vila Verde', ct: 'CT-315', parc: 'Sinal', venc: 'pago 27/08', vc: G, v: 'R$ 15.900', meio: 'PIX QR', acao: 'Recibo' }, st('Paga', G)),
+      Object.assign({ cli: 'O&M — Clínica Vitalle', ct: 'OM-004', parc: 'ago/2026', venc: 'pago 25/08', vc: G, v: 'R$ 690', meio: 'PIX QR', acao: 'Recibo' }, st('Paga', G))
+    ];
+  }
+  idx() {
+    const a = [];
+    this.funilBase().forEach(c0 => c0.cards.forEach(k => a.push({ t: k.n, sub: 'CRM · ' + c0.n + ' · ' + k.c, sc: 'crm' })));
+    this.getProps().forEach(p => a.push({ t: p.id + ' — ' + p.cli, sub: 'Proposta · ' + p.v, sc: 'prop' }));
+    [['CT-315 — Cond. Vila Verde', 'Contrato · R$ 106.000'], ['CT-314 — Marcos Paiva', 'Contrato · R$ 32.400'], ['CT-311 — Ana Rocha', 'Contrato · R$ 32.400']].forEach(x => a.push({ t: x[0], sub: x[1], sc: 'contr' }));
+    [['Cond. Vila Verde', 'Obra · Fortaleza · 38 kWp'], ['Residência Ana Rocha', 'Obra · Eusébio · 6,84 kWp'], ['Sítio Boa Luz', 'Obra · Sobral · 16,5 kWp'], ['Mercadinho São José', 'Obra · Caucaia · 11,4 kWp']].forEach(x => a.push({ t: x[0], sub: x[1], sc: 'obras' }));
+    [['Módulo 570W Bifacial', 'Estoque · 12 un disponíveis'], ['Inversor 8 kW mono 220V', 'Estoque · 6 un'], ['Cabo solar 6mm²', 'Estoque · 14 rolos']].forEach(x => a.push({ t: x[0], sub: x[1], sc: 'estoque' }));
+    [['CH-31 — Sítio Santa Clara', 'Chamado · inversor offline'], ['CH-30 — Mercadinho São José', 'Chamado · baixa geração']].forEach(x => a.push({ t: x[0], sub: x[1], sc: 'om' }));
+    [['Diego Ferraz', 'Equipe · Comercial'], ['Larissa Nunes', 'Equipe · Comercial'], ['João Batista', 'Equipe · Instalador'], ['Camila Duarte', 'Equipe · Financeiro']].forEach(x => a.push({ t: x[0], sub: x[1], sc: 'equipe' }));
+    [['Fiorino BRA-2E19', 'Frota · em uso'], ['Saveiro SDU-7A44', 'Frota · manutenção pendente'], ['Iveco Daily PHK-9C02', 'Frota · em uso']].forEach(x => a.push({ t: x[0], sub: x[1], sc: 'frota' }));
+    return a;
+  }
+  togChk(i) { const d = this.getChk().slice(); d[i] = d[i] ? 0 : 1; this.setState({ chkDone: d, checkedOut: false }); }
+  et(done) {
+    const names = ['Separação', 'Mobilização', 'Instalação', 'Comissionamento', 'Entrega'];
+    return names.map((n, i) => ({ n, c: i < done ? '#16a34a' : i === done ? '#f97316' : 'light-dark(#e3e8ea,#1d3640)', tc: i <= done ? 'light-dark(#16262b,#e8eef0)' : 'light-dark(#9aa8ac,#4c6570)' }));
+  }
+  chk() {
+    const names = ['Conferência do material na chegada', 'Fixação da estrutura no telhado', 'Instalação dos módulos', 'Passagem de cabos e aterramento', 'Instalação do inversor', 'Conexão CA e string box', 'Comissionamento e testes', 'Foto final + termo de entrega'];
+    const d = this.getChk();
+    return names.map((n, i) => d[i]
+      ? { n, m: '✓', bg: '#16a34a', cl: '#fff', bd: '#16a34a', tc: 'light-dark(#8a979b,#5f7883)', tog: () => this.togChk(i) }
+      : { n, m: '', bg: 'transparent', cl: '#fff', bd: 'light-dark(#c3ced2,#2a4550)', tc: 'light-dark(#16262b,#e8eef0)', tog: () => this.togChk(i) });
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,22 @@
+{
+  "name": "voltua-erp",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --open /Voltua%20ERP.dc.html",
+    "build": "vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit",
+    "check": "npm run typecheck && npm run build",
+    "supabase": "supabase"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.57.4"
+  },
+  "devDependencies": {
+    "supabase": "^2.39.2",
+    "typescript": "^5.9.2",
+    "vite": "^7.1.3"
+  }
+}
