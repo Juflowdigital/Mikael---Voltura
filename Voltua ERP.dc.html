@@ -1164,6 +1164,7 @@ body{background:#071225;color:#edf4ff}
               <span style="color:light-dark(#5c6b70,#8ba0a6);white-space:nowrap">{{r.l}}</span><span style="font-weight:600;text-align:right">{{r.v}}</span>
             </div>
           </sc-for>
+          <sc-if value="{{cliContatoEmpty}}" hint-placeholder-val="false"><div style="padding:22px 4px;text-align:center;font-size:12px;color:light-dark(#8a979b,#5f7883)">Nenhum dado de contato ou instalação foi informado.</div></sc-if>
         </div>
       </div>
       <div style="background:light-dark(#ffffff,#10242b);border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:12px;padding:18px 20px">
@@ -1193,6 +1194,7 @@ body{background:#071225;color:#edf4ff}
               <span style="font-weight:600;color:#f97316;cursor:pointer">{{r.l}}</span><span style="color:light-dark(#8a979b,#5f7883)">{{r.v}}</span>
             </div>
           </sc-for>
+          <sc-if value="{{cliDocsEmpty}}" hint-placeholder-val="false"><div style="padding:22px 4px;text-align:center;font-size:12px;color:light-dark(#8a979b,#5f7883)">Nenhum documento vinculado a este cliente.</div></sc-if>
         </div>
         <div style="margin-top:14px;padding:12px;border-radius:10px;background:light-dark(#f7f9f9,#0e2029);font-size:12px;line-height:1.5;color:light-dark(#5c6b70,#8ba0a6)">Propostas, contratos, obras e chamados deste cliente ficam vinculados ao cadastro automaticamente.</div>
       </div>
@@ -1446,18 +1448,21 @@ class Component extends DCLogic {
   money(v) { return 'R$ ' + Number(v || 0).toLocaleString('pt-BR', { maximumFractionDigits: 2 }); }
   async loadOperationalData(organizationId) {
     const sb = await this.sb();
-    const [{ data: leads, error: leadsError }, { data: proposals, error: proposalsError }, { data: company }, { data: settings }] = await Promise.all([
+    const [{ data: leads, error: leadsError }, { data: proposals, error: proposalsError }, { data: company }, { data: settings }, { data: activities }] = await Promise.all([
       sb.from('leads').select('id,name,city,customer_type,source,stage,estimated_value,created_at').eq('organization_id', organizationId).order('created_at', { ascending: false }),
       sb.from('proposals').select('id,proposal_number,status,total_value,created_at,clients(name),budgets(system_power_kwp)').eq('organization_id', organizationId).order('created_at', { ascending: false }),
       sb.from('organizations').select('name,legal_name,tax_id,city,state,utility_company,logo_path,address,branches').eq('id', organizationId).single(),
-      sb.from('organization_settings').select('calculation,alerts,integrations,document_models,approval_rules').eq('organization_id', organizationId).maybeSingle()
+      sb.from('organization_settings').select('calculation,alerts,integrations,document_models,approval_rules').eq('organization_id', organizationId).maybeSingle(),
+      sb.from('crm_activities').select('lead_id,subject,description,created_at').eq('organization_id', organizationId).order('created_at', { ascending: false })
     ]);
     if (leadsError) throw leadsError;
     if (proposalsError) throw proposalsError;
     const funil = this.funilBase().map((column, index) => Object.assign({}, column, { cards: [], q: 0, stage: this.stageKeys[index] }));
+    const activityByLead={};(activities||[]).forEach(a=>{if(!activityByLead[a.lead_id]){let details={};try{details=JSON.parse(a.description||'{}');}catch(e){}activityByLead[a.lead_id]={subject:a.subject||'',created_at:a.created_at,details};}});
     (leads || []).forEach(lead => {
       const index = Math.max(0, this.stageKeys.indexOf(lead.stage));
-      funil[index].cards.push(Object.assign(this.mkC(lead.name, lead.city || '—', lead.customer_type || 'Não informado', lead.estimated_value ? this.money(lead.estimated_value) : 'R$ —', lead.source || 'Não informada', '#16a34a', new Date(lead.created_at).toLocaleDateString('pt-BR')), { id: lead.id }));
+      const activity=activityByLead[lead.id]||{},details=activity.details||{};
+      funil[index].cards.push(Object.assign(this.mkC(lead.name, lead.city || '—', lead.customer_type || 'Não informado', lead.estimated_value ? this.money(lead.estimated_value) : 'R$ —', lead.source || 'Não informada', '#16a34a', new Date(lead.created_at).toLocaleDateString('pt-BR')), { id: lead.id,createdAt:lead.created_at,activityTitle:activity.subject||'',details }));
       funil[index].q++;
     });
     const labels = { draft: 'Rascunho', sent: 'Enviada', viewed: 'Visualizada', accepted: 'Aceita', rejected: 'Rejeitada', expired: 'Expirada' };
@@ -1533,9 +1538,9 @@ class Component extends DCLogic {
       const sb = await this.sb(), value = this.parseMoney(fm.valor);
       const { data, error } = await sb.from('leads').insert({ organization_id: this.state.organizationId, name: fm.nome.trim(), city: fm.cidade || null, customer_type: fm.tipo || null, source: fm.origem || null, estimated_value: value, stage: 'lead' }).select('id').single();
       if (error) throw error;
-      const details = { title: fm.negotiationTitle, address: fm.endereco || '', business_unit: fm.businessUnit || '', utility_company: fm.concessionaria || '', manager: fm.manager || '', seller: fm.seller || '', funnel: fm.funnel || '', phase: fm.phase || '', tags: fm.tags || '', information: fm.information || '' };
+      const details = { title: fm.negotiationTitle, document:fm.doc||'',phone:fm.telefone||'',email:fm.email||'',address: fm.endereco || '', business_unit: fm.businessUnit || '', utility_company: fm.concessionaria || '', manager: fm.manager || '', seller: fm.seller || '', funnel: fm.funnel || '', phase: fm.phase || '', tags: fm.tags || '', information: fm.information || '' };
       const activity = await sb.from('crm_activities').insert({ organization_id: this.state.organizationId, lead_id: data.id, kind: 'negotiation_created', subject: fm.negotiationTitle, description: JSON.stringify(details), created_by: this.state.userId }); if (activity.error) throw activity.error;
-      const f = this.cloneFunil(); f[0].cards.unshift(Object.assign(this.mkC(fm.nome, fm.cidade || '—', fm.tipo || 'Não informado', value ? this.money(value) : 'R$ —', fm.origem || 'Não informada', '#16a34a', 'agora'), { id: data.id })); f[0].q++;
+      const f = this.cloneFunil(); f[0].cards.unshift(Object.assign(this.mkC(fm.nome, fm.cidade || '—', fm.tipo || 'Não informado', value ? this.money(value) : 'R$ —', fm.origem || 'Não informada', '#16a34a', 'agora'), { id: data.id,createdAt:new Date().toISOString(),activityTitle:fm.negotiationTitle,details })); f[0].q++;
       this.setState({ funil: f, modal: null, form: {} }); this.toastMsg('Negociação cadastrada no funil comercial');
     } catch (e) { this.toastMsg('Erro ao cadastrar lead: ' + e.message); }
   }
@@ -1727,16 +1732,11 @@ class Component extends DCLogic {
       cliNome: S.cliSel ? S.cliSel.n : 'Cliente',
       cliIni: S.cliSel ? S.cliSel.n.split(' ').map(w => w[0]).slice(0, 2).join('') : '--',
       cliInfo: S.cliSel ? S.cliSel.tipo + ' · ' + S.cliSel.c + ' · origem: ' + S.cliSel.o + ' · potencial ' + S.cliSel.v : '',
-      cliContato: [['Telefone / WhatsApp', '(85) 9 9640-1128'], ['E-mail', 'contato@cliente.com.br'], ['Endereço', 'Rua das Acácias, 142'], ['Concessionária', 'Enel CE'], ['Padrão de entrada', 'Bifásico 220V']].map(x => ({ l: x[0], v: x[1] })),
-      cliTimeline: [
-        { d: '12/08', t: 'Lead criado', s: 'Origem registrada no funil comercial' },
-        { d: '15/08', t: 'Visita técnica realizada', s: 'Fotos do telhado e padrão de entrada anexadas' },
-        { d: '18/08', t: 'Proposta enviada', s: 'Visualizada 3 vezes pelo cliente' },
-        { d: '19/08', t: 'Contrato assinado', s: 'Aceite com IP, data e hora · 2/2 assinaturas' },
-        { d: '22/08', t: 'Obra aberta', s: 'Equipe A alocada · material reservado no estoque' },
-        { d: 'hoje', t: 'Em execução', s: 'Checklist de campo 5/8 · fotos por etapa no app' }
-      ],
-      cliDocs: [['Proposta comercial (PDF)', '18/08'], ['Contrato assinado', '19/08'], ['ART e projeto', '20/08'], ['Fotos da visita técnica', '15/08']].map(x => ({ l: x[0], v: x[1] })),
+      cliContato: (()=>{const d=S.cliSel?.details||{};return [['CPF / CNPJ',d.document],['Telefone / WhatsApp',d.phone],['E-mail',d.email],['Endereço',d.address],['Concessionária',d.utility_company],['Unidade de negócio',d.business_unit]].filter(x=>x[1]).map(x=>({l:x[0],v:x[1]}));})(),
+      cliContatoEmpty:!S.cliSel||!['document','phone','email','address','utility_company','business_unit'].some(k=>S.cliSel.details?.[k]),
+      cliTimeline: S.cliSel?[{d:S.cliSel.createdAt?new Date(S.cliSel.createdAt).toLocaleDateString('pt-BR'):(S.cliSel.f||'—'),t:S.cliSel.activityTitle||'Contato criado',s:S.cliSel.details?.information||('Origem: '+(S.cliSel.o||'não informada'))}]:[],
+      cliDocs: S.cliSel?this.getProps().filter(p=>p.cli===S.cliSel.n).map(p=>({l:'Proposta '+p.id,v:p.data||'—'})):[],
+      cliDocsEmpty:!S.cliSel||!this.getProps().some(p=>p.cli===S.cliSel.n),
       voltarCrm: () => this.nav('crm'),
       openCliente: () => { if (selK) this.setState({ screen: 'cliente', modal: null, card: null, cliSel: selK, notif: false }); },
       openOrc: () => this.setState({ modal: 'orc', form: {} }),
