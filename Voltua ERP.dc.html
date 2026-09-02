@@ -340,7 +340,8 @@ body{background:#071225;color:#edf4ff}
             <div style="font-size:13.5px;font-weight:600;border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:9px;padding:9px 12px;background:light-dark(#f7f9f9,#0e2029)">{{e.v}}</div>
           </div>
         </sc-for>
-        <div onClick="{{dimensionar}}" style="font-size:13px;font-weight:600;background:#f97316;color:#fff;border-radius:9px;padding:10px;text-align:center;cursor:pointer" style-hover="background:#ea580c">Dimensionar automaticamente</div>
+        <div onClick="{{dimensionar}}" style="font-size:13px;font-weight:600;background:#f97316;color:#fff;border-radius:9px;padding:10px;text-align:center;cursor:pointer" style-hover="background:#ea580c">{{dimensionButton}}</div>
+        <div style="font-size:11.5px;color:{{dimensionStatusColor}};text-align:center">{{dimensionStatus}}</div>
         <div onClick="{{proposalFromBudget}}" style="font-size:13px;font-weight:700;color:#f6a623;border:1px solid #f6a623;border-radius:9px;padding:10px;text-align:center;cursor:pointer">Gerar proposta comercial</div>
         <div style="font-size:11.5px;color:light-dark(#8a979b,#5f7883);line-height:1.5">Irradiação regional embutida · fator de perdas 18% configurável</div>
       </div>
@@ -376,7 +377,7 @@ body{background:#071225;color:#edf4ff}
                 </sc-for>
                 <tr>
                   <td style="padding:11px 20px;font-size:13px;font-weight:700;border-top:2px solid light-dark(#e3e8ea,#1d3640)">Valor final da proposta</td>
-                  <td style="padding:11px 20px;font-size:15px;font-weight:700;font-family:'Space Grotesk';text-align:right;border-top:2px solid light-dark(#e3e8ea,#1d3640);color:#f97316">R$ 32.400</td>
+                  <td style="padding:11px 20px;font-size:15px;font-weight:700;font-family:'Space Grotesk';text-align:right;border-top:2px solid light-dark(#e3e8ea,#1d3640);color:#f97316">{{finalProposalValue}}</td>
                 </tr>
               </tbody>
             </table>
@@ -1588,7 +1589,7 @@ class Component extends DCLogic {
       if (!client) { const inserted = await sb.from('clients').insert(clientPayload).select('id').single(); if (inserted.error) throw inserted.error; client = inserted.data; }
       const assumptions = { customer_type: fm.tipo || '', utility_account: fm.uc || '', tariff: fm.tarifa || '', average_bill: fm.conta || '', connection_type: fm.ligacao || '', consumption_history: fm.historico || '', roof_type: fm.telhado || '', available_area: fm.area || '', orientation: fm.orientacao || '', shading: fm.sombreamento || '', preferred_module: fm.moduloModelo || '', preferred_inverter: fm.inversor || '', commercial_margin: fm.margem || '', notes: fm.observacoes || '' };
       const saved = await sb.from('budgets').insert({ organization_id: org, client_id: client.id, monthly_consumption_kwh: consumption, system_power_kwp: power, module_count: modules, module_power_w: 570, inverter_power_kw: power, estimated_generation_kwh: generation, roof_area_m2: this.parseMoney(fm.area) || modules * 2.6, estimated_price: this.parseMoney(ideal.preco), payback_years: this.parseMoney(ideal.pay), assumptions, created_by: this.state.userId }).select('id').single(); if (saved.error) throw saved.error;
-      this.setState({ modal: null, consumo: consumption, budgetId: saved.data.id, orcNome: fm.nome, orcCidade: fm.cidade, orcCli: fm.nome + ' · ' + fm.cidade, form: {} });
+      this.setState({ modal: null, consumo: consumption, dimensionResult:this.calcCen(consumption),dimensionedAt:new Date(),dimensionDirty:false,budgetId: saved.data.id, orcNome: fm.nome, orcCidade: fm.cidade, orcCli: fm.nome + ' · ' + fm.cidade, form: {} });
       this.toastMsg('Orçamento salvo e dimensionado com sucesso');
     } catch (e) { this.toastMsg('Erro ao salvar orçamento: ' + e.message); }
   }
@@ -1648,15 +1649,16 @@ class Component extends DCLogic {
   }
   getChk() { return this.state.chkDone ?? [1, 1, 1, 1, 1, 0, 0, 0]; }
   calcCen(c) {
+    const cfg=this.state.settings?.calculation||{},moduleW=Math.max(100,Number(cfg.module_power_w)||570),loss=Math.min(.5,Math.max(0,(Number(cfg.loss_factor)||18)/100)),irr=Math.max(2,Number(String(cfg.irradiation||'5.5').replace(',','.'))||5.5),margin=Math.max(0,(Number(cfg.margin)||10.2)/100),baseKwp=Math.max(.1,Number(c||0)/(irr*30*(1-loss))),baseModules=Math.max(1,Math.ceil(baseKwp*1000/moduleW));
     const mk = (mods, tipo, rec) => {
-      const kwp = mods * 0.57, ger = Math.round(mods * 80), preco = Math.round(mods * 2700 / 100) * 100;
+      const kwp = mods * moduleW/1000, ger = Math.round(kwp*irr*30*(1-loss)),equipment=mods*2100,preco = Math.round((equipment+kwp*1150+1800)*(1+margin)/100)*100;
       const inv = [3, 5, 8, 10, 15, 20, 25, 30, 40, 50, 75].find(x => x >= kwp) || Math.ceil(kwp);
       const pay = (preco / (Math.min(ger, c * 1.05) * 1.2 * 12)).toFixed(1).replace('.', ',');
-      return { tipo, kwp: kwp.toFixed(2).replace('.', ',') + ' kWp', mod: mods + ' módulos 570W bifacial', inv: 'Inversor ' + inv + ' kW mono 220V', area: 'Área ocupada: ' + Math.ceil(mods * 2.6) + ' m²', ger: 'Geração: ' + ger.toLocaleString('pt-BR') + ' kWh/mês', preco: 'R$ ' + preco.toLocaleString('pt-BR'), pay: pay + ' anos', rec, bc: rec ? '#f97316' : 'light-dark(#e3e8ea,#1d3640)' };
+      return { tipo, kwp: kwp.toFixed(2).replace('.', ',') + ' kWp', mod: mods + ' módulos '+moduleW+'W '+(cfg.module_model||'bifacial'), inv: 'Inversor ' + inv + ' kW', area: 'Área ocupada: ' + Math.ceil(mods * 2.6) + ' m²', ger: 'Geração: ' + ger.toLocaleString('pt-BR') + ' kWh/mês', preco: 'R$ ' + preco.toLocaleString('pt-BR'), pay: pay + ' anos', rec, bc: rec ? '#f97316' : 'light-dark(#e3e8ea,#1d3640)' };
     };
-    const base = Math.max(1, Math.ceil(c / 80));
-    return [mk(Math.max(1, Math.round(base * 0.8)), 'Cenário econômico', false), mk(Math.round(base * 1.15), 'Cenário ideal', true), mk(Math.round(base * 1.5), 'Cenário expansão', false)];
+    return [mk(Math.max(1,Math.ceil(baseModules*.85)),'Cenário econômico',false),mk(baseModules,'Cenário ideal',true),mk(Math.ceil(baseModules*1.2),'Cenário expansão',false)];
   }
+  runDimensioning(){const consumption=Number(this.state.consumo)||0;if(consumption<=0){this.toastMsg('Informe um consumo mensal maior que zero');return;}this.setState({dimensionLoading:true});setTimeout(()=>{const result=this.calcCen(consumption);this.setState({dimensionResult:result,dimensionLoading:false,dimensionDirty:false,dimensionedAt:new Date()});this.toastMsg('Dimensionamento concluído com 3 cenários');},180);}
   titles = {
     dash: ['Dashboard', 'Visão geral · Agosto 2026'], crm: ['CRM e Funil Comercial', 'Módulo 01'],
     orc: ['Orçamento e Dimensionamento', 'Módulo 02'], prop: ['Propostas Comerciais', 'Módulo 03'],
@@ -1699,6 +1701,7 @@ class Component extends DCLogic {
     const results = S.q ? this.idx().filter(x => (x.t + ' ' + x.sub).toLowerCase().includes(ql)).slice(0, 7) : [];
     const perLabel = S.periodo === 'Dia' ? 'Hoje, 28/08/2026' : S.periodo === 'Semana' ? 'Semana 24–30/08' : S.periodo === 'Personalizado' ? (S.perIni && S.perFim ? S.perIni.split('-').reverse().join('/') + ' – ' + S.perFim.split('-').reverse().join('/') : 'Período personalizado') : 'Agosto 2026';
     const perK = ({ 'Dia': { prop: '2', kwp: '9,6', d1: '+1 vs ontem', d2: 'instalados hoje' }, 'Semana': { prop: '9', kwp: '52,3', d1: '+3 vs semana anterior', d2: 'nesta semana' }, 'Personalizado': { prop: '18', kwp: '121,4', d1: 'no período selecionado', d2: 'no período selecionado' } })[S.periodo] || { prop: '32', kwp: '214,6', d1: '+18% vs julho', d2: '+31,2 kWp na semana' };
+    const dimensionScenarios=S.dimensionResult||this.calcCen(S.consumo),idealDimension=dimensionScenarios[1],idealPrice=this.parseMoney(idealDimension.preco)||0;
     const vals = {
       showMapa: this.props.mostrarMapa ?? true,
       isLogin: S.screen === 'login', isApp: S.screen !== 'login', menuTransform: S.menuOpen ? 'translateX(0)' : 'translateX(-105%)', toggleMenu: () => this.toggleMenu(),
@@ -1738,7 +1741,7 @@ class Component extends DCLogic {
       openOrc: () => this.setState({ modal: 'orc', form: {} }),
       fConsumo: this.ff('consumo'),
       saveOrc: () => this.saveBudget(), lookupCnpj: () => this.lookupCnpj(),
-      proposalFromBudget: () => { const ideal = this.calcCen(S.consumo)[1], modules = parseInt(ideal.mod) || 1; this.setState({ modal: 'prop', form: { nome: S.orcNome || 'Cliente do orçamento', cidade: S.orcCidade || '', consumo: String(S.consumo), pot: ideal.kwp.replace(' kWp','').replace(',','.'), modulos: String(modules), geracao: ideal.ger.replace(/\D/g,''), valor: ideal.preco.replace('R$ ','') } }); },
+      proposalFromBudget: () => { const ideal = (S.dimensionResult||this.calcCen(S.consumo))[1], modules = parseInt(ideal.mod) || 1; this.setState({ modal: 'prop', form: { nome: S.orcNome || 'Cliente do orçamento', cidade: S.orcCidade || '', consumo: String(S.consumo), pot: ideal.kwp.replace(' kWp','').replace(',','.'), modulos: String(modules), geracao: ideal.ger.replace(/\D/g,''), valor: ideal.preco.replace('R$ ','') } }); },
       closeModal: () => this.setState({ modal: null, card: null }),
       stop: e => e.stopPropagation(),
       modalDet: S.modal === 'det' && !!S.detail,
@@ -1768,8 +1771,8 @@ class Component extends DCLogic {
       newIncome: () => this.openAction('income'),
       newExpense: () => this.openAction('expense'),
       invite: () => this.setState({modal:'invite',form:{inviteRole:'viewer'}}),
-      dimensionar: () => this.toastMsg('Cenários recalculados para ' + S.consumo + ' kWh/mês'),
-      consumoVal: S.consumo, setConsumo: e => this.setState({ consumo: parseInt(e.target.value) || 0 }),
+      dimensionar: () => this.runDimensioning(), dimensionButton:S.dimensionLoading?'Calculando…':S.dimensionDirty?'Recalcular dimensionamento':'Dimensionar automaticamente',dimensionStatus:S.dimensionedAt&&!S.dimensionDirty?'Calculado em '+S.dimensionedAt.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})+' · '+S.consumo+' kWh/mês':S.dimensionDirty?'Consumo alterado — clique para atualizar os cenários':'Pronto para calcular com os parâmetros da empresa',dimensionStatusColor:S.dimensionDirty?'#f6a623':'#86efac',
+      consumoVal: S.consumo, setConsumo: e => this.setState({ consumo: parseInt(e.target.value) || 0, dimensionDirty:true }),
       checkoutFn: () => { if (this.getChk().some(x => !x)) { this.toastMsg('Conclua o checklist antes do check-out'); } else { this.setState({ checkedOut: true }); this.toastMsg('Check-out registrado · 16:42 · GPS -3.890, -38.455'); } },
       scanFn: () => this.scanBarcode(),
       photoFn: () => this.pickWorkPhoto(),
@@ -1858,12 +1861,8 @@ class Component extends DCLogic {
         { l: 'Cidade / Irradiação', v: 'Fortaleza-CE · 5,7 kWh/m²·dia' },
         { l: 'Tipo de kit', v: 'On-grid · telhado cerâmico' }
       ],
-      cenarios: this.calcCen(S.consumo),
-      custos: [
-        { n: 'Equipamentos (kit fotovoltaico)', v: 'R$ 18.900' }, { n: 'Estrutura de fixação', v: 'R$ 2.400' },
-        { n: 'Mão de obra de instalação', v: 'R$ 4.200' }, { n: 'ART + projeto e homologação', v: 'R$ 950' },
-        { n: 'Frete', v: 'R$ 780' }, { n: 'Impostos', v: 'R$ 1.870' }, { n: 'Margem (10,2%)', v: 'R$ 3.300' }
-      ],
+      cenarios: dimensionScenarios, finalProposalValue:this.money(idealPrice),
+      custos: [['Equipamentos (kit fotovoltaico)',.58],['Estrutura de fixação',.08],['Mão de obra de instalação',.13],['ART + projeto e homologação',.04],['Frete',.03],['Impostos',.06],['Margem comercial',.08]].map(([n,p])=>({n,v:this.money(idealPrice*p)})),
       financ: [
         { n: 'Entrada (10%)', v: 'R$ 3.240' }, { n: 'Financiado em 60×', v: 'R$ 812/mês' }, { n: 'Conta de luz atual', v: 'R$ 780/mês' }
       ],
