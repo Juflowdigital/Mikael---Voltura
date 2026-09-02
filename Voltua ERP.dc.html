@@ -30,6 +30,31 @@ a{color:#f97316;text-decoration:none}a:hover{color:#ea580c}
 @media(max-width:900px){.app-sidebar{position:fixed!important;left:0;top:env(safe-area-inset-top);height:calc(100dvh - env(safe-area-inset-top))!important;z-index:50;box-shadow:14px 0 40px rgba(0,0,0,.28);transition:transform .22s ease}.app-main{min-width:0!important;width:100%!important}.mobile-menu-button{display:grid!important}.app-topbar{padding-top:8px!important;height:58px!important}}
 @media(min-width:901px){.mobile-menu-button{display:none!important}}
 @media(min-width:901px){.app-sidebar{transform:none!important}}
+/* Direção visual aprovada: ERP escuro, denso e organizado por módulos. */
+:root{color-scheme:dark}
+body{background:#071225;color:#edf4ff}
+.app-sidebar{width:280px!important;background:#071225!important;border-right:1px solid #17243c}
+.app-main{background:#091429}
+.app-topbar{height:72px!important;background:#091429!important;border-bottom:1px solid #17243c!important;padding-left:40px!important;padding-right:40px!important}
+.app-content{background:#091429}
+.app-content [style*="background:light-dark(#ffffff,#10242b)"]{background:#101d34!important;border-color:#213250!important;box-shadow:0 8px 24px rgba(1,7,18,.14)}
+.app-content [style*="background:light-dark(#f7f9f9,#0e2029)"]{background:#0b172c!important;border-color:#263754!important}
+.app-content [style*="background:light-dark(#eef1f2,#17303a)"]{background:#1a2943!important}
+.app-content thead{background:#182640}
+.app-content th{color:#9fb3d9!important;border-color:#263754!important}
+.app-content td{border-color:#1d2d49!important}
+.app-content input,.app-content select,.app-content textarea{transition:border-color .18s ease,box-shadow .18s ease}
+.app-content input:focus,.app-content select:focus,.app-content textarea:focus{border-color:#f6a623!important;box-shadow:0 0 0 3px rgba(246,166,35,.12);outline:none}
+.app-content [style*="background:#f97316"]{background:#f6a623!important;color:#071225!important;box-shadow:0 7px 18px rgba(246,166,35,.14)}
+.app-content [style*="color:#f97316"]{color:#f6a623!important}
+.app-content [style*="font-size:18px;font-weight:600"]{font-size:23px!important;font-weight:700!important;letter-spacing:-.02em}
+.app-sidebar [style*="text-transform:uppercase"]{color:#617392!important}
+.app-sidebar [style*="cursor:pointer"]{transition:background .16s ease,color .16s ease,transform .16s ease}
+.app-sidebar [style*="cursor:pointer"]:active{transform:translateY(1px)}
+@media(min-width:901px){.app-sidebar+div{background:#091429}}
+@media(max-width:1180px){.app-topbar input{max-width:150px}.app-topbar{padding-left:20px!important;padding-right:20px!important}}
+@media(max-width:900px){.app-sidebar{width:280px!important}.app-topbar{height:60px!important}.desktop-only{display:none!important}}
+@media print{body *{visibility:hidden!important}#proposal-document,#proposal-document *{visibility:visible!important}#proposal-document{position:absolute!important;inset:0!important;width:100%!important;max-height:none!important;overflow:visible!important;box-shadow:none!important;border-radius:0!important}.proposal-actions{display:none!important}}
 </style>
 </helmet>
 <div style="display:flex;min-height:100vh;background:light-dark(#f2f4f5,#0b1a1f);color:light-dark(#16262b,#e8eef0)">
@@ -70,7 +95,7 @@ a{color:#f97316;text-decoration:none}a:hover{color:#ea580c}
   </div>
 </sc-if>
 <sc-if value="{{isApp}}" hint-placeholder-val="{{true}}">
-  <div class="app-sidebar" style="width:230px;flex-shrink:0;background:#0c2b33;color:#fff;display:flex;flex-direction:column;position:sticky;top:0;height:100vh;transform:{{menuTransform}}">
+  <div class="app-sidebar" style="width:280px;flex-shrink:0;background:#071225;color:#fff;display:flex;flex-direction:column;position:sticky;top:0;height:100vh;transform:{{menuTransform}}">
     <div style="display:flex;align-items:center;gap:9px;padding:18px 16px 14px">
       <div style="width:26px;height:26px;border-radius:7px;background:#f97316;display:grid;place-items:center"><svg width="17" height="17" viewBox="0 0 48 48" fill="none"><circle cx="24" cy="9.5" r="4.5" fill="#ffffff"></circle><path d="M8 15 L16 15 L26.5 42 L20 42 Z" fill="#ffffff"></path><path d="M40 15 L32 15 L21.5 42 L28 42 Z" fill="#ffffff" opacity="0.82"></path></svg></div>
       <div style="font-family:'Space Grotesk';font-weight:700;font-size:17px">Voltua<span style="color:#f97316">.</span></div>
@@ -96,7 +121,7 @@ a{color:#f97316;text-decoration:none}a:hover{color:#ea580c}
       <div onClick="{{logout}}" title="Sair" style="cursor:pointer;font-size:11px;color:rgba(255,255,255,.55);border:1px solid rgba(255,255,255,.18);border-radius:7px;padding:4px 8px" style-hover="color:#fff;border-color:rgba(255,255,255,.4)">Sair</div>
     </div>
   </div>
-  <div style="flex:1;min-width:0;display:flex;flex-direction:column">
+  <div class="app-main" style="flex:1;min-width:0;display:flex;flex-direction:column">
     <div class="app-topbar" style="height:58px;flex-shrink:0;display:flex;align-items:center;gap:12px;padding:0 26px;border-bottom:1px solid light-dark(#e3e8ea,#1d3640);background:light-dark(#ffffff,#0e2029);position:sticky;top:0;z-index:20;padding-top:env(safe-area-inset-top)">
       <button class="mobile-menu-button" onClick="{{toggleMenu}}" aria-label="Abrir menu" style="display:none;width:34px;height:34px;place-items:center;border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:9px;background:transparent;color:inherit;font-size:20px;cursor:pointer">☰</button>
       <div style="font-family:'Space Grotesk';font-size:16px;font-weight:600">{{screenTitle}}</div>
@@ -134,7 +159,7 @@ a{color:#f97316;text-decoration:none}a:hover{color:#ea580c}
         <div style="position:absolute;top:-4px;right:-4px;background:#dc2626;color:#fff;font-size:10px;font-weight:700;border-radius:99px;min-width:16px;height:16px;display:grid;place-items:center;padding:0 3px">{{notifCount}}</div>
       </div>
     </div>
-    <div style="flex:1;overflow-y:auto">
+    <div class="app-content" style="flex:1;overflow-y:auto">
       <sc-if value="{{is_dash}}" hint-placeholder-val="{{true}}">
         <div style="padding:24px 26px;display:flex;flex-direction:column;gap:18px">
           <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:14px">
@@ -307,6 +332,7 @@ a{color:#f97316;text-decoration:none}a:hover{color:#ea580c}
           </div>
         </sc-for>
         <div onClick="{{dimensionar}}" style="font-size:13px;font-weight:600;background:#f97316;color:#fff;border-radius:9px;padding:10px;text-align:center;cursor:pointer" style-hover="background:#ea580c">Dimensionar automaticamente</div>
+        <div onClick="{{proposalFromBudget}}" style="font-size:13px;font-weight:700;color:#f6a623;border:1px solid #f6a623;border-radius:9px;padding:10px;text-align:center;cursor:pointer">Gerar proposta comercial</div>
         <div style="font-size:11.5px;color:light-dark(#8a979b,#5f7883);line-height:1.5">Irradiação regional embutida · fator de perdas 18% configurável</div>
       </div>
       <div style="display:flex;flex-direction:column;gap:14px">
@@ -1230,7 +1256,7 @@ a{color:#f97316;text-decoration:none}a:hover{color:#ea580c}
     <div onClick="{{closeModal}}" style="position:fixed;inset:0;background:rgba(8,20,25,.45);z-index:60;display:grid;place-items:center">
       <div onClick="{{stop}}" style="width:400px;background:light-dark(#ffffff,#10242b);border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:14px;padding:22px 24px;display:flex;flex-direction:column;gap:12px;box-shadow:0 24px 60px rgba(0,0,0,.3)">
         <div style="font-family:'Space Grotesk';font-size:17px;font-weight:600">Novo orçamento</div>
-        <input onChange="{{fNome}}" placeholder="Cliente" style="font-size:13.5px;font-family:'Instrument Sans';border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:9px;padding:10px 12px;background:light-dark(#f7f9f9,#0e2029);color:inherit;outline-color:#f97316">
+        <input value="{{fNomeVal}}" onChange="{{fNome}}" placeholder="Cliente" style="font-size:13.5px;font-family:'Instrument Sans';border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:9px;padding:10px 12px;background:light-dark(#f7f9f9,#0e2029);color:inherit;outline-color:#f97316">
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
           <input type="number" onChange="{{fConsumo}}" placeholder="Consumo (kWh/mês)" style="font-size:13.5px;font-family:'Instrument Sans';border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:9px;padding:10px 12px;background:light-dark(#f7f9f9,#0e2029);color:inherit;outline-color:#f97316">
           <input onChange="{{fCidade}}" placeholder="Cidade" style="font-size:13.5px;font-family:'Instrument Sans';border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:9px;padding:10px 12px;background:light-dark(#f7f9f9,#0e2029);color:inherit;outline-color:#f97316">
@@ -1245,7 +1271,7 @@ a{color:#f97316;text-decoration:none}a:hover{color:#ea580c}
   </sc-if>
   <sc-if value="{{modalPdf}}" hint-placeholder-val="{{false}}">
     <div onClick="{{closeModal}}" style="position:fixed;inset:0;background:rgba(8,20,25,.55);z-index:60;display:grid;place-items:center;padding:24px">
-      <div onClick="{{stop}}" style="width:640px;max-height:88vh;overflow-y:auto;background:light-dark(#ffffff,#10242b);border-radius:16px;box-shadow:0 30px 80px rgba(0,0,0,.4);display:flex;flex-direction:column">
+      <div id="proposal-document" onClick="{{stop}}" style="width:720px;max-width:calc(100vw - 48px);max-height:88vh;overflow-y:auto;background:#ffffff;color:#172033;border-radius:16px;box-shadow:0 30px 80px rgba(0,0,0,.4);display:flex;flex-direction:column">
         <div style="background:#0c2b33;color:#fff;padding:26px 30px;border-radius:16px 16px 0 0">
           <div style="display:flex;justify-content:space-between;align-items:center">
             <div style="display:flex;align-items:center;gap:9px">
@@ -1269,6 +1295,11 @@ a{color:#f97316;text-decoration:none}a:hover{color:#ea580c}
               </sc-for>
             </div>
           </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+            <sc-for list="{{pdfEquipment}}" as="r" hint-placeholder-count="6">
+              <div style="padding:10px 12px;border:1px solid #e6eaf0;border-radius:8px"><div style="font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:#778399">{{r.l}}</div><div style="font-size:12.5px;font-weight:650;margin-top:3px">{{r.v}}</div></div>
+            </sc-for>
+          </div>
           <div style="display:flex;flex-direction:column">
             <sc-for list="{{pdfStats}}" as="r" hint-placeholder-count="5">
               <div style="display:flex;justify-content:space-between;font-size:13px;padding:9px 0;border-bottom:1px solid light-dark(#eef1f2,#17303a)">
@@ -1277,8 +1308,8 @@ a{color:#f97316;text-decoration:none}a:hover{color:#ea580c}
             </sc-for>
           </div>
           <div style="padding:13px 16px;border-radius:10px;background:rgba(22,163,74,.1);border:1px solid rgba(22,163,74,.3);font-size:12.5px;line-height:1.55;color:light-dark(#14532d,#86efac)">Em 25 anos, o sistema gera uma economia acumulada estimada de <b>R$ 312.400</b> — o investimento de {{pdfVal}} se paga em cerca de 3 anos.</div>
-          <div style="display:flex;gap:10px">
-            <div onClick="{{pdfBaixar}}" style="flex:1;text-align:center;font-size:13px;font-weight:600;background:#f97316;color:#fff;border-radius:9px;padding:11px;cursor:pointer" style-hover="background:#ea580c">Baixar PDF</div>
+          <div class="proposal-actions" style="display:flex;gap:10px">
+            <div onClick="{{pdfBaixar}}" style="flex:1;text-align:center;font-size:13px;font-weight:600;background:#f97316;color:#fff;border-radius:9px;padding:11px;cursor:pointer" style-hover="background:#ea580c">Imprimir / Salvar PDF</div>
             <div onClick="{{pdfZap}}" style="flex:1;text-align:center;font-size:13px;font-weight:600;color:#16a34a;border:1px solid rgba(22,163,74,.4);border-radius:9px;padding:11px;cursor:pointer" style-hover="background:rgba(22,163,74,.08)">Enviar por WhatsApp</div>
           </div>
         </div>
@@ -1287,16 +1318,26 @@ a{color:#f97316;text-decoration:none}a:hover{color:#ea580c}
   </sc-if>
   <sc-if value="{{modalProp}}" hint-placeholder-val="{{false}}">
     <div onClick="{{closeModal}}" style="position:fixed;inset:0;background:rgba(8,20,25,.45);z-index:60;display:grid;place-items:center">
-      <div onClick="{{stop}}" style="width:400px;background:light-dark(#ffffff,#10242b);border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:14px;padding:22px 24px;display:flex;flex-direction:column;gap:12px;box-shadow:0 24px 60px rgba(0,0,0,.3)">
-        <div style="font-family:'Space Grotesk';font-size:17px;font-weight:600">Nova proposta</div>
+      <div onClick="{{stop}}" style="width:760px;max-width:calc(100vw - 40px);max-height:88vh;overflow-y:auto;background:#101d34;border:1px solid #263654;border-radius:14px;padding:24px;display:flex;flex-direction:column;gap:12px;box-shadow:0 24px 60px rgba(0,0,0,.45)">
+        <div style="font-family:'Space Grotesk';font-size:20px;font-weight:650">Nova proposta comercial</div>
+        <div style="font-size:12px;color:#91a3c2">Preencha os dados técnicos e comerciais. Ao concluir, o documento será aberto para conferência.</div>
+        <div style="font-size:11px;font-weight:750;color:#f6a623;text-transform:uppercase;letter-spacing:.08em">Cliente e instalação</div>
         <input onChange="{{fNome}}" placeholder="Cliente" style="font-size:13.5px;font-family:'Instrument Sans';border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:9px;padding:10px 12px;background:light-dark(#f7f9f9,#0e2029);color:inherit;outline-color:#f97316">
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-          <input onChange="{{fPot}}" placeholder="Potência (kWp)" style="font-size:13.5px;font-family:'Instrument Sans';border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:9px;padding:10px 12px;background:light-dark(#f7f9f9,#0e2029);color:inherit;outline-color:#f97316">
-          <input onChange="{{fValor}}" placeholder="Valor (R$)" style="font-size:13.5px;font-family:'Instrument Sans';border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:9px;padding:10px 12px;background:light-dark(#f7f9f9,#0e2029);color:inherit;outline-color:#f97316">
+          <input onChange="{{fDoc}}" placeholder="CPF / CNPJ" style="font:inherit;border:1px solid #31415e;border-radius:9px;padding:10px 12px;background:#0b172c;color:inherit">
+          <input onChange="{{fTelefone}}" placeholder="Telefone / WhatsApp" style="font:inherit;border:1px solid #31415e;border-radius:9px;padding:10px 12px;background:#0b172c;color:inherit">
         </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px"><input onChange="{{fEmail}}" placeholder="E-mail" style="font:inherit;border:1px solid #31415e;border-radius:9px;padding:10px 12px;background:#0b172c;color:inherit"><input onChange="{{fCidade}}" placeholder="Cidade / UF" style="font:inherit;border:1px solid #31415e;border-radius:9px;padding:10px 12px;background:#0b172c;color:inherit"></div>
+        <input onChange="{{fEndereco}}" placeholder="Endereço da instalação" style="font:inherit;border:1px solid #31415e;border-radius:9px;padding:10px 12px;background:#0b172c;color:inherit">
+        <div style="font-size:11px;font-weight:750;color:#f6a623;text-transform:uppercase;letter-spacing:.08em;margin-top:3px">Dimensionamento e equipamentos</div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px"><input type="number" value="{{fConsumoVal}}" onChange="{{fConsumo}}" placeholder="Consumo kWh/mês" style="font:inherit;border:1px solid #31415e;border-radius:9px;padding:10px;background:#0b172c;color:inherit"><input value="{{fPotVal}}" onChange="{{fPot}}" placeholder="Potência kWp *" style="font:inherit;border:1px solid #31415e;border-radius:9px;padding:10px;background:#0b172c;color:inherit"><input type="number" value="{{fModulosVal}}" onChange="{{fModulos}}" placeholder="Qtd. módulos" style="font:inherit;border:1px solid #31415e;border-radius:9px;padding:10px;background:#0b172c;color:inherit"><input value="{{fGeracaoVal}}" onChange="{{fGeracao}}" placeholder="Geração mensal" style="font:inherit;border:1px solid #31415e;border-radius:9px;padding:10px;background:#0b172c;color:inherit"></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px"><input onChange="{{fModuloModelo}}" placeholder="Modelo dos módulos" style="font:inherit;border:1px solid #31415e;border-radius:9px;padding:10px 12px;background:#0b172c;color:inherit"><input onChange="{{fInversor}}" placeholder="Modelo do inversor" style="font:inherit;border:1px solid #31415e;border-radius:9px;padding:10px 12px;background:#0b172c;color:inherit"></div>
+        <div style="font-size:11px;font-weight:750;color:#f6a623;text-transform:uppercase;letter-spacing:.08em;margin-top:3px">Condições comerciais</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px"><input value="{{fValorVal}}" onChange="{{fValor}}" placeholder="Valor total (R$) *" style="font:inherit;border:1px solid #f6a623;border-radius:9px;padding:10px 12px;background:#0b172c;color:inherit"><input onChange="{{fEntrada}}" placeholder="Entrada" style="font:inherit;border:1px solid #31415e;border-radius:9px;padding:10px 12px;background:#0b172c;color:inherit"><input onChange="{{fParcelas}}" placeholder="Parcelamento" style="font:inherit;border:1px solid #31415e;border-radius:9px;padding:10px 12px;background:#0b172c;color:inherit"></div>
+        <textarea onChange="{{fObservacoes}}" placeholder="Escopo, garantias, prazo e observações" rows="3" style="font:inherit;resize:vertical;border:1px solid #31415e;border-radius:9px;padding:10px 12px;background:#0b172c;color:inherit"></textarea>
         <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:4px">
           <div onClick="{{closeModal}}" style="font-size:13px;font-weight:600;color:light-dark(#5c6b70,#8ba0a6);border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:9px;padding:9px 16px;cursor:pointer">Cancelar</div>
-          <div onClick="{{saveProp}}" style="font-size:13px;font-weight:600;background:#f97316;color:#fff;border-radius:9px;padding:9px 16px;cursor:pointer" style-hover="background:#ea580c">Criar rascunho</div>
+          <div onClick="{{saveProp}}" style="font-size:13px;font-weight:700;background:#f6a623;color:#071225;border-radius:9px;padding:10px 18px;cursor:pointer">Criar e visualizar proposta</div>
         </div>
       </div>
     </div>
@@ -1332,7 +1373,7 @@ a{color:#f97316;text-decoration:none}a:hover{color:#ea580c}
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props="{&quot;modoEscuro&quot;: {&quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: false, &quot;tsType&quot;: &quot;boolean&quot;, &quot;section&quot;: &quot;Aparência&quot;}, &quot;mostrarMapa&quot;: {&quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: true, &quot;tsType&quot;: &quot;boolean&quot;, &quot;section&quot;: &quot;Dashboard&quot;}}">
 class Component extends DCLogic {
-  state = { screen: 'login', menuOpen: false, darkSet: null, cleanDemo: true, user: { nome: 'Usuário', perfil: 'Visualizador' }, toast: '', modal: null, actionType: '', actionName: '', actionValue: '', userId: null, organizationId: null, consumo: 650, funil: null, props: null, parc: null, chkDone: null, alertasOff: false, checkedOut: false, form: {}, detail: null, q: '', periodo: 'Mês', perIni: '', perFim: '', cfgT: null, pdfP: null, cliSel: null, authEmail: '', authPassword: '', authLoading: true, authError: '' };
+  state = { screen: 'login', menuOpen: false, darkSet: true, cleanDemo: false, user: { nome: 'Usuário', perfil: 'Visualizador' }, toast: '', modal: null, actionType: '', actionName: '', actionValue: '', userId: null, organizationId: null, consumo: 650, funil: null, props: null, parc: null, chkDone: null, alertasOff: false, checkedOut: false, form: {}, detail: null, q: '', periodo: 'Mês', perIni: '', perFim: '', cfgT: null, pdfP: null, cliSel: null, authEmail: '', authPassword: '', authLoading: true, authError: '' };
   componentDidMount() { this.restoreSession(); }
   async sb() {
     for (let i = 0; i < 100 && !window.voltuaSupabase; i++) await new Promise(r => setTimeout(r, 30));
@@ -1434,14 +1475,25 @@ class Component extends DCLogic {
   getProps() { return this.state.props ?? this.propsBase(); }
   parseMoney(value) { let normalized = String(value || '').replace(/[^0-9,.-]/g, ''); if (normalized.includes(',')) normalized = normalized.replace(/\./g, '').replace(',', '.'); else if (/\.\d{3}$/.test(normalized)) normalized = normalized.replace(/\./g, ''); const number = Number(normalized); return Number.isFinite(number) ? number : null; }
   async addProp() {
-    const fm = this.state.form; if (!fm.nome) { this.toastMsg('Informe o cliente da proposta'); return; }
+    const fm = this.state.form;
+    if (!fm.nome || !fm.pot || !fm.valor) { this.toastMsg('Informe cliente, potência e valor total'); return; }
     try {
       const sb = await this.sb(), org = this.state.organizationId, value = this.parseMoney(fm.valor) || 0;
+      const power = this.parseMoney(fm.pot) || 0, consumption = this.parseMoney(fm.consumo) || Math.max(1, Math.round(power * 120));
+      const moduleCount = Math.max(1, parseInt(fm.modulos) || Math.ceil(power * 1000 / 570));
+      const generation = this.parseMoney(fm.geracao) || Math.round(power * 125);
       const { data: client, error: clientError } = await sb.from('clients').insert({ organization_id: org, name: fm.nome.trim() }).select('id').single(); if (clientError) throw clientError;
+      const assumptions = { document: fm.doc || '', phone: fm.telefone || '', email: fm.email || '', city: fm.cidade || '', address: fm.endereco || '', module_model: fm.moduloModelo || 'Módulo fotovoltaico 570 W', inverter_model: fm.inversor || 'Inversor on-grid', down_payment: fm.entrada || '', installments: fm.parcelas || '', notes: fm.observacoes || '' };
+      const { data: budget, error: budgetError } = await sb.from('budgets').insert({ organization_id: org, client_id: client.id, monthly_consumption_kwh: consumption, system_power_kwp: power, module_count: moduleCount, module_power_w: 570, inverter_power_kw: power, estimated_generation_kwh: generation, roof_area_m2: moduleCount * 2.6, estimated_price: value, assumptions, created_by: this.state.userId }).select('id').single(); if (budgetError) throw budgetError;
       const number = 'PR-' + String(Date.now()).slice(-8);
-      const { data, error } = await sb.from('proposals').insert({ organization_id: org, proposal_number: number, client_id: client.id, total_value: value, status: 'draft' }).select('id').single(); if (error) throw error;
-      const p = [Object.assign({ dbId: data.id, id: '#' + number, cli: fm.nome, data: 'agora', pot: (fm.pot || '—') + ' kWp', v: this.money(value), ver: 'v1' }, this.stm('Rascunho', this.GY))].concat(this.getProps());
-      this.setState({ props: p, modal: null, form: {} }); this.toastMsg('Proposta ' + number + ' criada como rascunho');
+      const valid = new Date(); valid.setDate(valid.getDate() + 15);
+      const { data, error } = await sb.from('proposals').insert({ organization_id: org, proposal_number: number, client_id: client.id, budget_id: budget.id, total_value: value, valid_until: valid.toISOString().slice(0, 10), status: 'draft', created_by: this.state.userId }).select('id').single(); if (error) throw error;
+      const content = { customer: { name: fm.nome, ...assumptions }, system: { power_kwp: power, consumption_kwh: consumption, generation_kwh: generation, module_count: moduleCount, module_model: assumptions.module_model, inverter_model: assumptions.inverter_model }, commercial: { total: value, down_payment: assumptions.down_payment, installments: assumptions.installments, validity_days: 15 } };
+      const version = await sb.from('proposal_versions').insert({ organization_id: org, proposal_id: data.id, version: 1, content, created_by: this.state.userId });
+      if (version.error) throw version.error;
+      const created = Object.assign({ dbId: data.id, id: '#' + number, cli: fm.nome, data: 'agora', pot: power.toLocaleString('pt-BR') + ' kWp', v: this.money(value), ver: 'v1', content }, this.stm('Rascunho', this.GY));
+      const p = [created].concat(this.getProps());
+      this.setState({ props: p, modal: 'pdf', pdfP: created, form: {} }); this.toastMsg('Proposta ' + number + ' criada e pronta para conferência');
     } catch (e) { this.toastMsg('Erro ao criar proposta: ' + e.message); }
   }
   getParc() { return this.state.parc ?? this.parcBase(); }
@@ -1514,8 +1566,9 @@ class Component extends DCLogic {
       modalPdf: S.modal === 'pdf' && !!S.pdfP,
       pdfId: S.pdfP ? S.pdfP.id : '', pdfCli: S.pdfP ? S.pdfP.cli : '', pdfPot: S.pdfP ? S.pdfP.pot : '', pdfVal: S.pdfP ? S.pdfP.v : '',
       pdfGer: [['Jan', 92], ['Fev', 88], ['Mar', 84], ['Abr', 80], ['Mai', 78], ['Jun', 82], ['Jul', 90], ['Ago', 96], ['Set', 100], ['Out', 99], ['Nov', 97], ['Dez', 95]].map(x => ({ m: x[0], h: x[1] + '%' })),
-      pdfStats: [['Investimento', S.pdfP ? S.pdfP.v : ''], ['Economia mensal estimada', 'R$ 890'], ['Payback', '3,1 anos'], ['Economia acumulada em 25 anos', 'R$ 312.400'], ['Valorização estimada do imóvel', '+ 6%']].map(x => ({ l: x[0], v: x[1] })),
-      pdfBaixar: () => this.toastMsg('PDF baixado — pronto para imprimir ou enviar'),
+      pdfEquipment: (() => { const c = S.pdfP?.content, sys = c?.system || {}, cus = c?.customer || {}; return [['Cliente', S.pdfP?.cli || '—'], ['Cidade / UF', cus.city || '—'], ['Consumo mensal', sys.consumption_kwh ? sys.consumption_kwh + ' kWh' : '—'], ['Geração estimada', sys.generation_kwh ? sys.generation_kwh + ' kWh/mês' : '—'], ['Módulos', sys.module_count ? sys.module_count + ' × ' + (sys.module_model || '570 W') : '—'], ['Inversor', sys.inverter_model || '—']].map(x => ({ l:x[0], v:x[1] })); })(),
+      pdfStats: (() => { const c = S.pdfP?.content, com = c?.commercial || {}; return [['Investimento', S.pdfP ? S.pdfP.v : ''], ['Entrada', com.down_payment || 'A combinar'], ['Parcelamento', com.installments || 'A combinar'], ['Validade da proposta', (com.validity_days || 15) + ' dias'], ['Garantias e escopo', c?.customer?.notes || 'Conforme condições comerciais']].map(x => ({ l: x[0], v: x[1] })); })(),
+      pdfBaixar: () => { this.toastMsg('Abrindo opções para imprimir ou salvar em PDF'); setTimeout(() => window.print(), 80); },
       pdfZap: () => S.pdfP && this.zap('Olá! Segue sua proposta ' + S.pdfP.id + ' da Voltua Energia (' + S.pdfP.pot + ' · ' + S.pdfP.v + ')'),
       is_cliente: S.screen === 'cliente',
       cliNome: S.cliSel ? S.cliSel.n : 'Cliente',
@@ -1537,9 +1590,10 @@ class Component extends DCLogic {
       fConsumo: this.ff('consumo'),
       saveOrc: () => {
         const fm = this.state.form; if (!fm.nome) { this.toastMsg('Informe o cliente do orçamento'); return; }
-        this.setState({ modal: null, consumo: parseInt(fm.consumo) || this.state.consumo, orcCli: fm.nome + (fm.cidade ? ' · ' + fm.cidade : ''), form: {} });
+        this.setState({ modal: null, consumo: parseInt(fm.consumo) || this.state.consumo, orcNome: fm.nome, orcCidade: fm.cidade || '', orcCli: fm.nome + (fm.cidade ? ' · ' + fm.cidade : ''), form: {} });
         this.toastMsg('Orçamento dimensionado para ' + fm.nome);
       },
+      proposalFromBudget: () => { const ideal = this.calcCen(S.consumo)[1], modules = parseInt(ideal.mod) || 1; this.setState({ modal: 'prop', form: { nome: S.orcNome || 'Cliente do orçamento', cidade: S.orcCidade || '', consumo: String(S.consumo), pot: ideal.kwp.replace(' kWp','').replace(',','.'), modulos: String(modules), geracao: ideal.ger.replace(/\D/g,''), valor: ideal.preco.replace('R$ ','') } }); },
       closeModal: () => this.setState({ modal: null, card: null }),
       stop: e => e.stopPropagation(),
       modalDet: S.modal === 'det' && !!S.detail,
@@ -1549,6 +1603,8 @@ class Component extends DCLogic {
       detAcaoLabel: S.detail && S.detail.acao ? S.detail.acao[0] : '',
       detAcaoRun: () => { const a = S.detail && S.detail.acao; this.setState({ modal: null, detail: null }); if (a) a[1](); },
       fNome: this.ff('nome'), fCidade: this.ff('cidade'), fValor: this.ff('valor'), fOrigem: this.ff('origem'), fTipo: this.ff('tipo'), fPot: this.ff('pot'),
+      fDoc: this.ff('doc'), fTelefone: this.ff('telefone'), fEmail: this.ff('email'), fEndereco: this.ff('endereco'), fModulos: this.ff('modulos'), fGeracao: this.ff('geracao'), fModuloModelo: this.ff('moduloModelo'), fInversor: this.ff('inversor'), fEntrada: this.ff('entrada'), fParcelas: this.ff('parcelas'), fObservacoes: this.ff('observacoes'),
+      fNomeVal: S.form.nome || '', fConsumoVal: S.form.consumo || '', fPotVal: S.form.pot || '', fModulosVal: S.form.modulos || '', fGeracaoVal: S.form.geracao || '', fValorVal: S.form.valor || '',
       saveLead: () => this.addLead(), saveProp: () => this.addProp(),
       cardNome: selK ? selK.n : '', cardInfo: selK ? selK.c + ' · ' + selK.tipo + ' · ' + selK.v + ' · origem: ' + selK.o : '',
       cardEtapa: card ? this.getFunil()[card[0]].n : '',
