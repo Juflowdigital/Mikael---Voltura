@@ -44,6 +44,7 @@ body{background:#071225;color:#edf4ff}
 .app-content th{color:#9fb3d9!important;border-color:#263754!important}
 .app-content td{border-color:#1d2d49!important}
 .app-content input,.app-content select,.app-content textarea{transition:border-color .18s ease,box-shadow .18s ease}
+.app-content input,.app-content select,.app-content textarea{min-width:0;max-width:100%;box-sizing:border-box}
 .app-content input:focus,.app-content select:focus,.app-content textarea:focus{border-color:#f6a623!important;box-shadow:0 0 0 3px rgba(246,166,35,.12);outline:none}
 .app-content [style*="background:#f97316"]{background:#f6a623!important;color:#071225!important;box-shadow:0 7px 18px rgba(246,166,35,.14)}
 .app-content [style*="color:#f97316"]{color:#f6a623!important}
@@ -1254,17 +1255,24 @@ body{background:#071225;color:#edf4ff}
   </sc-if>
   <sc-if value="{{modalOrc}}" hint-placeholder-val="{{false}}">
     <div onClick="{{closeModal}}" style="position:fixed;inset:0;background:rgba(8,20,25,.45);z-index:60;display:grid;place-items:center">
-      <div onClick="{{stop}}" style="width:400px;background:light-dark(#ffffff,#10242b);border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:14px;padding:22px 24px;display:flex;flex-direction:column;gap:12px;box-shadow:0 24px 60px rgba(0,0,0,.3)">
-        <div style="font-family:'Space Grotesk';font-size:17px;font-weight:600">Novo orçamento</div>
-        <input value="{{fNomeVal}}" onChange="{{fNome}}" placeholder="Cliente" style="font-size:13.5px;font-family:'Instrument Sans';border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:9px;padding:10px 12px;background:light-dark(#f7f9f9,#0e2029);color:inherit;outline-color:#f97316">
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-          <input type="number" onChange="{{fConsumo}}" placeholder="Consumo (kWh/mês)" style="font-size:13.5px;font-family:'Instrument Sans';border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:9px;padding:10px 12px;background:light-dark(#f7f9f9,#0e2029);color:inherit;outline-color:#f97316">
-          <input onChange="{{fCidade}}" placeholder="Cidade" style="font-size:13.5px;font-family:'Instrument Sans';border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:9px;padding:10px 12px;background:light-dark(#f7f9f9,#0e2029);color:inherit;outline-color:#f97316">
-        </div>
-        <div style="font-size:12px;color:light-dark(#8a979b,#5f7883);line-height:1.5">O dimensionamento usa a irradiação da cidade e o fator de perdas configurado. Os 3 cenários são gerados automaticamente.</div>
+      <div onClick="{{stop}}" style="width:820px;max-width:calc(100vw - 40px);max-height:90vh;overflow-y:auto;background:#101d34;border:1px solid #263654;border-radius:14px;padding:24px;display:flex;flex-direction:column;gap:12px;box-shadow:0 24px 60px rgba(0,0,0,.45)">
+        <div style="font-family:'Space Grotesk';font-size:20px;font-weight:650">Novo orçamento fotovoltaico</div>
+        <div style="font-size:12px;color:#91a3c2">Cadastre a unidade consumidora e os parâmetros técnicos para gerar um dimensionamento rastreável.</div>
+        <div style="font-size:11px;font-weight:750;color:#f6a623;text-transform:uppercase;letter-spacing:.08em">Cliente e unidade consumidora</div>
+        <div style="display:grid;grid-template-columns:2fr 1fr;gap:10px"><input value="{{fNomeVal}}" onChange="{{fNome}}" placeholder="Nome / Razão social *" style="font:inherit;border:1px solid #31415e;border-radius:9px;padding:10px 12px;background:#0b172c;color:inherit"><input value="{{fDocVal}}" onChange="{{fDoc}}" onBlur="{{lookupCnpj}}" placeholder="CPF / CNPJ (preenchimento automático)" style="font:inherit;border:1px solid #31415e;border-radius:9px;padding:10px 12px;background:#0b172c;color:inherit"></div>
+        <div style="display:grid;grid-template-columns:1.2fr 1.2fr 1fr;gap:10px"><input value="{{fEmailVal}}" onChange="{{fEmail}}" placeholder="E-mail" style="font:inherit;border:1px solid #31415e;border-radius:9px;padding:10px 12px;background:#0b172c;color:inherit"><input value="{{fTelefoneVal}}" onChange="{{fTelefone}}" placeholder="Telefone / WhatsApp" style="font:inherit;border:1px solid #31415e;border-radius:9px;padding:10px 12px;background:#0b172c;color:inherit"><input onChange="{{fTipo}}" placeholder="Residencial, comercial..." style="font:inherit;border:1px solid #31415e;border-radius:9px;padding:10px 12px;background:#0b172c;color:inherit"></div>
+        <div style="display:grid;grid-template-columns:2fr 1fr;gap:10px"><input value="{{fEnderecoVal}}" onChange="{{fEndereco}}" placeholder="Endereço completo da instalação" style="font:inherit;border:1px solid #31415e;border-radius:9px;padding:10px 12px;background:#0b172c;color:inherit"><input value="{{fCidadeVal}}" onChange="{{fCidade}}" placeholder="Cidade / UF *" style="font:inherit;border:1px solid #31415e;border-radius:9px;padding:10px 12px;background:#0b172c;color:inherit"></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px"><input onChange="{{fConcessionaria}}" placeholder="Concessionária" style="font:inherit;border:1px solid #31415e;border-radius:9px;padding:10px 12px;background:#0b172c;color:inherit"><input onChange="{{fUc}}" placeholder="Nº da unidade consumidora" style="font:inherit;border:1px solid #31415e;border-radius:9px;padding:10px 12px;background:#0b172c;color:inherit"><input onChange="{{fTarifa}}" placeholder="Tarifa R$/kWh" inputmode="decimal" style="font:inherit;border:1px solid #31415e;border-radius:9px;padding:10px 12px;background:#0b172c;color:inherit"></div>
+        <div style="font-size:11px;font-weight:750;color:#f6a623;text-transform:uppercase;letter-spacing:.08em;margin-top:3px">Histórico de consumo e rede elétrica</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:10px"><input type="number" value="{{fConsumoVal}}" onChange="{{fConsumo}}" placeholder="Média kWh/mês *" style="font:inherit;border:1px solid #f6a623;border-radius:9px;padding:10px;background:#0b172c;color:inherit"><input onChange="{{fConta}}" placeholder="Conta média (R$)" style="font:inherit;border:1px solid #31415e;border-radius:9px;padding:10px;background:#0b172c;color:inherit"><input onChange="{{fLigacao}}" placeholder="Mono / Bi / Trifásico" style="font:inherit;border:1px solid #31415e;border-radius:9px;padding:10px;background:#0b172c;color:inherit"><input onChange="{{fTensao}}" placeholder="Tensão (127/220/380 V)" style="font:inherit;border:1px solid #31415e;border-radius:9px;padding:10px;background:#0b172c;color:inherit"></div>
+        <textarea onChange="{{fHistorico}}" rows="2" placeholder="Consumos dos últimos 12 meses (separados por vírgula)" style="font:inherit;resize:vertical;border:1px solid #31415e;border-radius:9px;padding:10px 12px;background:#0b172c;color:inherit"></textarea>
+        <div style="font-size:11px;font-weight:750;color:#f6a623;text-transform:uppercase;letter-spacing:.08em;margin-top:3px">Local, telhado e preferências técnicas</div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px"><input onChange="{{fTelhado}}" placeholder="Tipo de telhado" style="font:inherit;border:1px solid #31415e;border-radius:9px;padding:10px;background:#0b172c;color:inherit"><input onChange="{{fArea}}" placeholder="Área disponível (m²)" style="font:inherit;border:1px solid #31415e;border-radius:9px;padding:10px;background:#0b172c;color:inherit"><input onChange="{{fOrientacao}}" placeholder="Orientação / inclinação" style="font:inherit;border:1px solid #31415e;border-radius:9px;padding:10px;background:#0b172c;color:inherit"><input onChange="{{fSombreamento}}" placeholder="Sombreamento" style="font:inherit;border:1px solid #31415e;border-radius:9px;padding:10px;background:#0b172c;color:inherit"></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px"><input onChange="{{fModuloModelo}}" placeholder="Preferência de módulo" style="font:inherit;border:1px solid #31415e;border-radius:9px;padding:10px 12px;background:#0b172c;color:inherit"><input onChange="{{fInversor}}" placeholder="Preferência de inversor" style="font:inherit;border:1px solid #31415e;border-radius:9px;padding:10px 12px;background:#0b172c;color:inherit"><input onChange="{{fMargem}}" placeholder="Margem comercial (%)" style="font:inherit;border:1px solid #31415e;border-radius:9px;padding:10px 12px;background:#0b172c;color:inherit"></div>
+        <textarea onChange="{{fObservacoes}}" rows="2" placeholder="Restrições, expansão futura e observações da visita" style="font:inherit;resize:vertical;border:1px solid #31415e;border-radius:9px;padding:10px 12px;background:#0b172c;color:inherit"></textarea>
         <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:4px">
           <div onClick="{{closeModal}}" style="font-size:13px;font-weight:600;color:light-dark(#5c6b70,#8ba0a6);border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:9px;padding:9px 16px;cursor:pointer">Cancelar</div>
-          <div onClick="{{saveOrc}}" style="font-size:13px;font-weight:600;background:#f97316;color:#fff;border-radius:9px;padding:9px 16px;cursor:pointer" style-hover="background:#ea580c">Dimensionar</div>
+          <div onClick="{{saveOrc}}" style="font-size:13px;font-weight:700;background:#f6a623;color:#071225;border-radius:9px;padding:10px 18px;cursor:pointer">Salvar e dimensionar</div>
         </div>
       </div>
     </div>
@@ -1322,13 +1330,13 @@ body{background:#071225;color:#edf4ff}
         <div style="font-family:'Space Grotesk';font-size:20px;font-weight:650">Nova proposta comercial</div>
         <div style="font-size:12px;color:#91a3c2">Preencha os dados técnicos e comerciais. Ao concluir, o documento será aberto para conferência.</div>
         <div style="font-size:11px;font-weight:750;color:#f6a623;text-transform:uppercase;letter-spacing:.08em">Cliente e instalação</div>
-        <input onChange="{{fNome}}" placeholder="Cliente" style="font-size:13.5px;font-family:'Instrument Sans';border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:9px;padding:10px 12px;background:light-dark(#f7f9f9,#0e2029);color:inherit;outline-color:#f97316">
+        <input value="{{fNomeVal}}" onChange="{{fNome}}" placeholder="Cliente" style="font-size:13.5px;font-family:'Instrument Sans';border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:9px;padding:10px 12px;background:light-dark(#f7f9f9,#0e2029);color:inherit;outline-color:#f97316">
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-          <input onChange="{{fDoc}}" placeholder="CPF / CNPJ" style="font:inherit;border:1px solid #31415e;border-radius:9px;padding:10px 12px;background:#0b172c;color:inherit">
-          <input onChange="{{fTelefone}}" placeholder="Telefone / WhatsApp" style="font:inherit;border:1px solid #31415e;border-radius:9px;padding:10px 12px;background:#0b172c;color:inherit">
+          <input value="{{fDocVal}}" onChange="{{fDoc}}" onBlur="{{lookupCnpj}}" placeholder="CPF / CNPJ (consulta automática)" style="font:inherit;border:1px solid #31415e;border-radius:9px;padding:10px 12px;background:#0b172c;color:inherit">
+          <input value="{{fTelefoneVal}}" onChange="{{fTelefone}}" placeholder="Telefone / WhatsApp" style="font:inherit;border:1px solid #31415e;border-radius:9px;padding:10px 12px;background:#0b172c;color:inherit">
         </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px"><input onChange="{{fEmail}}" placeholder="E-mail" style="font:inherit;border:1px solid #31415e;border-radius:9px;padding:10px 12px;background:#0b172c;color:inherit"><input onChange="{{fCidade}}" placeholder="Cidade / UF" style="font:inherit;border:1px solid #31415e;border-radius:9px;padding:10px 12px;background:#0b172c;color:inherit"></div>
-        <input onChange="{{fEndereco}}" placeholder="Endereço da instalação" style="font:inherit;border:1px solid #31415e;border-radius:9px;padding:10px 12px;background:#0b172c;color:inherit">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px"><input value="{{fEmailVal}}" onChange="{{fEmail}}" placeholder="E-mail" style="font:inherit;border:1px solid #31415e;border-radius:9px;padding:10px 12px;background:#0b172c;color:inherit"><input value="{{fCidadeVal}}" onChange="{{fCidade}}" placeholder="Cidade / UF" style="font:inherit;border:1px solid #31415e;border-radius:9px;padding:10px 12px;background:#0b172c;color:inherit"></div>
+        <input value="{{fEnderecoVal}}" onChange="{{fEndereco}}" placeholder="Endereço da instalação" style="font:inherit;border:1px solid #31415e;border-radius:9px;padding:10px 12px;background:#0b172c;color:inherit">
         <div style="font-size:11px;font-weight:750;color:#f6a623;text-transform:uppercase;letter-spacing:.08em;margin-top:3px">Dimensionamento e equipamentos</div>
         <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px"><input type="number" value="{{fConsumoVal}}" onChange="{{fConsumo}}" placeholder="Consumo kWh/mês" style="font:inherit;border:1px solid #31415e;border-radius:9px;padding:10px;background:#0b172c;color:inherit"><input value="{{fPotVal}}" onChange="{{fPot}}" placeholder="Potência kWp *" style="font:inherit;border:1px solid #31415e;border-radius:9px;padding:10px;background:#0b172c;color:inherit"><input type="number" value="{{fModulosVal}}" onChange="{{fModulos}}" placeholder="Qtd. módulos" style="font:inherit;border:1px solid #31415e;border-radius:9px;padding:10px;background:#0b172c;color:inherit"><input value="{{fGeracaoVal}}" onChange="{{fGeracao}}" placeholder="Geração mensal" style="font:inherit;border:1px solid #31415e;border-radius:9px;padding:10px;background:#0b172c;color:inherit"></div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px"><input onChange="{{fModuloModelo}}" placeholder="Modelo dos módulos" style="font:inherit;border:1px solid #31415e;border-radius:9px;padding:10px 12px;background:#0b172c;color:inherit"><input onChange="{{fInversor}}" placeholder="Modelo do inversor" style="font:inherit;border:1px solid #31415e;border-radius:9px;padding:10px 12px;background:#0b172c;color:inherit"></div>
@@ -1496,6 +1504,37 @@ class Component extends DCLogic {
       this.setState({ props: p, modal: 'pdf', pdfP: created, form: {} }); this.toastMsg('Proposta ' + number + ' criada e pronta para conferência');
     } catch (e) { this.toastMsg('Erro ao criar proposta: ' + e.message); }
   }
+  async lookupCnpj() {
+    const cnpj = String(this.state.form.doc || '').replace(/\D/g, '');
+    if (!cnpj) return;
+    if (cnpj.length !== 14) { if (cnpj.length > 11) this.toastMsg('CNPJ deve conter 14 dígitos'); return; }
+    this.setState({ cnpjLoading: true });
+    try {
+      const response = await fetch('https://brasilapi.com.br/api/cnpj/v1/' + cnpj);
+      if (!response.ok) throw new Error(response.status === 404 ? 'CNPJ não encontrado' : 'Consulta indisponível');
+      const d = await response.json();
+      const address = [d.descricao_tipo_de_logradouro, d.logradouro, d.numero, d.complemento, d.bairro].filter(Boolean).join(' ') + (d.cep ? ' · CEP ' + d.cep : '');
+      this.setState({ cnpjLoading: false, form: Object.assign({}, this.state.form, { doc: cnpj, nome: d.razao_social || d.nome_fantasia || this.state.form.nome || '', telefone: d.ddd_telefone_1 || d.ddd_telefone_2 || '', email: d.email || '', cidade: [d.municipio, d.uf].filter(Boolean).join(' / '), endereco: address.trim() }) });
+      this.toastMsg('Dados da empresa preenchidos pelo CNPJ');
+    } catch (e) { this.setState({ cnpjLoading: false }); this.toastMsg(e.message || 'Não foi possível consultar o CNPJ'); }
+  }
+  async saveBudget() {
+    const fm = this.state.form, consumption = this.parseMoney(fm.consumo);
+    if (!fm.nome || !consumption || !fm.cidade) { this.toastMsg('Informe cliente, cidade e consumo médio'); return; }
+    try {
+      const sb = await this.sb(), org = this.state.organizationId, taxId = String(fm.doc || '').replace(/\D/g, '') || null;
+      const ideal = this.calcCen(consumption)[1], power = this.parseMoney(ideal.kwp), modules = parseInt(ideal.mod) || 1;
+      const generation = this.parseMoney(ideal.ger.replace(/[^0-9,.]/g, '')) || Math.round(power * 125);
+      const cityParts = String(fm.cidade).split('/').map(x => x.trim()), clientPayload = { organization_id: org, name: fm.nome.trim(), person_type: taxId && taxId.length === 14 ? 'company' : 'individual', tax_id: taxId, email: fm.email || null, phone: fm.telefone || null, address: { full: fm.endereco || '' }, city: cityParts[0] || null, state: cityParts[1]?.slice(0,2) || null, utility_company: fm.concessionaria || null, service_voltage: fm.tensao || null, monthly_consumption_kwh: consumption, owner_id: this.state.userId, notes: fm.observacoes || null };
+      let client;
+      if (taxId) { const found = await sb.from('clients').select('id').eq('organization_id', org).eq('tax_id', taxId).maybeSingle(); if (found.error) throw found.error; if (found.data) { const updated = await sb.from('clients').update(clientPayload).eq('id', found.data.id).select('id').single(); if (updated.error) throw updated.error; client = updated.data; } }
+      if (!client) { const inserted = await sb.from('clients').insert(clientPayload).select('id').single(); if (inserted.error) throw inserted.error; client = inserted.data; }
+      const assumptions = { customer_type: fm.tipo || '', utility_account: fm.uc || '', tariff: fm.tarifa || '', average_bill: fm.conta || '', connection_type: fm.ligacao || '', consumption_history: fm.historico || '', roof_type: fm.telhado || '', available_area: fm.area || '', orientation: fm.orientacao || '', shading: fm.sombreamento || '', preferred_module: fm.moduloModelo || '', preferred_inverter: fm.inversor || '', commercial_margin: fm.margem || '', notes: fm.observacoes || '' };
+      const saved = await sb.from('budgets').insert({ organization_id: org, client_id: client.id, monthly_consumption_kwh: consumption, system_power_kwp: power, module_count: modules, module_power_w: 570, inverter_power_kw: power, estimated_generation_kwh: generation, roof_area_m2: this.parseMoney(fm.area) || modules * 2.6, estimated_price: this.parseMoney(ideal.preco), payback_years: this.parseMoney(ideal.pay), assumptions, created_by: this.state.userId }).select('id').single(); if (saved.error) throw saved.error;
+      this.setState({ modal: null, consumo: consumption, budgetId: saved.data.id, orcNome: fm.nome, orcCidade: fm.cidade, orcCli: fm.nome + ' · ' + fm.cidade, form: {} });
+      this.toastMsg('Orçamento salvo e dimensionado com sucesso');
+    } catch (e) { this.toastMsg('Erro ao salvar orçamento: ' + e.message); }
+  }
   getParc() { return this.state.parc ?? this.parcBase(); }
   baixa(i) {
     const p = this.getParc().map(x => Object.assign({}, x));
@@ -1588,11 +1627,7 @@ class Component extends DCLogic {
       openCliente: () => { if (selK) this.setState({ screen: 'cliente', modal: null, card: null, cliSel: selK, notif: false }); },
       openOrc: () => this.setState({ modal: 'orc', form: {} }),
       fConsumo: this.ff('consumo'),
-      saveOrc: () => {
-        const fm = this.state.form; if (!fm.nome) { this.toastMsg('Informe o cliente do orçamento'); return; }
-        this.setState({ modal: null, consumo: parseInt(fm.consumo) || this.state.consumo, orcNome: fm.nome, orcCidade: fm.cidade || '', orcCli: fm.nome + (fm.cidade ? ' · ' + fm.cidade : ''), form: {} });
-        this.toastMsg('Orçamento dimensionado para ' + fm.nome);
-      },
+      saveOrc: () => this.saveBudget(), lookupCnpj: () => this.lookupCnpj(),
       proposalFromBudget: () => { const ideal = this.calcCen(S.consumo)[1], modules = parseInt(ideal.mod) || 1; this.setState({ modal: 'prop', form: { nome: S.orcNome || 'Cliente do orçamento', cidade: S.orcCidade || '', consumo: String(S.consumo), pot: ideal.kwp.replace(' kWp','').replace(',','.'), modulos: String(modules), geracao: ideal.ger.replace(/\D/g,''), valor: ideal.preco.replace('R$ ','') } }); },
       closeModal: () => this.setState({ modal: null, card: null }),
       stop: e => e.stopPropagation(),
@@ -1604,7 +1639,8 @@ class Component extends DCLogic {
       detAcaoRun: () => { const a = S.detail && S.detail.acao; this.setState({ modal: null, detail: null }); if (a) a[1](); },
       fNome: this.ff('nome'), fCidade: this.ff('cidade'), fValor: this.ff('valor'), fOrigem: this.ff('origem'), fTipo: this.ff('tipo'), fPot: this.ff('pot'),
       fDoc: this.ff('doc'), fTelefone: this.ff('telefone'), fEmail: this.ff('email'), fEndereco: this.ff('endereco'), fModulos: this.ff('modulos'), fGeracao: this.ff('geracao'), fModuloModelo: this.ff('moduloModelo'), fInversor: this.ff('inversor'), fEntrada: this.ff('entrada'), fParcelas: this.ff('parcelas'), fObservacoes: this.ff('observacoes'),
-      fNomeVal: S.form.nome || '', fConsumoVal: S.form.consumo || '', fPotVal: S.form.pot || '', fModulosVal: S.form.modulos || '', fGeracaoVal: S.form.geracao || '', fValorVal: S.form.valor || '',
+      fConcessionaria: this.ff('concessionaria'), fUc: this.ff('uc'), fTarifa: this.ff('tarifa'), fConta: this.ff('conta'), fLigacao: this.ff('ligacao'), fTensao: this.ff('tensao'), fHistorico: this.ff('historico'), fTelhado: this.ff('telhado'), fArea: this.ff('area'), fOrientacao: this.ff('orientacao'), fSombreamento: this.ff('sombreamento'), fMargem: this.ff('margem'),
+      fNomeVal: S.form.nome || '', fDocVal: S.form.doc || '', fTelefoneVal: S.form.telefone || '', fEmailVal: S.form.email || '', fCidadeVal: S.form.cidade || '', fEnderecoVal: S.form.endereco || '', fConsumoVal: S.form.consumo || '', fPotVal: S.form.pot || '', fModulosVal: S.form.modulos || '', fGeracaoVal: S.form.geracao || '', fValorVal: S.form.valor || '',
       saveLead: () => this.addLead(), saveProp: () => this.addProp(),
       cardNome: selK ? selK.n : '', cardInfo: selK ? selK.c + ' · ' + selK.tipo + ' · ' + selK.v + ' · origem: ' + selK.o : '',
       cardEtapa: card ? this.getFunil()[card[0]].n : '',
