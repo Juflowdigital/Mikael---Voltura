@@ -1867,7 +1867,16 @@ class Component extends DCLogic {
       if(!descriptions[key])return null;
       const title=key.split('|')[1], financial=/Lançamentos|Caixas|Custo|Conciliação|Fiscais/.test(title), people=/Equipes|Colaboradores|Permissões/.test(title), service=/Chamados|Serviço|Satisfação/.test(title), stock=/Produtos|Fornecedores|Produção|Estoque|Compras|Material/.test(title);
       let cols=['Registro','Responsável','Situação'],raw=[['REG-2026-001','Atualizado hoje','Mykael','Em andamento',B],['REG-2026-002','Atualizado ontem','Equipe responsável','Ativo',G]];
-      if(financial){cols=['Lançamento','Vencimento','Valor'];raw=[['Parcela do contrato CT-0315','Patrícia Rodrigues','15/09/2026','R$ 120.000,17',A],['Fornecedor Solar Distribuidora','Pedido PC-088','05/09/2026','R$ 21.350,00',R]];}
+      const productionData={
+        'Produção e Estoque|Produtos':[['Produto / SKU','Estoque','Preço de venda'],[['Módulo Canadian 570 W','MOD-CAN-570-BF','100 unidades','R$ 1.149,00',G],['Inversor Growatt 10 kW','INV-GRO-10K','4 unidades','R$ 8.990,00',A],['Estrutura telha cerâmica','EST-TC-04','32 kits','R$ 640,00',G]]],
+        'Produção e Estoque|Fornecedores':[['Fornecedor','Categoria','Avaliação'],[['Solar Distribuidora','Fortaleza · prazo 5 dias','Módulos e inversores','4,8 / 5',G],['Eletro Prime','Caucaia · prazo 3 dias','Material elétrico','4,5 / 5',G],['Estruturas Nordeste','Maracanaú · prazo 7 dias','Estruturas','4,2 / 5',A]]],
+        'Produção e Estoque|Gestão de Produção':[['Ordem de produção','Etapa atual','Previsão'],[['OP-2026-044','Contrato CT-0316 · Neide Oliveira','Separação do kit','04/09/2026',B],['OP-2026-043','Contrato CT-0315 · Patrícia Rodrigues','Conferência técnica','03/09/2026',A]]],
+        'Produção e Estoque|Gestão de Estoque':[['Item / lote','Saldo disponível','Status'],[['Módulo Canadian 570 W','Lote 08/2026 · 24 reservados','76 unidades','Normal',G],['Conector MC4','Lote 07/2026 · 8 reservados','12 pares','Estoque baixo',R],['Cabo solar 6 mm²','Lote 08/2026 · 180 m reservados','620 metros','Normal',G]]],
+        'Produção e Estoque|Gestão de Compras':[['Pedido / fornecedor','Valor','Aprovação'],[['PC-2026-088','Solar Distribuidora · 24 módulos','R$ 21.350,00','Aguardando gestor',A],['PC-2026-087','Eletro Prime · material elétrico','R$ 4.780,00','Aprovado',G]]],
+        'Produção e Estoque|Requisições de Material':[['Requisição / obra','Solicitante','Status'],[['RM-2026-019','OB-2026-021 · Patrícia Rodrigues','Equipe A','Em separação',A],['RM-2026-018','OB-2026-020 · Neide Oliveira','Equipe B','Entregue',G]]]
+      };
+      if(productionData[key]){cols=productionData[key][0];raw=productionData[key][1];}
+      else if(financial){cols=['Lançamento','Vencimento','Valor'];raw=[['Parcela do contrato CT-0315','Patrícia Rodrigues','15/09/2026','R$ 120.000,17',A],['Fornecedor Solar Distribuidora','Pedido PC-088','05/09/2026','R$ 21.350,00',R]];}
       else if(people){cols=['Equipe / colaborador','Função','Situação'];raw=[['Equipe de Campo A','3 integrantes','Instalação','Em atividade',G],['Diego Ferraz','Comercial','Vendedor','Ativo',G]];}
       else if(service){cols=['Atendimento','Prioridade','Prazo'];raw=[['CH-2026-014 · Ana Rocha','Falha no inversor','Alta','4 horas',R],['OS-2026-009 · Cond. Vila Verde','Visita técnica','Normal','03/09 09:00',B]];}
       else if(stock){cols=['Item / documento','Quantidade','Situação'];raw=[['Módulo bifacial 570 W','SKU MOD-570-BF','100 un.','Disponível',G],['Pedido PC-2026-088','Solar Distribuidora','24 itens','Em aprovação',A]];}
