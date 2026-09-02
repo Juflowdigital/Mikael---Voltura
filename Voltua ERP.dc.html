@@ -1235,20 +1235,27 @@ body{background:#071225;color:#edf4ff}
   </sc-if>
   <sc-if value="{{modalLead}}" hint-placeholder-val="{{false}}">
     <div onClick="{{closeModal}}" style="position:fixed;inset:0;background:rgba(8,20,25,.45);z-index:60;display:grid;place-items:center">
-      <div onClick="{{stop}}" style="width:400px;background:light-dark(#ffffff,#10242b);border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:14px;padding:22px 24px;display:flex;flex-direction:column;gap:12px;box-shadow:0 24px 60px rgba(0,0,0,.3)">
-        <div style="font-family:'Space Grotesk';font-size:17px;font-weight:600">Novo lead</div>
+      <div onClick="{{stop}}" style="width:760px;max-width:calc(100vw - 40px);max-height:88vh;overflow:auto;background:#101d34;border:1px solid #263654;border-radius:14px;padding:24px;display:flex;flex-direction:column;gap:12px;box-shadow:0 24px 60px rgba(0,0,0,.4)">
+        <div style="font-family:'Space Grotesk';font-size:20px;font-weight:650">Nova negociação</div>
+        <input onChange="{{fNegotiationTitle}}" placeholder="Título da negociação *" style="font:inherit;border:1px solid #31415e;border-radius:9px;padding:11px 12px;background:#0b172c;color:inherit">
         <input onChange="{{fNome}}" placeholder="Nome do lead ou empresa" style="font-size:13.5px;font-family:'Instrument Sans';border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:9px;padding:10px 12px;background:light-dark(#f7f9f9,#0e2029);color:inherit;outline-color:#f97316">
+        <input onChange="{{fEndereco}}" placeholder="Endereço da instalação" style="font:inherit;border:1px solid #31415e;border-radius:9px;padding:11px 12px;background:#0b172c;color:inherit">
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
           <input onChange="{{fCidade}}" placeholder="Cidade" style="font-size:13.5px;font-family:'Instrument Sans';border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:9px;padding:10px 12px;background:light-dark(#f7f9f9,#0e2029);color:inherit;outline-color:#f97316">
           <input onChange="{{fTipo}}" placeholder="Tipo (Residencial…)" style="font-size:13.5px;font-family:'Instrument Sans';border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:9px;padding:10px 12px;background:light-dark(#f7f9f9,#0e2029);color:inherit;outline-color:#f97316">
         </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px"><input onChange="{{fBusinessUnit}}" placeholder="Unidade de negócio" style="font:inherit;border:1px solid #31415e;border-radius:9px;padding:11px 12px;background:#0b172c;color:inherit"><input onChange="{{fConcessionaria}}" placeholder="Concessionária" style="font:inherit;border:1px solid #31415e;border-radius:9px;padding:11px 12px;background:#0b172c;color:inherit"></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px"><input onChange="{{fManager}}" placeholder="Gestor" style="font:inherit;border:1px solid #31415e;border-radius:9px;padding:11px 12px;background:#0b172c;color:inherit"><input onChange="{{fSeller}}" placeholder="Vendedor" style="font:inherit;border:1px solid #31415e;border-radius:9px;padding:11px 12px;background:#0b172c;color:inherit"></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px"><input onChange="{{fFunnel}}" placeholder="Funil" style="font:inherit;border:1px solid #31415e;border-radius:9px;padding:11px 12px;background:#0b172c;color:inherit"><input onChange="{{fPhase}}" placeholder="Fase" style="font:inherit;border:1px solid #31415e;border-radius:9px;padding:11px 12px;background:#0b172c;color:inherit"></div>
+        <input onChange="{{fTags}}" placeholder="Tags (separadas por vírgula)" style="font:inherit;border:1px solid #31415e;border-radius:9px;padding:11px 12px;background:#0b172c;color:inherit">
+        <textarea onChange="{{fInformation}}" rows="3" placeholder="Informações da negociação" style="font:inherit;resize:vertical;border:1px solid #31415e;border-radius:9px;padding:11px 12px;background:#0b172c;color:inherit"></textarea>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
           <input onChange="{{fValor}}" placeholder="Valor estimado (R$)" style="font-size:13.5px;font-family:'Instrument Sans';border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:9px;padding:10px 12px;background:light-dark(#f7f9f9,#0e2029);color:inherit;outline-color:#f97316">
           <input onChange="{{fOrigem}}" placeholder="Origem (Indicação…)" style="font-size:13.5px;font-family:'Instrument Sans';border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:9px;padding:10px 12px;background:light-dark(#f7f9f9,#0e2029);color:inherit;outline-color:#f97316">
         </div>
         <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:4px">
           <div onClick="{{closeModal}}" style="font-size:13px;font-weight:600;color:light-dark(#5c6b70,#8ba0a6);border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:9px;padding:9px 16px;cursor:pointer">Cancelar</div>
-          <div onClick="{{saveLead}}" style="font-size:13px;font-weight:600;background:#f97316;color:#fff;border-radius:9px;padding:9px 16px;cursor:pointer" style-hover="background:#ea580c">Cadastrar lead</div>
+          <div onClick="{{saveLead}}" style="font-size:13px;font-weight:700;background:#f6a623;color:#071225;border-radius:9px;padding:10px 18px;cursor:pointer">Salvar negociação</div>
         </div>
       </div>
     </div>
@@ -1347,6 +1354,30 @@ body{background:#071225;color:#edf4ff}
           <div onClick="{{closeModal}}" style="font-size:13px;font-weight:600;color:light-dark(#5c6b70,#8ba0a6);border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:9px;padding:9px 16px;cursor:pointer">Cancelar</div>
           <div onClick="{{saveProp}}" style="font-size:13px;font-weight:700;background:#f6a623;color:#071225;border-radius:9px;padding:10px 18px;cursor:pointer">Criar e visualizar proposta</div>
         </div>
+      </div>
+    </div>
+  </sc-if>
+  <sc-if value="{{modalContract}}" hint-placeholder-val="{{false}}">
+    <div onClick="{{closeModal}}" style="position:fixed;inset:0;background:rgba(3,9,20,.7);z-index:60;display:grid;place-items:center;padding:20px">
+      <div onClick="{{stop}}" style="width:980px;max-width:calc(100vw - 40px);max-height:92vh;overflow:auto;background:#0d1930;border:1px solid #263754;border-radius:16px;padding:26px;display:flex;flex-direction:column;gap:16px;box-shadow:0 28px 80px rgba(0,0,0,.55)">
+        <div><div style="font-family:'Space Grotesk';font-size:23px;font-weight:700">Criar contrato</div><div style="font-size:12px;color:#91a3c2;margin-top:4px">Identificação, produtos, preços, pagamento, garantias e prazo.</div></div>
+        <div style="display:grid;grid-template-columns:1fr 2fr;gap:10px"><input onChange="{{fContractNumber}}" placeholder="Número do contrato (automático)" style="font:inherit;border:1px solid #31415e;border-radius:9px;padding:11px;background:#081429;color:inherit"><input onChange="{{fContractTitle}}" placeholder="Título do contrato *" style="font:inherit;border:1px solid #31415e;border-radius:9px;padding:11px;background:#081429;color:inherit"></div>
+        <div style="font-size:11px;font-weight:750;color:#f6a623;text-transform:uppercase;letter-spacing:.08em">Cliente e responsáveis</div>
+        <div style="display:grid;grid-template-columns:2fr 1fr;gap:10px"><input value="{{fNomeVal}}" onChange="{{fNome}}" placeholder="Cliente *" style="font:inherit;border:1px solid #31415e;border-radius:9px;padding:11px;background:#081429;color:inherit"><input value="{{fDocVal}}" onChange="{{fDoc}}" onBlur="{{lookupCnpj}}" placeholder="CNPJ (consulta automática)" style="font:inherit;border:1px solid #31415e;border-radius:9px;padding:11px;background:#081429;color:inherit"></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px"><input value="{{fEmailVal}}" onChange="{{fEmail}}" placeholder="E-mail" style="font:inherit;border:1px solid #31415e;border-radius:9px;padding:11px;background:#081429;color:inherit"><input value="{{fTelefoneVal}}" onChange="{{fTelefone}}" placeholder="Telefone" style="font:inherit;border:1px solid #31415e;border-radius:9px;padding:11px;background:#081429;color:inherit"><input onChange="{{fBusinessUnit}}" placeholder="Unidade de negócio" style="font:inherit;border:1px solid #31415e;border-radius:9px;padding:11px;background:#081429;color:inherit"></div>
+        <input value="{{fEnderecoVal}}" onChange="{{fEndereco}}" placeholder="Endereço da instalação" style="font:inherit;border:1px solid #31415e;border-radius:9px;padding:11px;background:#081429;color:inherit">
+        <div style="font-size:11px;font-weight:750;color:#f6a623;text-transform:uppercase;letter-spacing:.08em">Produtos do gerador fotovoltaico</div>
+        <div style="display:grid;grid-template-columns:1.8fr .55fr .8fr .7fr;gap:8px;font-size:11px;color:#8fa3c7;padding:0 4px"><span>Produto</span><span>Qtd.</span><span>Valor unitário</span><span>Garantia (meses)</span></div>
+        <div style="display:grid;grid-template-columns:1.8fr .55fr .8fr .7fr;gap:8px"><input onChange="{{fPanel}}" placeholder="Painel solar (marca/modelo)" style="font:inherit;border:1px solid #31415e;border-radius:8px;padding:10px;background:#081429;color:inherit"><input onChange="{{fPanelQty}}" placeholder="Qtd." type="number" style="font:inherit;border:1px solid #31415e;border-radius:8px;padding:10px;background:#081429;color:inherit"><input onChange="{{fPanelPrice}}" placeholder="R$" style="font:inherit;border:1px solid #31415e;border-radius:8px;padding:10px;background:#081429;color:inherit"><input onChange="{{fPanelWarranty}}" placeholder="Meses" type="number" style="font:inherit;border:1px solid #31415e;border-radius:8px;padding:10px;background:#081429;color:inherit"></div>
+        <div style="display:grid;grid-template-columns:1.8fr .55fr .8fr .7fr;gap:8px"><input onChange="{{fContractInverter}}" placeholder="Inversor (marca/modelo)" style="font:inherit;border:1px solid #31415e;border-radius:8px;padding:10px;background:#081429;color:inherit"><input onChange="{{fInverterQty}}" placeholder="Qtd." type="number" style="font:inherit;border:1px solid #31415e;border-radius:8px;padding:10px;background:#081429;color:inherit"><input onChange="{{fInverterPrice}}" placeholder="R$" style="font:inherit;border:1px solid #31415e;border-radius:8px;padding:10px;background:#081429;color:inherit"><input onChange="{{fInverterWarranty}}" placeholder="Meses" type="number" style="font:inherit;border:1px solid #31415e;border-radius:8px;padding:10px;background:#081429;color:inherit"></div>
+        <div style="display:grid;grid-template-columns:1.8fr .55fr .8fr .7fr;gap:8px"><input onChange="{{fStructure}}" placeholder="Estrutura de fixação" style="font:inherit;border:1px solid #31415e;border-radius:8px;padding:10px;background:#081429;color:inherit"><input onChange="{{fStructureQty}}" placeholder="Qtd." type="number" style="font:inherit;border:1px solid #31415e;border-radius:8px;padding:10px;background:#081429;color:inherit"><input onChange="{{fStructurePrice}}" placeholder="R$" style="font:inherit;border:1px solid #31415e;border-radius:8px;padding:10px;background:#081429;color:inherit"><input onChange="{{fStructureWarranty}}" placeholder="Meses" type="number" style="font:inherit;border:1px solid #31415e;border-radius:8px;padding:10px;background:#081429;color:inherit"></div>
+        <div style="font-size:11px;font-weight:750;color:#f6a623;text-transform:uppercase;letter-spacing:.08em">Preço e pagamento</div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px"><input onChange="{{fMargin}}" placeholder="Margem adicional (%)" style="font:inherit;border:1px solid #31415e;border-radius:9px;padding:11px;background:#081429;color:inherit"><input onChange="{{fDiscount}}" placeholder="Desconto (%)" style="font:inherit;border:1px solid #31415e;border-radius:9px;padding:11px;background:#081429;color:inherit"><input onChange="{{fCommission}}" placeholder="Comissão vendedor (%)" style="font:inherit;border:1px solid #31415e;border-radius:9px;padding:11px;background:#081429;color:inherit"><input onChange="{{fContractValue}}" placeholder="Valor final (R$) *" style="font:inherit;border:1px solid #f6a623;border-radius:9px;padding:11px;background:#081429;color:inherit"></div>
+        <div style="display:grid;grid-template-columns:2fr .7fr 1fr;gap:10px"><input onChange="{{fPaymentTerms}}" placeholder="Condição de pagamento" style="font:inherit;border:1px solid #31415e;border-radius:9px;padding:11px;background:#081429;color:inherit"><input onChange="{{fInstallments}}" placeholder="Parcelas (1 a 120)" type="number" style="font:inherit;border:1px solid #31415e;border-radius:9px;padding:11px;background:#081429;color:inherit"><input onChange="{{fExecutionDays}}" placeholder="Prazo de execução (dias)" type="number" style="font:inherit;border:1px solid #31415e;border-radius:9px;padding:11px;background:#081429;color:inherit"></div>
+        <div style="font-size:11px;font-weight:750;color:#f6a623;text-transform:uppercase;letter-spacing:.08em">Garantias e observações</div>
+        <div style="display:grid;grid-template-columns:1fr 2fr;gap:10px"><input onChange="{{fLaborWarranty}}" placeholder="Garantia mão de obra (dias)" type="number" style="font:inherit;border:1px solid #31415e;border-radius:9px;padding:11px;background:#081429;color:inherit"><input onChange="{{fAdditionalWarranty}}" placeholder="Garantias adicionais" style="font:inherit;border:1px solid #31415e;border-radius:9px;padding:11px;background:#081429;color:inherit"></div>
+        <textarea onChange="{{fContractNotes}}" rows="3" placeholder="Cláusulas, escopo e observações" style="font:inherit;resize:vertical;border:1px solid #31415e;border-radius:9px;padding:11px;background:#081429;color:inherit"></textarea>
+        <div style="display:flex;justify-content:flex-end;gap:10px"><div onClick="{{closeModal}}" style="padding:10px 17px;border:1px solid #31415e;border-radius:9px;cursor:pointer;font-weight:650">Cancelar</div><div onClick="{{saveContract}}" style="padding:10px 18px;border-radius:9px;background:#f6a623;color:#071225;cursor:pointer;font-weight:750">Criar contrato</div></div>
       </div>
     </div>
   </sc-if>
@@ -1471,13 +1502,15 @@ class Component extends DCLogic {
     try { await this.saveLeadStage(k, ni); this.setState({ funil: f, modal: null, card: null }); this.toastMsg(k.n + ' movido para "' + f[ni].n + '"'); } catch (e) { this.toastMsg('Erro ao atualizar lead: ' + e.message); }
   }
   async addLead() {
-    const fm = this.state.form; if (!fm.nome) { this.toastMsg('Informe o nome do lead'); return; }
+    const fm = this.state.form; if (!fm.nome || !fm.negotiationTitle) { this.toastMsg('Informe o título e o cliente da negociação'); return; }
     try {
       const sb = await this.sb(), value = this.parseMoney(fm.valor);
       const { data, error } = await sb.from('leads').insert({ organization_id: this.state.organizationId, name: fm.nome.trim(), city: fm.cidade || null, customer_type: fm.tipo || null, source: fm.origem || null, estimated_value: value, stage: 'lead' }).select('id').single();
       if (error) throw error;
+      const details = { title: fm.negotiationTitle, address: fm.endereco || '', business_unit: fm.businessUnit || '', utility_company: fm.concessionaria || '', manager: fm.manager || '', seller: fm.seller || '', funnel: fm.funnel || '', phase: fm.phase || '', tags: fm.tags || '', information: fm.information || '' };
+      const activity = await sb.from('crm_activities').insert({ organization_id: this.state.organizationId, lead_id: data.id, kind: 'negotiation_created', subject: fm.negotiationTitle, description: JSON.stringify(details), created_by: this.state.userId }); if (activity.error) throw activity.error;
       const f = this.cloneFunil(); f[0].cards.unshift(Object.assign(this.mkC(fm.nome, fm.cidade || '—', fm.tipo || 'Não informado', value ? this.money(value) : 'R$ —', fm.origem || 'Não informada', '#16a34a', 'agora'), { id: data.id })); f[0].q++;
-      this.setState({ funil: f, modal: null, form: {} }); this.toastMsg('Lead cadastrado no funil');
+      this.setState({ funil: f, modal: null, form: {} }); this.toastMsg('Negociação cadastrada no funil comercial');
     } catch (e) { this.toastMsg('Erro ao cadastrar lead: ' + e.message); }
   }
   getProps() { return this.state.props ?? this.propsBase(); }
@@ -1534,6 +1567,23 @@ class Component extends DCLogic {
       this.setState({ modal: null, consumo: consumption, budgetId: saved.data.id, orcNome: fm.nome, orcCidade: fm.cidade, orcCli: fm.nome + ' · ' + fm.cidade, form: {} });
       this.toastMsg('Orçamento salvo e dimensionado com sucesso');
     } catch (e) { this.toastMsg('Erro ao salvar orçamento: ' + e.message); }
+  }
+  async saveContract() {
+    const fm = this.state.form, total = this.parseMoney(fm.contractValue);
+    if (!fm.contractTitle || !fm.nome || !total) { this.toastMsg('Informe título, cliente e valor do contrato'); return; }
+    try {
+      const sb = await this.sb(), org = this.state.organizationId, taxId = String(fm.doc || '').replace(/\D/g, '') || null;
+      let client;
+      if (taxId) { const found = await sb.from('clients').select('id').eq('organization_id', org).eq('tax_id', taxId).maybeSingle(); if (found.error) throw found.error; client = found.data; }
+      if (!client) { const inserted = await sb.from('clients').insert({ organization_id: org, name: fm.nome.trim(), person_type: taxId?.length === 14 ? 'company' : 'individual', tax_id: taxId, email: fm.email || null, phone: fm.telefone || null, address: { full: fm.endereco || '' }, owner_id: this.state.userId }).select('id').single(); if (inserted.error) throw inserted.error; client = inserted.data; }
+      const number = fm.contractNumber?.trim() || 'CT-' + String(Date.now()).slice(-8), metadata = { business_unit: fm.businessUnit || 'Voltura Energia Solar', address: fm.endereco || '', panel: fm.panel || '', inverter: fm.contractInverter || '', structure: fm.structure || '', margin_percent: this.parseMoney(fm.margin) || 0, discount_percent: this.parseMoney(fm.discount) || 0, labor_warranty_days: parseInt(fm.laborWarranty) || 0, additional_warranty: fm.additionalWarranty || '', notes: fm.contractNotes || '' };
+      const saved = await sb.from('contracts').insert({ organization_id: org, contract_number: number, client_id: client.id, status: 'draft', total_value: total, title: fm.contractTitle, payment_terms: fm.paymentTerms || null, installment_count: parseInt(fm.installments) || 1, execution_days: parseInt(fm.executionDays) || null, commission_percent: this.parseMoney(fm.commission) || 0, metadata }).select('id').single(); if (saved.error) throw saved.error;
+      const rawItems = [['Painel solar', fm.panel, fm.panelQty, fm.panelPrice, fm.panelWarranty], ['Inversor', fm.contractInverter, fm.inverterQty, fm.inverterPrice, fm.inverterWarranty], ['Estrutura', fm.structure, fm.structureQty, fm.structurePrice, fm.structureWarranty], ['Mão de obra', fm.labor || 'Instalação fotovoltaica', fm.laborQty || 1, fm.laborPrice, fm.laborWarranty ? Math.round(parseInt(fm.laborWarranty) / 30) : null]];
+      const items = rawItems.filter(x => x[1] && this.parseMoney(x[2]) > 0).map(x => ({ organization_id: org, contract_id: saved.data.id, item_type: x[0], name: x[1], quantity: this.parseMoney(x[2]), unit_price: this.parseMoney(x[3]) || 0, warranty_months: parseInt(x[4]) || null }));
+      if (items.length) { const itemResult = await sb.from('contract_items').insert(items); if (itemResult.error) throw itemResult.error; }
+      const created = Object.assign({ id: number, cli: fm.nome, obra: fm.contractTitle, v: this.money(total), parc: (parseInt(fm.installments) || 1) + ' parcela(s)', ass: '0/2', dias: 'criado agora', acao: 'Ver contrato' }, this.stm('Rascunho', this.GY));
+      this.setState({ modal: null, form: {}, createdContracts: [created].concat(this.state.createdContracts || []) }); this.toastMsg('Contrato ' + number + ' criado com produtos e condições');
+    } catch (e) { this.toastMsg('Erro ao criar contrato: ' + e.message); }
   }
   getParc() { return this.state.parc ?? this.parcBase(); }
   baixa(i) {
@@ -1598,7 +1648,7 @@ class Component extends DCLogic {
       authKeyDown: e => { if (e.key === 'Enter') this.signIn(); }, login: () => this.signIn(),
       notifOpen: S.notif, notifCount: S.alertasOff ? 0 : 6,
       toast: S.toast, toastOn: !!S.toast,
-      modalLead: S.modal === 'lead', modalProp: S.modal === 'prop', modalAction: S.modal === 'action', actionTitle: S.actionType === 'contract' ? 'Novo contrato' : S.actionType === 'purchase' ? 'Nova solicitação de compra' : S.actionType === 'income' ? 'Registrar entrada' : S.actionType === 'expense' ? 'Registrar saída' : 'Nova cobrança', actionHint: S.actionType === 'contract' ? 'Cadastre o cliente e o valor inicial do contrato.' : S.actionType === 'purchase' ? 'Cadastre o fornecedor e o valor estimado do pedido.' : S.actionType === 'income' ? 'Registre uma receita recebida ou prevista.' : S.actionType === 'expense' ? 'Registre uma despesa paga ou prevista.' : 'Informe o cliente ou descrição e o valor da cobrança.', actionName: S.actionName, actionValue: S.actionValue, setActionName: e => this.setState({ actionName: e.target.value }), setActionValue: e => this.setState({ actionValue: e.target.value }), saveAction: () => this.saveAction(), modalCard: S.modal === 'card' && !!selK,
+      modalLead: S.modal === 'lead', modalProp: S.modal === 'prop', modalContract: S.modal === 'contract', modalAction: S.modal === 'action', actionTitle: S.actionType === 'purchase' ? 'Nova solicitação de compra' : S.actionType === 'income' ? 'Registrar entrada' : S.actionType === 'expense' ? 'Registrar saída' : 'Nova cobrança', actionHint: S.actionType === 'purchase' ? 'Cadastre o fornecedor e o valor estimado do pedido.' : S.actionType === 'income' ? 'Registre uma receita recebida ou prevista.' : S.actionType === 'expense' ? 'Registre uma despesa paga ou prevista.' : 'Informe o cliente ou descrição e o valor da cobrança.', actionName: S.actionName, actionValue: S.actionValue, setActionName: e => this.setState({ actionName: e.target.value }), setActionValue: e => this.setState({ actionValue: e.target.value }), saveAction: () => this.saveAction(), modalCard: S.modal === 'card' && !!selK,
       openLead: () => this.setState({ modal: 'lead', form: {} }),
       openProp: () => this.setState({ modal: 'prop', form: {} }),
       modalOrc: S.modal === 'orc',
@@ -1640,6 +1690,8 @@ class Component extends DCLogic {
       fNome: this.ff('nome'), fCidade: this.ff('cidade'), fValor: this.ff('valor'), fOrigem: this.ff('origem'), fTipo: this.ff('tipo'), fPot: this.ff('pot'),
       fDoc: this.ff('doc'), fTelefone: this.ff('telefone'), fEmail: this.ff('email'), fEndereco: this.ff('endereco'), fModulos: this.ff('modulos'), fGeracao: this.ff('geracao'), fModuloModelo: this.ff('moduloModelo'), fInversor: this.ff('inversor'), fEntrada: this.ff('entrada'), fParcelas: this.ff('parcelas'), fObservacoes: this.ff('observacoes'),
       fConcessionaria: this.ff('concessionaria'), fUc: this.ff('uc'), fTarifa: this.ff('tarifa'), fConta: this.ff('conta'), fLigacao: this.ff('ligacao'), fTensao: this.ff('tensao'), fHistorico: this.ff('historico'), fTelhado: this.ff('telhado'), fArea: this.ff('area'), fOrientacao: this.ff('orientacao'), fSombreamento: this.ff('sombreamento'), fMargem: this.ff('margem'),
+      fContractNumber: this.ff('contractNumber'), fContractTitle: this.ff('contractTitle'), fBusinessUnit: this.ff('businessUnit'), fPanel: this.ff('panel'), fPanelQty: this.ff('panelQty'), fPanelPrice: this.ff('panelPrice'), fPanelWarranty: this.ff('panelWarranty'), fContractInverter: this.ff('contractInverter'), fInverterQty: this.ff('inverterQty'), fInverterPrice: this.ff('inverterPrice'), fInverterWarranty: this.ff('inverterWarranty'), fStructure: this.ff('structure'), fStructureQty: this.ff('structureQty'), fStructurePrice: this.ff('structurePrice'), fStructureWarranty: this.ff('structureWarranty'), fMargin: this.ff('margin'), fDiscount: this.ff('discount'), fCommission: this.ff('commission'), fContractValue: this.ff('contractValue'), fPaymentTerms: this.ff('paymentTerms'), fInstallments: this.ff('installments'), fExecutionDays: this.ff('executionDays'), fLaborWarranty: this.ff('laborWarranty'), fAdditionalWarranty: this.ff('additionalWarranty'), fContractNotes: this.ff('contractNotes'), saveContract: () => this.saveContract(),
+      fNegotiationTitle: this.ff('negotiationTitle'), fManager: this.ff('manager'), fSeller: this.ff('seller'), fFunnel: this.ff('funnel'), fPhase: this.ff('phase'), fTags: this.ff('tags'), fInformation: this.ff('information'),
       fNomeVal: S.form.nome || '', fDocVal: S.form.doc || '', fTelefoneVal: S.form.telefone || '', fEmailVal: S.form.email || '', fCidadeVal: S.form.cidade || '', fEnderecoVal: S.form.endereco || '', fConsumoVal: S.form.consumo || '', fPotVal: S.form.pot || '', fModulosVal: S.form.modulos || '', fGeracaoVal: S.form.geracao || '', fValorVal: S.form.valor || '',
       saveLead: () => this.addLead(), saveProp: () => this.addProp(),
       cardNome: selK ? selK.n : '', cardInfo: selK ? selK.c + ' · ' + selK.tipo + ' · ' + selK.v + ' · origem: ' + selK.o : '',
@@ -1647,7 +1699,7 @@ class Component extends DCLogic {
       movePrev: () => this.moveCard(-1), moveNext: () => this.moveCard(1),
       cardZap: () => selK && this.zap('Olá ' + selK.n.split(' ')[0] + '! Aqui é da Voltua Energia, tudo bem?'),
       clearAlertas: () => { this.setState({ alertasOff: true, notif: false }); this.toastMsg('Alertas marcados como lidos'); },
-      newContr: () => this.openAction('contract'),
+      newContr: () => this.setState({ modal: 'contract', form: {} }),
       newPed: () => this.openAction('purchase'),
       newCobr: () => this.openAction('charge'),
       newIncome: () => this.openAction('income'),
@@ -1760,13 +1812,13 @@ class Component extends DCLogic {
       propStats: [
         { l: 'Enviadas no mês', v: '32' }, { l: 'Taxa de aceite', v: '25%' }, { l: 'Ticket médio', v: 'R$ 48.900' }, { l: 'Tempo médio até aceite', v: '4,2 dias' }
       ],
-      contratos: [
+      contratos: (S.createdContracts || []).concat([
         Object.assign({ id: 'CT-315', cli: 'Cond. Vila Verde', obra: '38,0 kWp · Fortaleza', v: 'R$ 106.000', parc: 'Sinal + 5 parcelas', ass: '2/2', dias: 'assinado em 22/08', acao: 'Ver PDF' }, st('Assinado', G)),
         Object.assign({ id: 'CT-314', cli: 'Marcos Paiva', obra: '6,84 kWp · Fortaleza', v: 'R$ 32.400', parc: 'Sinal + 3 parcelas', ass: '1/2', dias: 'pendente há 6 dias', acao: 'Reenviar' }, st('Aguardando', A)),
         Object.assign({ id: 'CT-313', cli: 'Fazenda Ipê', obra: '54,7 kWp · Canindé', v: 'R$ 118.400', parc: 'Sinal + 6 parcelas', ass: '0/2', dias: 'pendente há 8 dias', acao: 'Reenviar' }, st('Aguardando', A)),
         Object.assign({ id: 'CT-311', cli: 'Ana Rocha', obra: '6,84 kWp · Eusébio', v: 'R$ 32.400', parc: 'Sinal + 6 parcelas', ass: '2/2', dias: 'assinado em 19/08', acao: 'Ver PDF' }, st('Assinado', G)),
         Object.assign({ id: 'CT-308', cli: 'Mercadinho São José', obra: '11,4 kWp · Caucaia', v: 'R$ 44.600', parc: 'À vista (PIX)', ass: '2/2', dias: 'assinado em 12/08', acao: 'Ver PDF' }, st('Concluído', GY))
-      ].map(c => Object.assign({}, c, {
+      ]).map(c => Object.assign({}, c, {
         act: e => { e.stopPropagation(); this.toastMsg(c.acao === 'Ver PDF' ? 'Contrato ' + c.id + ' aberto em PDF' : 'Contrato ' + c.id + ' reenviado para assinatura por WhatsApp'); },
         det: () => this.openDet('Contrato ' + c.id, c.cli + ' · ' + c.obra, [['Valor', c.v], ['Parcelamento', c.parc], ['Assinaturas', c.ass], ['Situação', c.dias], ['Status', c.s]], ['Ver contrato em PDF', () => this.toastMsg('Contrato ' + c.id + ' aberto em PDF')])
       })),
