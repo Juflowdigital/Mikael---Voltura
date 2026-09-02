@@ -164,6 +164,7 @@ body{background:#071225;color:#edf4ff}
       </div>
     </div>
     <div class="app-content" style="flex:1;overflow-y:auto">
+      <sc-if value="{{is_operational_subpage}}" hint-placeholder-val="{{false}}"><div style="padding:24px 26px;display:flex;flex-direction:column;gap:16px"><div style="display:flex;align-items:center"><div><div style="font-size:23px;font-weight:750">{{subpageTitle}}</div><div style="font-size:12px;color:#91a3c2;margin-top:4px">{{subpageDescription}}</div></div><div style="flex:1"></div><div onClick="{{subpagePrimary}}" style="background:#f6a623;color:#071225;padding:9px 15px;border-radius:9px;font-size:13px;font-weight:750;cursor:pointer">{{subpagePrimaryLabel}}</div></div><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px"><sc-for list="{{subpageStats}}" as="s" hint-placeholder-count="3"><div style="background:#101d34;border:1px solid #213250;border-radius:12px;padding:16px"><div style="font-size:12px;color:#91a3c2">{{s.l}}</div><div style="font-size:24px;font-weight:750;margin-top:5px">{{s.v}}</div><div style="font-size:11px;color:{{s.c}};margin-top:4px">{{s.d}}</div></div></sc-for></div><div style="background:#101d34;border:1px solid #213250;border-radius:12px;overflow:hidden"><div style="display:grid;grid-template-columns:1.4fr 1fr 1fr 120px;gap:12px;padding:12px 16px;background:#182640;color:#9fb3d9;font-size:11px;font-weight:700;text-transform:uppercase"><span>{{subpageCol1}}</span><span>{{subpageCol2}}</span><span>{{subpageCol3}}</span><span style="text-align:right">Ações</span></div><sc-for list="{{subpageRows}}" as="r" hint-placeholder-count="5"><div onClick="{{r.open}}" style="display:grid;grid-template-columns:1.4fr 1fr 1fr 120px;gap:12px;align-items:center;padding:13px 16px;border-top:1px solid #1d2d49;cursor:pointer"><div><b>{{r.a}}</b><div style="font-size:11px;color:#91a3c2;margin-top:3px">{{r.sub}}</div></div><span>{{r.b}}</span><span style="color:{{r.c}}">{{r.d}}</span><span style="text-align:right;color:#f6a623;font-size:12px;font-weight:650">Abrir ›</span></div></sc-for><sc-if value="{{subpageEmpty}}" hint-placeholder-val="{{false}}"><div style="padding:46px;text-align:center;color:#91a3c2">Nenhum registro encontrado nesta seção.</div></sc-if></div></div></sc-if>
       <sc-if value="{{is_dash}}" hint-placeholder-val="{{true}}">
         <div style="padding:24px 26px;display:flex;flex-direction:column;gap:18px">
           <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:14px">
@@ -1780,8 +1781,8 @@ class Component extends DCLogic {
       checkoutStyle: S.checkedOut,
       userNome: S.user.nome, userPerfil: S.user.perfil,
       userIni: S.user.nome.split(' ').map(w => w[0]).slice(0, 2).join(''),
-      screenTitle: (S.screen === 'config' && S.menuSelection?.startsWith('Administração|')) || (S.screen==='crm'&&S.menuSelection?.startsWith('Comercial|')) ? S.menuSelection.split('|')[1] : S.screen === 'cliente' ? (S.cliSel ? S.cliSel.n : 'Cliente') : (this.titles[S.screen] || [''])[0],
-      screenSub: S.screen === 'config' ? 'Administração da empresa' : S.screen==='crm'?'Gestão comercial':S.screen === 'cliente' ? 'Cadastro completo do cliente' : S.screen === 'dash' ? 'Visão geral · ' + perLabel : (this.titles[S.screen] || ['', ''])[1],
+      screenTitle: S.menuSelection ? S.menuSelection.split('|')[1] : S.screen === 'cliente' ? (S.cliSel ? S.cliSel.n : 'Cliente') : (this.titles[S.screen] || [''])[0],
+      screenSub: S.menuSelection ? S.menuSelection.split('|')[0] : S.screen === 'cliente' ? 'Cadastro completo do cliente' : S.screen === 'dash' ? 'Visão geral · ' + perLabel : (this.titles[S.screen] || ['', ''])[1],
       qVal: S.q, setQ: e => this.setState({ q: e.target.value }),
       searchOpen: !!S.q,
       searchResults: results.map(x => Object.assign({}, x, { go: () => { this.nav(x.sc); this.setState({ q: '' }); this.toastMsg('Aberto em: ' + (this.titles[x.sc] || [''])[0]); } })),
@@ -1836,9 +1837,51 @@ class Component extends DCLogic {
   }
   extraVals(st) {
     const S = this.state, G = this.G, A = this.A, R = this.R, B = this.B, GY = this.GY, O = this.O;
-    const scr = {}; ['dash','crm','orc','prop','contr','homol','obras','compras','estoque','frota','fin','cobr','om','equipe','rel','config'].forEach(k => scr['is_' + k] = S.screen === k);
+    const descriptions={
+      'Contratos|Gestão de Contratos':'Cadastre, edite, emita e acompanhe contratos profissionais.',
+      'Projetos|Gestão de Projetos':'Controle engenharia, documentos, aprovações e prazos por projeto.',
+      'Produção e Estoque|Produtos':'Catálogo técnico com estoque, custo, preço e fornecedores.',
+      'Produção e Estoque|Fornecedores':'Cadastro, contatos, condições comerciais e desempenho.',
+      'Produção e Estoque|Gestão de Produção':'Ordens, separação de kits e liberação para obra.',
+      'Produção e Estoque|Gestão de Estoque':'Saldos, reservas, lotes e movimentações do almoxarifado.',
+      'Produção e Estoque|Gestão de Compras':'Cotações, pedidos e aprovações de aquisição.',
+      'Produção e Estoque|Requisições de Material':'Solicitações de campo, separação e entrega de materiais.',
+      'Obras|Gestão de Obras':'Planejamento, execução, checklists, fotos e ocorrências.',
+      'Obras|Equipes':'Agenda, disponibilidade e produtividade das equipes de campo.',
+      'Pós-Vendas|Chamados':'Atendimento ao cliente com prioridade, SLA e histórico.',
+      'Pós-Vendas|Ordens de Serviço':'Visitas, técnicos, materiais e conclusão dos serviços.',
+      'Pós-Vendas|Controle de Satisfação':'Pesquisas, NPS, comentários e tratativas de experiência.',
+      'Vendas Avulsas|Gestão de Vendas':'Pedidos, produtos, pagamentos e entrega de vendas avulsas.',
+      'Financeiro|Lançamentos':'Receitas, despesas, vencimentos e categorias financeiras.',
+      'Financeiro|Caixas e Bancos':'Saldos, contas bancárias e movimentações conciliadas.',
+      'Financeiro|Centros de Custo':'Custos e resultados por área, obra e unidade.',
+      'Financeiro|Conciliação':'Comparação entre extrato bancário e lançamentos do sistema.',
+      'Financeiro|Notas Fiscais':'Emissão e acompanhamento de documentos fiscais.',
+      'Suprimentos e Patrimônio|Compras':'Central de requisições, cotações e pedidos.',
+      'Suprimentos e Patrimônio|Estoque':'Visão operacional de saldos, reservas e movimentações.',
+      'Suprimentos e Patrimônio|Patrimônio e Frota':'Veículos, ferramentas, manutenção e responsáveis.',
+      'Recursos Humanos|Colaboradores':'Cadastros, funções, contatos e situação da equipe.',
+      'Recursos Humanos|Metas e Permissões':'Metas individuais, perfis de acesso e responsabilidades.'
+    };
+    const buildOperational=key=>{
+      if(!descriptions[key])return null;
+      const title=key.split('|')[1], financial=/Lançamentos|Caixas|Custo|Conciliação|Fiscais/.test(title), people=/Equipes|Colaboradores|Permissões/.test(title), service=/Chamados|Serviço|Satisfação/.test(title), stock=/Produtos|Fornecedores|Produção|Estoque|Compras|Material/.test(title);
+      let cols=['Registro','Responsável','Situação'],raw=[['REG-2026-001','Atualizado hoje','Mykael','Em andamento',B],['REG-2026-002','Atualizado ontem','Equipe responsável','Ativo',G]];
+      if(financial){cols=['Lançamento','Vencimento','Valor'];raw=[['Parcela do contrato CT-0315','Patrícia Rodrigues','15/09/2026','R$ 120.000,17',A],['Fornecedor Solar Distribuidora','Pedido PC-088','05/09/2026','R$ 21.350,00',R]];}
+      else if(people){cols=['Equipe / colaborador','Função','Situação'];raw=[['Equipe de Campo A','3 integrantes','Instalação','Em atividade',G],['Diego Ferraz','Comercial','Vendedor','Ativo',G]];}
+      else if(service){cols=['Atendimento','Prioridade','Prazo'];raw=[['CH-2026-014 · Ana Rocha','Falha no inversor','Alta','4 horas',R],['OS-2026-009 · Cond. Vila Verde','Visita técnica','Normal','03/09 09:00',B]];}
+      else if(stock){cols=['Item / documento','Quantidade','Situação'];raw=[['Módulo bifacial 570 W','SKU MOD-570-BF','100 un.','Disponível',G],['Pedido PC-2026-088','Solar Distribuidora','24 itens','Em aprovação',A]];}
+      else if(/Contrato/.test(title)){cols=['Contrato / cliente','Valor','Situação'];raw=[['CT-2026-0315','Patrícia Rodrigues','R$ 120.000,17','Em vistoria',A],['CT-2026-0316','Neide Oliveira','R$ 17.500,93','Em produção',B]];}
+      else if(/Projeto|Obra/.test(title)){cols=['Projeto / cliente','Etapa','Prazo'];raw=[['PRJ-2026-0315','Patrícia Rodrigues','Vistoria técnica','Em atraso',R],['PRJ-2026-0316','Neide Oliveira','Produção','12/09/2026',B]];}
+      const rows=raw.map(r=>({a:r[0],sub:r[1],b:r[2],d:r[3],c:r[4],open:()=>this.openDet(title+' · '+r[0],r[1],[[cols[1],r[2]],[cols[2],r[3]]])}));
+      const primary=/Contratos/.test(key)?()=>this.setState({modal:'contract',form:{}}):/Compras/.test(title)?()=>this.openAction('purchase'):/Lançamentos/.test(title)?()=>this.openAction('income'):rows[0].open;
+      return {title,description:descriptions[key],cols,rows,primary,primaryLabel:/Contratos/.test(key)?'Criar contrato':/Compras/.test(title)?'Nova compra':/Lançamentos/.test(title)?'Novo lançamento':'Abrir primeiro registro',stats:[['Registros',String(rows.length),G,'Nesta seção'],['Pendências',String(rows.filter(r=>r.c===R||r.c===A).length),A,'Precisam de atenção'],['Atualização','Hoje',B,'Dados sincronizados']]};
+    };
+    const operational=buildOperational(S.menuSelection);
+    const scr = {}; ['dash','crm','orc','prop','contr','homol','obras','compras','estoque','frota','fin','cobr','om','equipe','rel','config'].forEach(k => scr['is_' + k] = S.screen === k && !operational);
     const TXT = 'light-dark(#16262b,#e8eef0)', MUT = 'light-dark(#8a979b,#5f7883)';
     return Object.assign(scr, {
+      is_operational_subpage:!!operational,subpageTitle:operational?.title||'',subpageDescription:operational?.description||'',subpagePrimary:operational?.primary||(()=>{}),subpagePrimaryLabel:operational?.primaryLabel||'',subpageStats:(operational?.stats||[]).map(x=>({l:x[0],v:x[1],c:x[2],d:x[3]})),subpageCol1:operational?.cols?.[0]||'',subpageCol2:operational?.cols?.[1]||'',subpageCol3:operational?.cols?.[2]||'',subpageRows:operational?.rows||[],subpageEmpty:!!operational&&!operational.rows.length,
       crmShowClients:S.menuSelection==='Comercial|Clientes',crmShowLeads:S.menuSelection==='Comercial|Leads',crmShowManagement:S.menuSelection==='Comercial|Gestão de Negociações',crmShowFunnel:!['Comercial|Clientes','Comercial|Leads','Comercial|Gestão de Negociações'].includes(S.menuSelection)||S.menuSelection==='Comercial|Funil de Vendas',
       crmClients:this.mapFunil(this.getFunil()).flatMap(col=>col.cards).map(c=>({n:c.n,city:c.c,type:c.tipo,source:c.o,value:c.v,open:()=>this.setState({screen:'cliente',cliSel:c})})),
       crmLeads:this.mapFunil(this.getFunil()).slice(0,2).flatMap(col=>col.cards).map(c=>({n:c.n,city:c.c,type:c.tipo,source:c.o,value:c.v,open:c.open})),crmManagementStats:[{l:'Negociações ativas',v:String(this.getFunil().slice(0,5).reduce((n,c)=>n+c.cards.length,0))},{l:'Propostas enviadas',v:String(this.getFunil()[3]?.cards.length||0)},{l:'Fechamentos',v:String(this.getFunil()[5]?.cards.length||0)}],
