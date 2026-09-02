@@ -1833,9 +1833,9 @@ class Component extends DCLogic {
       st
     };
     if (S.cleanDemo) ['pdfGer','pdfStats','cliContato','cliTimeline','cliDocs','kpis','vendas','funilResumo','alertas','movs','atividades','canais','orcEntrada','custos','financ','propStats','contratos','homolEtapas','homols','homolDocs','concPrazos','obrasList','checklist','campoFeats','pedidos','cotacoes','estStats','estItens','estMovs','consumoObra','veiculos','ferramentas','finKpis','pagar','receber','custoObras','dre','comissoes','cobrStats','omStats','chamados','geracao','omContratos','metas','auditoria','colabs','cfgEmpresaRows','cfgKitsRows','integracoes'].forEach(key => { vals[key] = []; });
-    return Object.assign(vals, this.extraVals(st));
+    return Object.assign(vals, this.extraVals(st, dimensionScenarios, idealPrice));
   }
-  extraVals(st) {
+  extraVals(st, dimensionScenarios, idealPrice) {
     const S = this.state, G = this.G, A = this.A, R = this.R, B = this.B, GY = this.GY, O = this.O;
     const descriptions={
       'Contratos|Gestão de Contratos':'Cadastre, edite, emita e acompanhe contratos profissionais.',
