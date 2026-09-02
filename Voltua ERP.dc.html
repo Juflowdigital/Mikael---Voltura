@@ -1058,6 +1058,8 @@ body{background:#071225;color:#edf4ff}
 </sc-if>
 <sc-if value="{{is_config}}" hint-placeholder-val="{{false}}">
   <div style="padding:24px 26px;display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start">
+    <sc-if value="{{cfgShowOverview}}" hint-placeholder-val="{{false}}"><div style="grid-column:1/-1;display:grid;grid-template-columns:repeat(4,1fr);gap:12px"><sc-for list="{{adminOverview}}" as="a" hint-placeholder-count="4"><div style="background:#101d34;border:1px solid #213250;border-radius:12px;padding:17px"><div style="font-size:12px;color:#91a3c2">{{a.l}}</div><div style="font-size:23px;font-weight:750;margin-top:5px">{{a.v}}</div><div style="font-size:11px;color:{{a.c}};margin-top:4px">{{a.d}}</div></div></sc-for></div></sc-if>
+    <sc-if value="{{cfgShowCompany}}" hint-placeholder-val="{{false}}">
     <div style="background:light-dark(#ffffff,#10242b);border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:12px;padding:18px 20px;display:flex;flex-direction:column;gap:4px">
       <div style="font-family:'Space Grotesk';font-size:15px;font-weight:600">Dados da empresa</div>
       <div style="display:flex;flex-direction:column;margin-top:8px">
@@ -1069,6 +1071,8 @@ body{background:#071225;color:#edf4ff}
       </div>
       <div onClick="{{cfgEmpresa}}" style="margin-top:12px;align-self:flex-start;font-size:12.5px;font-weight:600;color:#f97316;border:1px solid rgba(249,115,22,.4);border-radius:9px;padding:8px 14px;cursor:pointer" style-hover="background:rgba(249,115,22,.08)">Editar dados e logo</div>
     </div>
+    </sc-if>
+    <sc-if value="{{cfgShowGeneral}}" hint-placeholder-val="{{false}}">
     <div style="background:light-dark(#ffffff,#10242b);border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:12px;padding:18px 20px">
       <div style="font-family:'Space Grotesk';font-size:15px;font-weight:600">Notificações e alertas</div>
       <div style="font-size:12px;color:light-dark(#5c6b70,#8ba0a6);margin-top:2px">O que dispara alerta no sino e por WhatsApp</div>
@@ -1111,6 +1115,10 @@ body{background:#071225;color:#edf4ff}
         </div>
       </div>
     </div>
+    </sc-if>
+    <sc-if value="{{cfgShowModels}}" hint-placeholder-val="{{false}}"><div style="grid-column:1/-1;background:#101d34;border:1px solid #213250;border-radius:12px;padding:20px"><div style="display:flex;align-items:center"><div><div style="font-size:18px;font-weight:700">Modelos de documentos</div><div style="font-size:12px;color:#91a3c2;margin-top:3px">Propostas, contratos, ordens de serviço e comunicações padronizadas.</div></div><div style="flex:1"></div><div onClick="{{addModel}}" style="background:#f6a623;color:#071225;border-radius:9px;padding:9px 14px;font-size:12.5px;font-weight:750;cursor:pointer">+ Novo modelo</div></div><div style="margin-top:16px;display:flex;flex-direction:column;gap:8px"><sc-for list="{{documentModels}}" as="m" hint-placeholder-count="3"><div style="display:flex;align-items:center;padding:12px 14px;background:#0b172c;border:1px solid #263754;border-radius:9px"><span style="font-weight:650;flex:1">{{m.name}}</span><span style="font-size:11px;color:{{m.c}}">{{m.status}}</span><div onClick="{{m.toggle}}" style="margin-left:14px;color:#f6a623;font-size:12px;cursor:pointer">{{m.action}}</div></div></sc-for></div></div></sc-if>
+    <sc-if value="{{cfgShowRules}}" hint-placeholder-val="{{false}}"><div style="grid-column:1/-1;background:#101d34;border:1px solid #213250;border-radius:12px;padding:20px"><div style="display:flex;align-items:center"><div><div style="font-size:18px;font-weight:700">Regras de aprovação</div><div style="font-size:12px;color:#91a3c2;margin-top:3px">Defina quais operações exigem aprovação antes de prosseguir.</div></div><div style="flex:1"></div><div onClick="{{addRule}}" style="background:#f6a623;color:#071225;border-radius:9px;padding:9px 14px;font-size:12.5px;font-weight:750;cursor:pointer">+ Nova regra</div></div><div style="margin-top:16px;display:flex;flex-direction:column;gap:8px"><sc-for list="{{approvalRules}}" as="m" hint-placeholder-count="3"><div style="display:flex;align-items:center;padding:12px 14px;background:#0b172c;border:1px solid #263754;border-radius:9px"><span style="font-weight:650;flex:1">{{m.name}}</span><span style="font-size:11px;color:{{m.c}}">{{m.status}}</span><div onClick="{{m.toggle}}" style="margin-left:14px;color:#f6a623;font-size:12px;cursor:pointer">{{m.action}}</div></div></sc-for></div></div></sc-if>
+    <sc-if value="{{cfgShowIntegrations}}" hint-placeholder-val="{{false}}">
     <div style="grid-column:1/-1;background:light-dark(#ffffff,#10242b);border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:12px;padding:18px 20px">
       <div style="font-family:'Space Grotesk';font-size:15px;font-weight:600">Integrações</div>
       <div style="font-size:12px;color:light-dark(#5c6b70,#8ba0a6);margin-top:2px">As opcionais dependem de plataformas de terceiros com mensalidade própria, paga direto ao fornecedor</div>
@@ -1127,6 +1135,7 @@ body{background:#071225;color:#edf4ff}
         </sc-for>
       </div>
     </div>
+    </sc-if>
   </div>
 </sc-if>
 <sc-if value="{{is_cliente}}" hint-placeholder-val="{{false}}">
@@ -1434,7 +1443,7 @@ class Component extends DCLogic {
       sb.from('leads').select('id,name,city,customer_type,source,stage,estimated_value,created_at').eq('organization_id', organizationId).order('created_at', { ascending: false }),
       sb.from('proposals').select('id,proposal_number,status,total_value,created_at,clients(name),budgets(system_power_kwp)').eq('organization_id', organizationId).order('created_at', { ascending: false }),
       sb.from('organizations').select('name,legal_name,tax_id,city,state,utility_company,logo_path,address,branches').eq('id', organizationId).single(),
-      sb.from('organization_settings').select('calculation,alerts,integrations').eq('organization_id', organizationId).maybeSingle()
+      sb.from('organization_settings').select('calculation,alerts,integrations,document_models,approval_rules').eq('organization_id', organizationId).maybeSingle()
     ]);
     if (leadsError) throw leadsError;
     if (proposalsError) throw proposalsError;
@@ -1449,7 +1458,7 @@ class Component extends DCLogic {
     const props = (proposals || []).map(p => Object.assign({ dbId: p.id, id: '#' + p.proposal_number, cli: p.clients?.name || 'Cliente', data: new Date(p.created_at).toLocaleDateString('pt-BR'), pot: (p.budgets?.system_power_kwp || '—') + ' kWp', v: this.money(p.total_value), ver: 'v1' }, this.stm(labels[p.status] || p.status, colors[p.status] || this.GY)));
     let logoUrl = '';
     if (company?.logo_path) { const signed = await sb.storage.from('documents').createSignedUrl(company.logo_path, 3600); logoUrl = signed.data?.signedUrl || ''; }
-    this.setState({ funil, props, company: company || {}, settings: settings || { calculation:{}, alerts:{}, integrations:{} }, companyLogoUrl: logoUrl, cfgT: settings?.alerts?.toggles || null });
+    this.setState({ funil, props, company: company || {}, settings: settings || { calculation:{}, alerts:{}, integrations:{}, document_models:[], approval_rules:[] }, companyLogoUrl: logoUrl, cfgT: settings?.alerts?.toggles || null });
   }
   async enterSession(session) {
     const sb = await this.sb();
@@ -1620,6 +1629,8 @@ class Component extends DCLogic {
   async createInvitation() { const fm=this.state.form,email=String(fm.inviteEmail||'').trim().toLowerCase();if(!/^\S+@\S+\.\S+$/.test(email)){this.toastMsg('Informe um e-mail válido');return;}try{const sb=await this.sb();const invoked=await sb.functions.invoke('invite-user',{body:{email,fullName:fm.inviteName||'',role:fm.inviteRole||'viewer',jobTitle:fm.inviteJob||'',organizationId:this.state.organizationId,redirectTo:location.href.split('?')[0]}});if(invoked.error)throw invoked.error;this.setState({modal:null,form:{}});this.toastMsg('Convite enviado por e-mail com sucesso');}catch(e){this.toastMsg('Erro ao enviar convite: '+(e.context?.error||e.message));}}
   exportReport(title,format) { if(format==='pdf'){window.print();return;}const rows=[['Relatório',title],['Empresa',this.state.company?.legal_name||this.state.company?.name||'Voltura'],['Período',this.state.periodo],['Exportado em',new Date().toLocaleString('pt-BR')]],csv=rows.map(r=>r.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(';')).join('\n'),blob=new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=title.toLowerCase().replace(/[^a-z0-9]+/g,'-')+'.csv';a.click();URL.revokeObjectURL(a.href);this.toastMsg('Relatório exportado para Excel/CSV'); }
   async pickWorkPhoto() { const input=document.createElement('input');input.type='file';input.accept='image/*';input.capture='environment';input.onchange=async()=>{const file=input.files?.[0];if(!file)return;try{const sb=await this.sb(),path=this.state.organizationId+'/work-photos/'+Date.now()+'-'+file.name.replace(/[^a-zA-Z0-9._-]/g,'_'),r=await sb.storage.from('work-photos').upload(path,file);if(r.error)throw r.error;this.toastMsg('Foto enviada e vinculada ao registro de campo');}catch(e){this.toastMsg('Erro ao enviar foto: '+e.message)}};input.click(); }
+  async addAdminItem(kind) { const isModel=kind==='document_models',name=window.prompt(isModel?'Nome do novo modelo de documento:':'Nome da nova regra de aprovação:');if(!name?.trim())return;const current=this.state.settings||{},list=(current[kind]||[]).slice();list.push({id:crypto.randomUUID(),name:name.trim(),active:true,created_at:new Date().toISOString()});try{const sb=await this.sb(),r=await sb.from('organization_settings').update({[kind]:list}).eq('organization_id',this.state.organizationId).select().single();if(r.error)throw r.error;this.setState({settings:r.data});this.toastMsg((isModel?'Modelo':'Regra')+' criado com sucesso');}catch(e){this.toastMsg('Erro ao salvar: '+e.message);}}
+  async toggleAdminItem(kind,id) { const current=this.state.settings||{},list=(current[kind]||[]).map(x=>x.id===id?Object.assign({},x,{active:!x.active}):x);try{const sb=await this.sb(),r=await sb.from('organization_settings').update({[kind]:list}).eq('organization_id',this.state.organizationId).select().single();if(r.error)throw r.error;this.setState({settings:r.data});}catch(e){this.toastMsg('Erro ao atualizar: '+e.message);}}
   async scanBarcode() { const code=window.prompt('Leia com o scanner ou digite o código/SKU do produto:');if(!code)return;try{const sb=await this.sb(),r=await sb.from('inventory_items').select('*').eq('organization_id',this.state.organizationId).or('sku.eq.'+code+',barcode.eq.'+code).limit(1).maybeSingle();if(r.error)throw r.error;if(!r.data){this.toastMsg('Nenhum item encontrado para o código '+code);return;}this.openDet('Item localizado',r.data.name||code,[['SKU',r.data.sku||code],['Quantidade',r.data.quantity||0],['Local',r.data.location||'—']]);}catch(e){this.toastMsg('Erro ao consultar código: '+e.message);} }
   getParc() { return this.state.parc ?? this.parcBase(); }
   baixa(i) {
@@ -1758,8 +1769,8 @@ class Component extends DCLogic {
       checkoutStyle: S.checkedOut,
       userNome: S.user.nome, userPerfil: S.user.perfil,
       userIni: S.user.nome.split(' ').map(w => w[0]).slice(0, 2).join(''),
-      screenTitle: S.screen === 'cliente' ? (S.cliSel ? S.cliSel.n : 'Cliente') : (this.titles[S.screen] || [''])[0],
-      screenSub: S.screen === 'cliente' ? 'Cadastro completo do cliente' : S.screen === 'dash' ? 'Visão geral · ' + perLabel : (this.titles[S.screen] || ['', ''])[1],
+      screenTitle: S.screen === 'config' && S.menuSelection?.startsWith('Administração|') ? S.menuSelection.split('|')[1] : S.screen === 'cliente' ? (S.cliSel ? S.cliSel.n : 'Cliente') : (this.titles[S.screen] || [''])[0],
+      screenSub: S.screen === 'config' ? 'Administração da empresa' : S.screen === 'cliente' ? 'Cadastro completo do cliente' : S.screen === 'dash' ? 'Visão geral · ' + perLabel : (this.titles[S.screen] || ['', ''])[1],
       qVal: S.q, setQ: e => this.setState({ q: e.target.value }),
       searchOpen: !!S.q,
       searchResults: results.map(x => Object.assign({}, x, { go: () => { this.nav(x.sc); this.setState({ q: '' }); this.toastMsg('Aberto em: ' + (this.titles[x.sc] || [''])[0]); } })),
@@ -2030,6 +2041,9 @@ class Component extends DCLogic {
         Object.assign({ n: 'João Batista', f: 'Instalador líder', p: 'Instalador', mod: 'Apenas obras designadas (app)', ult: 'há 3 min' }, st('Campo', A)),
         Object.assign({ n: 'Camila Duarte', f: 'Analista financeira', p: 'Financeiro', mod: 'Financeiro, Cobranças, Relatórios', ult: 'há 40 min' }, st('Financeiro', G))
       ], c => [c.n, c.f, [['Perfil de acesso', c.p], ['Módulos visíveis', c.mod], ['Último acesso', c.ult]], ['Editar permissões', () => this.toastMsg('Permissões de ' + c.n + ' abertas')]]),
+      cfgShowOverview: !S.menuSelection || S.menuSelection==='Administração|Visão Geral', cfgShowCompany:S.menuSelection==='Administração|Minha Empresa', cfgShowIntegrations:S.menuSelection==='Administração|Integrações', cfgShowModels:S.menuSelection==='Administração|Modelos', cfgShowRules:S.menuSelection==='Administração|Regras de Aprovação', cfgShowGeneral:S.menuSelection==='Administração|Configurações Gerais',
+      adminOverview:[{l:'Usuários ativos',v:'1',d:'Gerencie em Usuários',c:G},{l:'Modelos',v:String((S.settings?.document_models||[]).length),d:'Documentos configurados',c:B},{l:'Regras de aprovação',v:String((S.settings?.approval_rules||[]).filter(x=>x.active).length),d:'Regras ativas',c:A},{l:'Integrações',v:String(Object.values(S.settings?.integrations||{}).filter(Boolean).length),d:'Serviços ativos',c:G}],
+      documentModels:(S.settings?.document_models||[]).map(m=>Object.assign({},m,{status:m.active?'Ativo':'Inativo',c:m.active?G:GY,action:m.active?'Desativar':'Ativar',toggle:()=>this.toggleAdminItem('document_models',m.id)})),approvalRules:(S.settings?.approval_rules||[]).map(m=>Object.assign({},m,{status:m.active?'Ativa':'Inativa',c:m.active?G:GY,action:m.active?'Desativar':'Ativar',toggle:()=>this.toggleAdminItem('approval_rules',m.id)})),addModel:()=>this.addAdminItem('document_models'),addRule:()=>this.addAdminItem('approval_rules'),
       cfgEmpresaRows: (()=>{const c=S.company||{};return [{l:'Razão social',v:c.legal_name||c.name||'—'},{l:'CNPJ',v:c.tax_id||'—'},{l:'Cidade-sede',v:[c.city,c.state].filter(Boolean).join('-')||'—'},{l:'Concessionária padrão',v:c.utility_company||'—'},{l:'Filiais',v:c.branches||'—'}]})(),
       cfgKitsRows: (()=>{const c=S.settings?.calculation||{};return [{l:'Margem padrão dos kits',v:(c.margin??10.2)+'%'},{l:'Fator de perdas',v:(c.loss_factor??18)+'%'},{l:'Tarifa de referência',v:'R$ '+(c.reference_tariff??1.2)+'/kWh'},{l:'Irradiação solar',v:c.irradiation||'Tabela regional embutida'},{l:'Módulo padrão',v:(c.module_power_w||570)+'W '+(c.module_model||'bifacial')}]})(),
       cfgEmpresa: () => {const c=S.company||{};this.setState({modal:'company',form:{tradeName:c.name||'',legalName:c.legal_name||'',companyTaxId:c.tax_id||'',companyCity:c.city||'',companyState:c.state||'',companyUtility:c.utility_company||'',companyAddress:c.address||'',companyBranches:c.branches||''}})},
