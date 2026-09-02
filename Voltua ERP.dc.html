@@ -104,13 +104,16 @@ body{background:#071225;color:#edf4ff}
     </div>
     <div style="flex:1;overflow-y:auto;padding:4px 10px 12px;display:flex;flex-direction:column;gap:2px">
       <sc-for list="{{navGroups}}" as="g" hint-placeholder-count="5">
-        <div style="font-size:10px;letter-spacing:.09em;text-transform:uppercase;color:rgba(255,255,255,.38);padding:14px 8px 5px;font-weight:600">{{g.label}}</div>
-        <sc-for list="{{g.items}}" as="it" hint-placeholder-count="3">
-          <div onClick="{{it.go}}" style="display:flex;align-items:center;gap:9px;padding:8px;border-radius:8px;cursor:pointer;background:{{it.bg}}" style-hover="background:rgba(255,255,255,.07)">
-            <span style="display:grid;place-items:center;width:18px;height:18px;font-size:14px;color:{{it.numc}}">{{it.icon}}</span>
-            <span style="font-size:13px;color:{{it.cl}};font-weight:500">{{it.label}}</span>
+        <div onClick="{{g.toggle}}" style="display:flex;align-items:center;gap:10px;padding:11px 10px;border-radius:8px;cursor:pointer;background:{{g.bg}};color:{{g.cl}}" style-hover="background:rgba(255,255,255,.07)">
+          <span style="display:grid;place-items:center;width:22px;font-size:17px">{{g.icon}}</span><span style="font-size:13px;font-weight:650;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{g.label}}</span><span style="font-size:13px;color:#91a3c2">{{g.chevron}}</span>
+        </div>
+        <sc-if value="{{g.open}}" hint-placeholder-val="{{false}}">
+          <div style="display:flex;flex-direction:column;padding:2px 4px 6px 42px;gap:1px">
+            <sc-for list="{{g.items}}" as="it" hint-placeholder-count="4">
+              <div onClick="{{it.go}}" style="font-size:12.5px;color:{{it.cl}};font-weight:{{it.weight}};padding:7px 8px;border-radius:7px;cursor:pointer;background:{{it.bg}}" style-hover="color:#fff;background:rgba(255,255,255,.06)">{{it.label}}</div>
+            </sc-for>
           </div>
-        </sc-for>
+        </sc-if>
       </sc-for>
     </div>
     <div style="border-top:1px solid rgba(255,255,255,.1);padding:12px 14px;display:flex;align-items:center;gap:10px">
@@ -1412,7 +1415,7 @@ body{background:#071225;color:#edf4ff}
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props="{&quot;modoEscuro&quot;: {&quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: false, &quot;tsType&quot;: &quot;boolean&quot;, &quot;section&quot;: &quot;Aparência&quot;}, &quot;mostrarMapa&quot;: {&quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: true, &quot;tsType&quot;: &quot;boolean&quot;, &quot;section&quot;: &quot;Dashboard&quot;}}">
 class Component extends DCLogic {
-  state = { screen: 'login', menuOpen: false, darkSet: true, cleanDemo: false, user: { nome: 'Usuário', perfil: 'Visualizador' }, toast: '', modal: null, actionType: '', actionName: '', actionValue: '', userId: null, organizationId: null, consumo: 650, funil: null, props: null, parc: null, chkDone: null, alertasOff: false, checkedOut: false, form: {}, detail: null, q: '', periodo: 'Mês', perIni: '', perFim: '', cfgT: null, pdfP: null, cliSel: null, authEmail: '', authPassword: '', authLoading: true, authError: '' };
+  state = { screen: 'login', menuOpen: false, expandedMenu: 'Comercial', darkSet: true, cleanDemo: false, user: { nome: 'Usuário', perfil: 'Visualizador' }, toast: '', modal: null, actionType: '', actionName: '', actionValue: '', userId: null, organizationId: null, consumo: 650, funil: null, props: null, parc: null, chkDone: null, alertasOff: false, checkedOut: false, form: {}, detail: null, q: '', periodo: 'Mês', perIni: '', perFim: '', cfgT: null, pdfP: null, cliSel: null, authEmail: '', authPassword: '', authLoading: true, authError: '' };
   componentDidMount() { this.restoreSession(); }
   async sb() {
     for (let i = 0; i < 100 && !window.voltuaSupabase; i++) await new Promise(r => setTimeout(r, 30));
@@ -1613,12 +1616,17 @@ class Component extends DCLogic {
     equipe: ['Equipe, Metas e Permissões', 'Módulo 14'], rel: ['Relatórios e Exportações', 'Módulo 16'], config: ['Configurações', 'Empresa, cálculo, alertas e integrações']
   };
   navDef = [
-    ['Visão geral', [['dash', '15', 'Dashboard', '⌂']]],
-    ['Comercial', [['crm', '01', 'CRM e Funil', '◎'], ['orc', '02', 'Orçamentos', '◇'], ['prop', '03', 'Propostas', '▤'], ['contr', '04', 'Contratos', '▱']]],
-    ['Operações', [['homol', '05', 'Homologação', '✓'], ['obras', '06', 'Obras', '⌘'], ['compras', '08', 'Compras', '⇄'], ['estoque', '09', 'Estoque', '▥'], ['frota', '10', 'Patrimônio e Frota', '◇']]],
-    ['Financeiro', [['fin', '11', 'Financeiro', '▣'], ['cobr', '12', 'Cobranças', '◌']]],
-    ['Pós-venda', [['om', '13', 'O&M e Assistência', '↻']]],
-    ['Gestão', [['equipe', '14', 'Equipe e Metas', '♙'], ['rel', '16', 'Relatórios', '▥'], ['config', '17', 'Configurações', '⚙']]]
+    ['Administração','🛡️',[['config','Visão Geral'],['config','Minha Empresa'],['config','Integrações'],['equipe','Usuários'],['config','Modelos'],['config','Regras de Aprovação'],['config','Configurações Gerais']]],
+    ['Comercial','👋',[['dash','Visão Geral'],['crm','Clientes'],['crm','Leads'],['orc','Dimensionamentos'],['crm','Gestão de Negociações'],['crm','Funil de Vendas'],['rel','Relatórios']]],
+    ['Contratos','🗂️',[['contr','Visão Geral'],['contr','Gestão de Contratos'],['rel','Relatórios']]],
+    ['Projetos','🛠️',[['homol','Visão Geral'],['homol','Gestão de Projetos'],['rel','Relatórios']]],
+    ['Produção e Estoque','📦',[['estoque','Visão Geral'],['estoque','Produtos'],['compras','Fornecedores'],['compras','Gestão de Produção'],['estoque','Gestão de Estoque'],['compras','Gestão de Compras'],['compras','Requisições de Material'],['rel','Relatórios']]],
+    ['Obras','🏗️',[['obras','Visão Geral'],['obras','Gestão de Obras'],['obras','Equipes'],['rel','Relatórios']]],
+    ['Pós-Vendas','🎧',[['om','Visão Geral'],['om','Chamados'],['om','Ordens de Serviço'],['om','Controle de Satisfação'],['rel','Relatórios']]],
+    ['Vendas Avulsas','🎁',[['prop','Visão Geral'],['prop','Gestão de Vendas'],['rel','Relatórios']]],
+    ['Financeiro','💰',[['fin','Visão Geral'],['fin','Lançamentos'],['fin','Caixas e Bancos'],['fin','Centros de Custo'],['cobr','Conciliação'],['fin','Notas Fiscais'],['rel','Relatórios']]],
+    ['Suprimentos e Patrimônio','🛒',[['compras','Compras'],['estoque','Estoque'],['frota','Patrimônio e Frota'],['rel','Relatórios']]],
+    ['Recursos Humanos','👥',[['equipe','Colaboradores'],['equipe','Metas e Permissões'],['rel','Relatórios']]]
   ];
   perfisDef = [
     ['Administrador', 'Acesso total: módulos, financeiro e configurações', 'AD'],
@@ -1732,13 +1740,10 @@ class Component extends DCLogic {
         nome, desc, ini,
         go: () => this.toastMsg('Perfis são definidos pelo administrador no cadastro da equipe')
       })),
-      navGroups: this.navDef.map(([label, items]) => ({
-        label,
-        items: items.filter(([id]) => this.allowed(id)).map(([id, num, lb, icon]) => {
-          const on = S.screen === id;
-          return { num, icon, label: lb, go: () => this.nav(id), bg: on ? 'rgba(249,115,22,.16)' : 'transparent', cl: on ? '#fff' : 'rgba(255,255,255,.72)', numc: on ? '#f9a35b' : 'rgba(255,255,255,.35)' };
-        })
-      })).filter(g => g.items.length),
+      navGroups: this.navDef.map(([label, icon, items]) => {
+        const visible = items.filter(([id]) => this.allowed(id)), active = S.menuSelection ? S.menuSelection.startsWith(label + '|') : visible.some(([id]) => id === S.screen), open = S.expandedMenu === label;
+        return { label, icon, open, chevron: open ? '⌄' : '›', toggle: () => this.setState({ expandedMenu: open ? '' : label }), bg: active ? 'rgba(255,255,255,.08)' : 'transparent', cl: active ? '#fff' : 'rgba(255,255,255,.72)', items: visible.map(([id, lb], vi) => { const key = label + '|' + lb, on = S.menuSelection ? S.menuSelection === key : S.screen === id && vi === visible.findIndex(([firstId]) => firstId === id); return { label: lb, go: () => { this.setState({ expandedMenu: label, menuSelection: key }); this.nav(id); }, bg: on ? 'rgba(246,166,35,.09)' : 'transparent', cl: on ? '#fff' : 'rgba(220,230,247,.7)', weight: on ? '700' : '500' }; }) };
+      }).filter(g => g.items.length),
       kpis: this.detMap([
         { l: 'Propostas', v: perK.prop, d: perK.d1, dc: G },
         { l: 'kWp vendidos', v: perK.kwp, d: perK.d2, dc: G },
