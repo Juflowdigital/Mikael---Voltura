@@ -2,7 +2,7 @@ import { readFileSync, readdirSync, statSync } from 'node:fs'
 import { join } from 'node:path'
 
 const roots = ['src']
-const extraFiles = ['Voltua ERP.dc.html', 'map.html', 'index.html', 'app.html']
+const extraFiles = ['index.html']
 
 function walk(dir) {
   const found = []

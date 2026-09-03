@@ -572,3 +572,68 @@ export interface EnergyGeneration {
   generated_kwh: number
   source: string
 }
+
+/* ---------- Patrimônio, vendas avulsas e RH ---------- */
+
+export interface Asset {
+  id: string
+  asset_tag: string
+  name: string
+  category: string
+  serial_number: string | null
+  status: string
+  responsible_id: string | null
+  work_id: string | null
+  location: string | null
+  acquisition_date: string | null
+  acquisition_value: number | null
+  next_maintenance_at: string | null
+  metadata: Record<string, unknown>
+  created_at: string
+}
+
+export type MaintenanceStatus = 'draft' | 'pending' | 'active' | 'completed' | 'cancelled'
+
+export interface AssetMaintenance {
+  id: string
+  asset_id: string
+  description: string
+  status: MaintenanceStatus
+  scheduled_at: string | null
+  completed_at: string | null
+  cost: number | null
+  provider: string | null
+  created_at: string
+}
+
+export type DirectSaleStatus = 'draft' | 'confirmed' | 'delivered' | 'cancelled'
+
+export interface DirectSale {
+  id: string
+  sale_number: string
+  client_id: string | null
+  seller_id: string | null
+  status: DirectSaleStatus
+  sold_at: string
+  total_value: number
+  payment_method: string | null
+  notes: string | null
+  created_at: string
+}
+
+export interface DirectSaleItem {
+  id: string
+  sale_id: string
+  inventory_item_id: string | null
+  description: string
+  quantity: number
+  unit_price: number
+}
+
+export interface SalesGoal {
+  id: string
+  user_id: string
+  reference_month: string
+  target_kwp: number | null
+  target_revenue: number | null
+}
