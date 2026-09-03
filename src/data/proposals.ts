@@ -1,10 +1,10 @@
 /** Repositorio de propostas comerciais. */
-import { list } from './db'
+import { insert, list } from './db'
 import type { Proposal, ProposalStatus } from '../core/types'
 import type { Tone } from '../ui/components/badge'
 
 const SELECT =
-  'id,client_id,budget_id,proposal_number,status,total_value,valid_until,created_at,clients(name,city,state),budgets(system_power_kwp)'
+  'id,client_id,budget_id,proposal_number,title,status,total_value,valid_until,business_unit_id,seller_id,manager_id,metadata,created_at,clients(name,city,state),budgets(system_power_kwp)'
 
 export const PROPOSAL_LABEL: Record<ProposalStatus, string> = {
   draft: 'Rascunho',
@@ -26,6 +26,36 @@ export const PROPOSAL_TONE: Record<ProposalStatus, Tone> = {
 
 export function findAll(): Promise<Proposal[]> {
   return list<Proposal>('proposals', { select: SELECT, orderBy: 'created_at' })
+}
+
+
+export interface ProposalInput {
+  proposal_number: string
+  title: string | null
+  client_id: string
+  budget_id: string | null
+  status: ProposalStatus
+  total_value: number
+  valid_until: string | null
+  business_unit_id: string | null
+  seller_id: string | null
+  manager_id: string | null
+  metadata: Record<string, unknown>
+}
+
+export function create(input: ProposalInput): Promise<Proposal> {
+  return insert<Proposal>('proposals', { ...input })
+}
+
+/** Numeracao sequencial por mes, no mesmo padrao dos contratos (PR-AAAAMM-000). */
+export function nextNumber(existing: Proposal[]): string {
+  const prefix = 'PR-' + new Date().toISOString().slice(0, 7).replace('-', '')
+  const used = existing
+    .map((proposal) => proposal.proposal_number)
+    .filter((number) => number.startsWith(prefix))
+    .map((number) => Number(number.split('-')[2]) || 0)
+  const next = (used.length ? Math.max(...used) : 0) + 1
+  return prefix + '-' + String(next).padStart(3, '0')
 }
 
 export function clientName(proposal: Proposal): string {

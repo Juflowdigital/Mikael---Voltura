@@ -1,8 +1,16 @@
 import { existsSync, readFileSync } from 'node:fs'
 
 const problems = []
-const navigation = readFileSync('src/shell/navigation.ts', 'utf8')
-const registry = readFileSync('src/modules/registry.ts', 'utf8')
+
+/**
+ * As expressoes abaixo dependem de '\n'. Num checkout Windows com autocrlf o
+ * arquivo chega com '\r\n' e nada casa — o verificador acusaria todas as rotas
+ * como quebradas sem nenhuma delas estar. Normaliza antes de procurar.
+ */
+const source = (path) => readFileSync(path, 'utf8').replace(/\r\n/g, '\n')
+
+const navigation = source('src/shell/navigation.ts')
+const registry = source('src/modules/registry.ts')
 
 /* 1. Toda rota registrada precisa existir na navegacao e ter arquivo em disco. */
 const groupSlugs = [...navigation.matchAll(/slug: '([a-z-]+)',\n\s+icon:/g)].map((m) => m[1])

@@ -108,9 +108,14 @@ export interface Proposal {
   client_id: string | null
   budget_id: string | null
   proposal_number: string
+  title: string | null
   status: ProposalStatus
   total_value: number | null
   valid_until: string | null
+  business_unit_id: string | null
+  seller_id: string | null
+  manager_id: string | null
+  metadata: Record<string, unknown> | null
   created_at: string
   clients?: { name: string | null; city: string | null; state: string | null } | null
   budgets?: { system_power_kwp: number | null } | null
