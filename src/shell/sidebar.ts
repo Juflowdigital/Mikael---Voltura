@@ -25,6 +25,7 @@ function groupNode(group: NavGroup, activePath: string, openGroup: string | null
     'div',
     {
       class: 'sidebar-group' + (isCurrent ? ' is-active' : ''),
+      'data-group': group.slug,
       title: group.label,
       onClick: () => app.set({ sidebarOpenGroup: isOpen ? null : group.label }),
     },
@@ -46,6 +47,7 @@ function groupNode(group: NavGroup, activePath: string, openGroup: string | null
           'div',
           {
             class: 'sidebar-sub-item' + (path === activePath ? ' is-active' : ''),
+            'data-path': path,
             onClick: () => navigate(path),
           },
           item.label,

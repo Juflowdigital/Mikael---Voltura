@@ -90,7 +90,12 @@ export function toggleField(label: string, checked: boolean, onChange: (value: b
   })
   return h(
     'label.row',
-    { style: { cursor: 'pointer', gap: '9px' } },
+    {
+      style: { cursor: 'pointer', gap: '9px', userSelect: 'none' },
+      role: 'switch',
+      'aria-checked': checked ? 'true' : 'false',
+      onClick: () => onChange(!checked),
+    },
     h(
       'span',
       {
@@ -103,7 +108,6 @@ export function toggleField(label: string, checked: boolean, onChange: (value: b
           flexShrink: '0',
           transition: 'background .14s ease',
         },
-        onClick: () => onChange(!checked),
       },
       knob,
     ),

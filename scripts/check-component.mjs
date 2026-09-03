@@ -22,6 +22,7 @@ if (existsSync(legacyPath)) {
 const navigation = readFileSync('src/shell/navigation.ts', 'utf8')
 const registry = readFileSync('src/modules/registry.ts', 'utf8')
 
+const subpages = [...navigation.matchAll(/groupSlug: .([a-z-]+)., label: .[^.]+., slug: .([a-z0-9-]+)./g)].map((m) => m[1] + '/' + m[2])
 const groupSlugs = [...navigation.matchAll(/slug: '([a-z-]+)',\n\s+icon:/g)].map((m) => m[1])
 const routes = [...registry.matchAll(/'(\/[a-z0-9-]+\/[a-z0-9-]+)':\s*\(\)\s*=>\s*import\('([^']+)'\)/g)]
 

@@ -138,6 +138,7 @@ export function dataTable<T>(options: TableOptions<T>): HTMLElement {
 
     return h(
       'div.table-foot',
+      options.totalLabel ? h('span', options.totalLabel(total)) : null,
       h('span.spacer'),
       'Linhas por página:',
       h(

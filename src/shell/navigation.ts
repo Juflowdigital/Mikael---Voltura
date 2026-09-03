@@ -207,13 +207,25 @@ export interface NavLocation {
   path: string
 }
 
+/**
+ * Sub-paginas alcancadas por botao, nao pelo menu (ex.: "Criar Contrato").
+ * Resolvem como rota valida, mas nao aparecem na lista de itens do modulo.
+ */
+export const SUBPAGES: { groupSlug: string; label: string; slug: string }[] = [
+  { groupSlug: 'contratos', label: 'Criar Contrato', slug: 'criar-contrato' },
+]
+
 export function findLocation(path: string): NavLocation | null {
   const [, groupSlug, itemSlug] = path.split('/')
   const group = groupSlug === HOME.slug ? HOME : NAV.find((entry) => entry.slug === groupSlug)
   if (!group) return null
-  const item = group.items.find((entry) => entry.slug === itemSlug)
+
+  const item =
+    group.items.find((entry) => entry.slug === itemSlug) ??
+    SUBPAGES.find((entry) => entry.groupSlug === groupSlug && entry.slug === itemSlug)
   if (!item) return null
-  return { group, item, path: `/${groupSlug}/${itemSlug}` }
+
+  return { group, item: { label: item.label, slug: item.slug }, path: `/${groupSlug}/${itemSlug}` }
 }
 
 /** Todos os itens em uma lista plana — usado pela busca global. */
