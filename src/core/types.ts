@@ -221,3 +221,144 @@ export interface OrganizationMember {
   role: Role
   active: boolean
 }
+
+/* ---------- Produção e Estoque ---------- */
+
+export type GeneratorType = 'ongrid' | 'hibrido' | 'offgrid'
+export type ProductKind = 'gerador' | 'componente' | 'servico'
+export type ComponentType = 'painel' | 'inversor' | 'estrutura' | 'stringbox' | 'otimizador' | 'servico'
+
+export interface Product {
+  id: string
+  kind: ProductKind
+  generator_type: GeneratorType | null
+  name: string
+  unit: string
+  category: string | null
+  active: boolean
+  total_power_wp: number
+  kit_price: number
+  metadata: Record<string, unknown>
+  created_at: string
+  updated_at: string
+}
+
+export interface ProductComponent {
+  id: string
+  product_id: string
+  component_type: ComponentType
+  brand: string | null
+  model: string | null
+  quantity: number
+  power: number | null
+  attributes: Record<string, unknown>
+  created_at: string
+}
+
+export interface Supplier {
+  id: string
+  name: string
+  tax_id: string | null
+  email: string | null
+  phone: string | null
+  lead_time_days: number | null
+  rating: number | null
+  created_at: string
+}
+
+export interface InventoryItem {
+  id: string
+  sku: string
+  name: string
+  category: string | null
+  unit: string
+  barcode: string | null
+  quantity: number
+  minimum_quantity: number
+  average_cost: number
+  location: string | null
+  active: boolean
+  created_at: string
+}
+
+export type MovementType = 'in' | 'out' | 'reserve' | 'release' | 'adjustment' | 'transfer'
+
+export interface InventoryMovement {
+  id: string
+  inventory_item_id: string
+  work_id: string | null
+  purchase_order_id: string | null
+  movement_type: MovementType
+  quantity: number
+  unit_cost: number | null
+  notes: string | null
+  occurred_at: string
+}
+
+export type PurchaseStatus = 'draft' | 'quoted' | 'approved' | 'ordered' | 'partially_received' | 'received' | 'cancelled'
+
+export interface PurchaseOrder {
+  id: string
+  order_number: string
+  supplier_id: string
+  work_id: string | null
+  status: PurchaseStatus
+  total_value: number
+  expected_at: string | null
+  created_at: string
+}
+
+export type ProductionStage = 'a-produzir' | 'em-producao' | 'concluida' | 'cancelada'
+export type FlowStatus = 'nao-iniciado' | 'em-andamento' | 'concluido'
+
+export interface ProductionOrder {
+  id: string
+  code: string
+  client_id: string
+  contract_id: string | null
+  business_unit_id: string | null
+  manager_id: string | null
+  stage: ProductionStage
+  purchase_flow: FlowStatus
+  shipping_flow: FlowStatus
+  conflicts: string[]
+  started_at: string | null
+  finished_at: string | null
+  created_at: string
+  updated_at: string
+}
+
+export type RequisitionStatus = 'open' | 'approved' | 'separated' | 'delivered' | 'cancelled'
+
+export interface MaterialRequisition {
+  id: string
+  number: string
+  work_id: string | null
+  production_order_id: string | null
+  requested_by: string | null
+  status: RequisitionStatus
+  notes: string | null
+  created_at: string
+}
+
+export interface RequisitionItem {
+  id: string
+  requisition_id: string
+  inventory_item_id: string
+  quantity: number
+  delivered_quantity: number
+}
+
+export type LogisticsKind = 'expedicao' | 'entrega' | 'coleta' | 'devolucao'
+
+export interface LogisticsEntry {
+  id: string
+  work_id: string | null
+  production_order_id: string | null
+  kind: LogisticsKind
+  occurred_at: string
+  vehicle: string | null
+  driver: string | null
+  notes: string | null
+  created_at: string
+}

@@ -28,6 +28,15 @@ export const SCREENS: Record<string, ScreenLoader> = {
   '/administracao/modelos': () => import('./administracao/modelos'),
   '/administracao/regras-de-aprovacao': () => import('./administracao/regras-de-aprovacao'),
   '/administracao/configuracoes-gerais': () => import('./administracao/configuracoes-gerais'),
+  '/producao/visao-geral': () => import('./producao/visao-geral'),
+  '/producao/produtos': () => import('./producao/produtos'),
+  '/producao/fornecedores': () => import('./producao/fornecedores'),
+  '/producao/gestao-de-producao': () => import('./producao/gestao-de-producao'),
+  '/producao/gestao-de-estoque': () => import('./producao/gestao-de-estoque'),
+  '/producao/gestao-de-compras': () => import('./producao/gestao-de-compras'),
+  '/producao/requisicoes-de-material': () => import('./producao/requisicoes-de-material'),
+  '/producao/apontamentos-logisticos': () => import('./producao/apontamentos-logisticos'),
+  '/producao/relatorios': () => import('./producao/relatorios'),
 }
 
 export function screenLoader(path: string): ScreenLoader | null {
