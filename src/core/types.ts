@@ -106,7 +106,7 @@ export interface Proposal {
   total_value: number | null
   valid_until: string | null
   created_at: string
-  clients?: { name: string | null } | null
+  clients?: { name: string | null; city: string | null; state: string | null } | null
   budgets?: { system_power_kwp: number | null } | null
 }
 
