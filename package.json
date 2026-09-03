@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite --open /Voltua%20ERP.dc.html",
+    "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
@@ -12,7 +12,9 @@
     "test:e2e": "playwright test",
     "check:component": "node scripts/check-component.mjs",
     "check": "npm run lint && npm run typecheck && npm run check:component && npm run build",
-    "supabase": "supabase"
+    "supabase": "supabase",
+    "dev:novo": "vite --open /app.html",
+    "dev:legado": "vite --open /Voltua%20ERP.dc.html"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.57.4"

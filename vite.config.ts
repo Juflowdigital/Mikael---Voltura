@@ -19,6 +19,7 @@ export default defineConfig({
       input: {
         index: resolve(__dirname, 'index.html'),
         app: resolve(__dirname, 'Voltua ERP.dc.html'),
+        novo: resolve(__dirname, 'app.html'),
       },
     },
   },
