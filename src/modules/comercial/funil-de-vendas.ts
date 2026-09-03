@@ -106,7 +106,7 @@ export async function render(host: HTMLElement): Promise<void> {
         ],
         actions: [
           h('button.btn.btn-primary', { onClick: () => navigate('/comercial/leads') }, '+ Novo Lead'),
-          h('button.btn', { onClick: () => navigate('/comercial/negociacoes') }, '+ Nova Negociação'),
+          h('button.btn', { onClick: () => navigate('/comercial/nova-negociacao') }, '+ Nova Negociação'),
         ],
       }),
       h(

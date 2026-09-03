@@ -53,8 +53,13 @@ export async function render(host: HTMLElement, ctx: RouteContext): Promise<void
       key: 'title',
       label: 'Título',
       sortable: true,
-      value: (row) => '#' + row.proposal_number,
-      render: (row) => h('b', 'Proposta #' + row.proposal_number),
+      value: (row) => row.title || row.proposal_number,
+      render: (row) =>
+        h(
+          'div',
+          h('b', row.title || 'Proposta ' + row.proposal_number),
+          h('div.faint', { style: { fontSize: '11.5px', marginTop: '2px' } }, row.proposal_number),
+        ),
     },
     { key: 'client', label: 'Cliente', sortable: true, value: clientName, render: clientName },
     { key: 'city', label: 'Cidade/Estado', value: clientCity, render: clientCity },
@@ -90,7 +95,7 @@ export async function render(host: HTMLElement, ctx: RouteContext): Promise<void
       crumbs: [{ label: 'Comercial' }, { label: 'Gestão de Negociações' }],
       actions: [
         h('button.btn', { onClick: () => navigate('/comercial/funil-de-vendas') }, 'Funil de Vendas'),
-        h('button.btn.btn-primary', { onClick: () => navigate('/comercial/dimensionamentos') }, '+ Nova Negociação'),
+        h('button.btn.btn-primary', { onClick: () => navigate('/comercial/nova-negociacao') }, '+ Nova Negociação'),
       ],
     }),
     h(

@@ -12,6 +12,7 @@ export const SCREENS: Record<string, ScreenLoader> = {
   '/comercial/leads': () => import('./comercial/leads'),
   '/comercial/dimensionamentos': () => import('./comercial/dimensionamentos'),
   '/comercial/negociacoes': () => import('./comercial/negociacoes'),
+  '/comercial/nova-negociacao': () => import('./comercial/nova-negociacao'),
   '/comercial/funil-de-vendas': () => import('./comercial/funil-de-vendas'),
   '/comercial/relatorios': () => import('./comercial/relatorios'),
   '/contratos/visao-geral': () => import('./contratos/visao-geral'),
