@@ -37,6 +37,10 @@ export const SCREENS: Record<string, ScreenLoader> = {
   '/producao/requisicoes-de-material': () => import('./producao/requisicoes-de-material'),
   '/producao/apontamentos-logisticos': () => import('./producao/apontamentos-logisticos'),
   '/producao/relatorios': () => import('./producao/relatorios'),
+  '/obras/visao-geral': () => import('./obras/visao-geral'),
+  '/obras/gestao-de-obras': () => import('./obras/gestao-de-obras'),
+  '/obras/equipes': () => import('./obras/equipes'),
+  '/obras/relatorios': () => import('./obras/relatorios'),
 }
 
 export function screenLoader(path: string): ScreenLoader | null {

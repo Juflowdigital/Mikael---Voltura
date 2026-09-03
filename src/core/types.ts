@@ -362,3 +362,46 @@ export interface LogisticsEntry {
   notes: string | null
   created_at: string
 }
+
+/* ---------- Obras ---------- */
+
+export interface WorkAssignment {
+  id: string
+  work_id: string
+  user_id: string
+  assignment_role: string
+  starts_at: string | null
+  ends_at: string | null
+  created_at: string
+}
+
+export interface WorkChecklistItem {
+  id: string
+  work_id: string
+  title: string
+  stage: string
+  position: number
+  completed: boolean
+  completed_by: string | null
+  completed_at: string | null
+  created_at: string
+}
+
+export interface WorkPhoto {
+  id: string
+  work_id: string
+  checklist_item_id: string | null
+  stage: string
+  storage_path: string
+  captured_at: string
+}
+
+export interface FieldCheckin {
+  id: string
+  work_id: string
+  user_id: string
+  kind: 'checkin' | 'checkout'
+  latitude: number
+  longitude: number
+  occurred_at: string
+}
