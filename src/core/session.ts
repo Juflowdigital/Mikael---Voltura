@@ -63,11 +63,28 @@ async function loadTenant(organizationId: string): Promise<void> {
   })
 }
 
+/**
+ * Le o nome do perfil. Logo apos o login o token as vezes ainda nao esta
+ * propagado e a primeira leitura volta 401 — nesse caso tenta uma vez mais,
+ * senao a saudacao cairia no e-mail sem nenhum aviso.
+ */
+async function profileName(userId: string): Promise<string> {
+  for (let attempt = 0; attempt < 2; attempt += 1) {
+    const { data, error } = await supabase.from('profiles').select('full_name').eq('id', userId).maybeSingle()
+    if (!error) return data?.full_name ?? ''
+    await new Promise((resolve) => setTimeout(resolve, 250))
+  }
+  return ''
+}
+
 async function enterSession(userId: string, email: string): Promise<void> {
-  const [profileResult, membershipResult] = await Promise.all([
-    supabase.from('profiles').select('full_name').eq('id', userId).maybeSingle(),
-    supabase.from('organization_members').select('role,organization_id').eq('user_id', userId).eq('active', true).limit(1).maybeSingle(),
-  ])
+  const membershipResult = await supabase
+    .from('organization_members')
+    .select('role,organization_id')
+    .eq('user_id', userId)
+    .eq('active', true)
+    .limit(1)
+    .maybeSingle()
 
   if (membershipResult.error) throw new Error('Falha ao verificar o acesso: ' + membershipResult.error.message)
   if (!membershipResult.data) {
@@ -78,7 +95,7 @@ async function enterSession(userId: string, email: string): Promise<void> {
   const user: SessionUser = {
     id: userId,
     email,
-    name: profileResult.data?.full_name || email,
+    name: (await profileName(userId)) || email,
     role,
     roleLabel: ROLE_LABEL[role] ?? 'Visualizador',
   }

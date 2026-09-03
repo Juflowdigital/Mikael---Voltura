@@ -4,7 +4,7 @@ import { card } from '../../ui/components/card'
 import { pageHead } from '../../ui/components/page'
 import { formRow, formSection, selectField, textAreaField, textField } from '../../ui/components/form'
 import { guard, toast } from '../../ui/components/feedback'
-import { money, power } from '../../core/format'
+import { money, parseMoney, power } from '../../core/format'
 import { navigate, type RouteContext } from '../../core/router'
 import { create, findAll, nextNumber, type ProposalInput } from '../../data/proposals'
 import { findAll as findClients } from '../../data/clients'
@@ -33,6 +33,7 @@ interface Draft {
   utilityCompany: string
   managerId: string
   sellerId: string
+  totalValue: number
   funnel: string
   phase: string
   tags: string
@@ -73,6 +74,7 @@ export async function render(host: HTMLElement, ctx: RouteContext): Promise<void
     utilityCompany: primary?.utility_company ?? '',
     managerId: '',
     sellerId: '',
+    totalValue: preselected?.estimated_price ?? 0,
     funnel: 'padrao',
     phase: STAGES[0]?.key ?? '',
     tags: '',
@@ -153,6 +155,7 @@ export async function render(host: HTMLElement, ctx: RouteContext): Promise<void
             options: budgetOptions(),
             onChange: (v) => {
               draft.budgetId = v
+              draft.totalValue = selectedBudget()?.estimated_price ?? draft.totalValue
               draw()
             },
           }),
@@ -161,7 +164,16 @@ export async function render(host: HTMLElement, ctx: RouteContext): Promise<void
       h(
         'div',
         { style: { marginTop: '14px' } },
-        textField({ label: 'Endereço da instalação', value: draft.address, onInput: (v) => (draft.address = v) }),
+        formRow(
+          '2fr 1fr',
+          textField({ label: 'Endereço da instalação', value: draft.address, onInput: (v) => (draft.address = v) }),
+          textField({
+            label: 'Valor da negociação (R$)',
+            value: draft.totalValue ? String(draft.totalValue) : '',
+            placeholder: '0,00',
+            onInput: (v) => (draft.totalValue = parseMoney(v)),
+          }),
+        ),
       ),
       summary(),
       formSection('Responsáveis'),
@@ -258,7 +270,7 @@ export async function render(host: HTMLElement, ctx: RouteContext): Promise<void
       client_id: draft.clientId,
       budget_id: draft.budgetId || null,
       status: 'draft',
-      total_value: budget?.estimated_price ?? null,
+      total_value: draft.totalValue,
       valid_until: addDays(VALIDITY_DAYS),
       business_unit_id: draft.businessUnitId || null,
       seller_id: draft.sellerId || null,

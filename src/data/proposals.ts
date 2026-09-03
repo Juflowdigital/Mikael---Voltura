@@ -35,7 +35,7 @@ export interface ProposalInput {
   client_id: string
   budget_id: string | null
   status: ProposalStatus
-  total_value: number | null
+  total_value: number
   valid_until: string | null
   business_unit_id: string | null
   seller_id: string | null
