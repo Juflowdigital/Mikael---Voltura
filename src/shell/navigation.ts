@@ -212,6 +212,7 @@ export interface NavLocation {
  * Resolvem como rota valida, mas nao aparecem na lista de itens do modulo.
  */
 export const SUBPAGES: { groupSlug: string; label: string; slug: string }[] = [
+  { groupSlug: 'comercial', label: 'Nova Negociação', slug: 'nova-negociacao' },
   { groupSlug: 'contratos', label: 'Criar Contrato', slug: 'criar-contrato' },
 ]
 

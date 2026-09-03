@@ -10,7 +10,7 @@ import { formRow, selectField, textField } from '../../ui/components/form'
 import { guard, toast } from '../../ui/components/feedback'
 import { date, decimal, integer, parseMoney, power } from '../../core/format'
 import { sizeSystem, type Scenario } from '../../core/sizing'
-import { setQuery, type RouteContext } from '../../core/router'
+import { navigate, setQuery, type RouteContext } from '../../core/router'
 import { app } from '../../core/session'
 import { cityOf, create, findAll, kindOf, KIND_LABEL, scenarioOf, type SystemKind } from '../../data/budgets'
 import { findAll as findClients } from '../../data/clients'
@@ -321,6 +321,23 @@ export async function render(host: HTMLElement, ctx: RouteContext): Promise<void
         render: (row) => (converted.has(row.id) ? badge('Convertido', 'green') : badge('Rascunho', 'gray')),
       },
       { key: 'created_at', label: 'Atualizado', sortable: true, render: (row) => date(row.created_at) },
+      {
+        key: 'acoes',
+        label: 'Ações',
+        align: 'right',
+        width: '150px',
+        render: (row) =>
+          converted.has(row.id)
+            ? h('span.faint', { style: { fontSize: '11.5px' } }, 'Já convertido')
+            : h(
+                'button.btn.btn-primary',
+                {
+                  style: { padding: '5px 12px', fontSize: '12px' },
+                  onClick: () => navigate('/comercial/nova-negociacao?dimensionamento=' + row.id),
+                },
+                'Converter',
+              ),
+      },
     ]
 
     mount(

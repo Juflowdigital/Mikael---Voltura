@@ -9,3 +9,8 @@ supabase/.temp/
 .vercel/
 playwright-report/
 test-results/
+
+# scripts temporarios de QA (nao versionados)
+.qa-*.mjs
+.qa-*.json
+.fixstep.cjs
