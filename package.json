@@ -8,14 +8,17 @@
     "build": "vite build",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
+    "lint": "node scripts/audit-static.mjs",
+    "test:e2e": "playwright test",
     "check:component": "node scripts/check-component.mjs",
-    "check": "npm run typecheck && npm run check:component && npm run build",
+    "check": "npm run lint && npm run typecheck && npm run check:component && npm run build",
     "supabase": "supabase"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.57.4"
   },
   "devDependencies": {
+    "@playwright/test": "^1.62.1",
     "supabase": "^2.39.2",
     "typescript": "^5.9.2",
     "vite": "^7.1.3"

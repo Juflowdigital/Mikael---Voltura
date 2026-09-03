@@ -55,6 +55,20 @@ body{background:#071225;color:#edf4ff}
 @media(min-width:901px){.app-sidebar+div{background:#091429}}
 @media(max-width:1180px){.app-topbar input{max-width:150px}.app-topbar{padding-left:20px!important;padding-right:20px!important}}
 @media(max-width:900px){.app-sidebar{width:280px!important}.app-topbar{height:60px!important}.desktop-only{display:none!important}}
+@media(max-width:900px){
+  .app-topbar{gap:8px!important;padding-left:12px!important;padding-right:12px!important;overflow:visible!important}
+  .app-topbar input[placeholder^="Buscar"]{max-width:110px!important}
+  .app-topbar>div:first-of-type{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:34vw}
+  .app-content>div{padding:16px 12px!important}
+  .app-content [style*="grid-template-columns"]{grid-template-columns:minmax(0,1fr)!important}
+  .app-content div:has(>table){overflow-x:auto!important}
+  .app-content table{min-width:620px}
+  .app-content button{min-height:40px}
+}
+@media(max-width:520px){
+  .app-topbar input[placeholder^="Buscar"]{display:none}
+  .topbar-periods{display:none!important}
+}
 @media print{body *{visibility:hidden!important}#proposal-document,#proposal-document *{visibility:visible!important}#proposal-document{position:absolute!important;inset:0!important;width:100%!important;max-height:none!important;overflow:visible!important;box-shadow:none!important;border-radius:0!important}.proposal-actions{display:none!important}}
 </style>
 </helmet>
@@ -129,7 +143,7 @@ body{background:#071225;color:#edf4ff}
     <div class="app-topbar" style="height:58px;flex-shrink:0;display:flex;align-items:center;gap:12px;padding:0 26px;border-bottom:1px solid light-dark(#e3e8ea,#1d3640);background:light-dark(#ffffff,#0e2029);position:sticky;top:0;z-index:20;padding-top:env(safe-area-inset-top)">
       <button class="mobile-menu-button" onClick="{{toggleMenu}}" aria-label="Abrir menu" style="display:none;width:34px;height:34px;place-items:center;border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:9px;background:transparent;color:inherit;font-size:20px;cursor:pointer">☰</button>
       <div style="font-family:'Space Grotesk';font-size:16px;font-weight:600">{{screenTitle}}</div>
-      <div style="font-size:12px;color:light-dark(#8a979b,#5f7883)">{{screenSub}}</div>
+      <div class="desktop-only" style="font-size:12px;color:light-dark(#8a979b,#5f7883)">{{screenSub}}</div>
       <div style="flex:1"></div>
       <div style="position:relative">
         <input value="{{qVal}}" onChange="{{setQ}}" placeholder="Buscar cliente, obra, proposta…" style="width:200px;font-size:12.5px;font-family:'Instrument Sans';border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:99px;padding:8px 14px;background:light-dark(#f7f9f9,#0e2029);color:inherit;outline-color:#f97316">
@@ -147,7 +161,7 @@ body{background:#071225;color:#edf4ff}
           </div>
         </sc-if>
       </div>
-      <div style="display:flex;align-items:center;gap:3px;border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:99px;padding:3px">
+      <div class="topbar-periods" style="display:flex;align-items:center;gap:3px;border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:99px;padding:3px">
         <sc-for list="{{periodos}}" as="p" hint-placeholder-count="4">
           <div onClick="{{p.go}}" style="font-size:11.5px;font-weight:600;border-radius:99px;padding:5px 11px;cursor:pointer;white-space:nowrap;background:{{p.bg}};color:{{p.cl}}">{{p.n}}</div>
         </sc-for>
@@ -225,10 +239,10 @@ body{background:#071225;color:#edf4ff}
             <div style="background:light-dark(#ffffff,#10242b);border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:12px;overflow:hidden;display:flex;flex-direction:column">
               <div style="padding:16px 20px 10px;display:flex;justify-content:space-between;align-items:baseline">
                 <div style="font-family:'Space Grotesk';font-size:15px;font-weight:600">Mapa de obras</div>
-                <div style="font-size:12px;color:light-dark(#5c6b70,#8ba0a6)">9 obras · 5 cidades</div>
+                <div style="font-size:12px;color:light-dark(#5c6b70,#8ba0a6)">{{mapSummary}}</div>
               </div>
               <sc-if value="{{showMapa}}" hint-placeholder-val="{{true}}">
-                <iframe src="map.html" style="border:0;width:100%;flex:1;min-height:250px"></iframe>
+                <iframe src="map.html" onLoad="{{mapLoad}}" style="border:0;width:100%;flex:1;min-height:250px"></iframe>
               </sc-if>
             </div>
             <div style="background:light-dark(#ffffff,#10242b);border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:12px;padding:18px 20px">
@@ -249,7 +263,7 @@ body{background:#071225;color:#edf4ff}
         </div>
       </sc-if>
       <sc-if value="{{is_crm}}" hint-placeholder-val="{{false}}">
-  <sc-if value="{{crmShowClients}}" hint-placeholder-val="{{false}}"><div style="padding:24px 26px;display:flex;flex-direction:column;gap:16px"><div style="display:flex;align-items:center"><div><div style="font-size:23px;font-weight:750">Clientes</div><div style="font-size:12px;color:#91a3c2">Cadastros consolidados e histórico comercial.</div></div><div style="flex:1"></div><div onClick="{{openLead}}" style="background:#f6a623;color:#071225;padding:9px 14px;border-radius:9px;font-weight:750;font-size:13px;cursor:pointer">+ Novo cliente</div></div><div style="background:#101d34;border:1px solid #213250;border-radius:12px;overflow:hidden"><table style="width:100%;border-collapse:collapse"><thead><tr><th style="text-align:left;padding:12px 16px">Cliente</th><th style="text-align:left">Cidade</th><th style="text-align:left">Tipo</th><th style="text-align:left">Origem</th><th style="text-align:right;padding-right:16px">Potencial</th></tr></thead><tbody><sc-for list="{{crmClients}}" as="c" hint-placeholder-count="6"><tr onClick="{{c.open}}" style="cursor:pointer"><td style="padding:13px 16px;font-weight:650">{{c.n}}</td><td>{{c.city}}</td><td>{{c.type}}</td><td>{{c.source}}</td><td style="text-align:right;padding-right:16px;font-weight:700">{{c.value}}</td></tr></sc-for></tbody></table></div></div></sc-if>
+  <sc-if value="{{crmShowClients}}" hint-placeholder-val="{{false}}"><div style="padding:24px 26px;display:flex;flex-direction:column;gap:16px"><div style="display:flex;align-items:center"><div><div style="font-size:23px;font-weight:750">Clientes</div><div style="font-size:12px;color:#91a3c2">Cadastros consolidados e histórico comercial.</div></div><div style="flex:1"></div><div onClick="{{openClient}}" style="background:#f6a623;color:#071225;padding:9px 14px;border-radius:9px;font-weight:750;font-size:13px;cursor:pointer">+ Novo cliente</div></div><div style="background:#101d34;border:1px solid #213250;border-radius:12px;overflow:hidden"><table style="width:100%;border-collapse:collapse"><thead><tr><th style="text-align:left;padding:12px 16px">Cliente</th><th style="text-align:left">Cidade</th><th style="text-align:left">Tipo</th><th style="text-align:left">Concessionária</th><th style="text-align:right;padding-right:16px">Consumo</th></tr></thead><tbody><sc-for list="{{crmClients}}" as="c" hint-placeholder-count="6"><tr onClick="{{c.open}}" style="cursor:pointer"><td style="padding:13px 16px;font-weight:650">{{c.n}}</td><td>{{c.city}}</td><td>{{c.type}}</td><td>{{c.source}}</td><td style="text-align:right;padding-right:16px;font-weight:700">{{c.value}}</td></tr></sc-for></tbody></table></div></div></sc-if>
   <sc-if value="{{crmShowLeads}}" hint-placeholder-val="{{false}}"><div style="padding:24px 26px;display:flex;flex-direction:column;gap:16px"><div style="display:flex;align-items:center"><div><div style="font-size:23px;font-weight:750">Leads</div><div style="font-size:12px;color:#91a3c2">Entradas comerciais que ainda estão em qualificação.</div></div><div style="flex:1"></div><div onClick="{{openLead}}" style="background:#f6a623;color:#071225;padding:9px 14px;border-radius:9px;font-weight:750;font-size:13px;cursor:pointer">+ Novo lead</div></div><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px"><sc-for list="{{crmLeads}}" as="c" hint-placeholder-count="6"><div onClick="{{c.open}}" style="background:#101d34;border:1px solid #213250;border-radius:12px;padding:16px;cursor:pointer"><div style="font-weight:700">{{c.n}}</div><div style="font-size:12px;color:#91a3c2;margin-top:4px">{{c.city}} · {{c.type}}</div><div style="display:flex;margin-top:12px"><span style="color:#f6a623;font-size:12px">{{c.source}}</span><span style="flex:1"></span><b>{{c.value}}</b></div></div></sc-for></div></div></sc-if>
   <sc-if value="{{crmShowManagement}}" hint-placeholder-val="{{false}}"><div style="padding:24px 26px;display:flex;flex-direction:column;gap:16px"><div><div style="font-size:23px;font-weight:750">Gestão de Negociações</div><div style="font-size:12px;color:#91a3c2">Atividades, responsáveis e próximas ações.</div></div><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px"><sc-for list="{{crmManagementStats}}" as="s" hint-placeholder-count="3"><div style="background:#101d34;border:1px solid #213250;border-radius:12px;padding:16px"><div style="font-size:12px;color:#91a3c2">{{s.l}}</div><div style="font-size:24px;font-weight:750;margin-top:5px">{{s.v}}</div></div></sc-for></div><div style="background:#101d34;border:1px solid #213250;border-radius:12px;padding:18px"><div style="font-weight:700">Agenda e follow-ups</div><sc-for list="{{atividades}}" as="a" hint-placeholder-count="4"><div onClick="{{a.det}}" style="display:flex;gap:12px;padding:12px 0;border-bottom:1px solid #213250;cursor:pointer"><b style="color:{{a.hc}}">{{a.h}}</b><span style="flex:1">{{a.t}}</span><span style="color:#91a3c2">{{a.r}}</span></div></sc-for></div></div></sc-if>
   <sc-if value="{{crmShowFunnel}}" hint-placeholder-val="{{true}}">
@@ -541,7 +555,7 @@ body{background:#071225;color:#edf4ff}
   <div style="padding:24px 26px;display:flex;flex-direction:column;gap:16px">
     <div style="display:flex;align-items:center;gap:10px">
       <div style="font-family:'Space Grotesk';font-size:18px;font-weight:600">Pipeline de obras</div>
-      <div style="font-size:12px;color:light-dark(#5c6b70,#8ba0a6)">9 obras simultâneas · abertas automaticamente do contrato assinado</div>
+      <div style="font-size:12px;color:light-dark(#5c6b70,#8ba0a6)">{{worksSummary}}</div>
       <div style="flex:1"></div>
       <div style="font-size:12.5px;font-weight:500;border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:9px;padding:7px 12px;cursor:pointer;color:light-dark(#5c6b70,#8ba0a6)">Cidade: Todas</div>
     </div>
@@ -1256,9 +1270,10 @@ body{background:#071225;color:#edf4ff}
   <sc-if value="{{modalLead}}" hint-placeholder-val="{{false}}">
     <div onClick="{{closeModal}}" style="position:fixed;inset:0;background:rgba(8,20,25,.45);z-index:60;display:grid;place-items:center">
       <div onClick="{{stop}}" style="width:760px;max-width:calc(100vw - 40px);max-height:88vh;overflow:auto;background:#101d34;border:1px solid #263654;border-radius:14px;padding:24px;display:flex;flex-direction:column;gap:12px;box-shadow:0 24px 60px rgba(0,0,0,.4)">
-        <div style="font-family:'Space Grotesk';font-size:20px;font-weight:650">Nova negociação</div>
-        <input onChange="{{fNegotiationTitle}}" placeholder="Título da negociação *" style="font:inherit;border:1px solid #31415e;border-radius:9px;padding:11px 12px;background:#0b172c;color:inherit">
+        <div style="font-family:'Space Grotesk';font-size:20px;font-weight:650">{{modalLeadTitle}}</div>
+        <sc-if value="{{leadIsNegotiation}}" hint-placeholder-val="{{true}}"><input onChange="{{fNegotiationTitle}}" placeholder="Título da negociação *" style="font:inherit;border:1px solid #31415e;border-radius:9px;padding:11px 12px;background:#0b172c;color:inherit"></sc-if>
         <input onChange="{{fNome}}" placeholder="Nome do lead ou empresa" style="font-size:13.5px;font-family:'Instrument Sans';border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:9px;padding:10px 12px;background:light-dark(#f7f9f9,#0e2029);color:inherit;outline-color:#f97316">
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px"><input onChange="{{fDoc}}" placeholder="CPF / CNPJ" style="font:inherit;border:1px solid #31415e;border-radius:9px;padding:11px 12px;background:#0b172c;color:inherit"><input type="email" onChange="{{fEmail}}" placeholder="E-mail" style="font:inherit;border:1px solid #31415e;border-radius:9px;padding:11px 12px;background:#0b172c;color:inherit"><input onChange="{{fTelefone}}" placeholder="Telefone / WhatsApp" style="font:inherit;border:1px solid #31415e;border-radius:9px;padding:11px 12px;background:#0b172c;color:inherit"></div>
         <input onChange="{{fEndereco}}" placeholder="Endereço da instalação" style="font:inherit;border:1px solid #31415e;border-radius:9px;padding:11px 12px;background:#0b172c;color:inherit">
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
           <input onChange="{{fCidade}}" placeholder="Cidade" style="font-size:13.5px;font-family:'Instrument Sans';border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:9px;padding:10px 12px;background:light-dark(#f7f9f9,#0e2029);color:inherit;outline-color:#f97316">
@@ -1275,7 +1290,7 @@ body{background:#071225;color:#edf4ff}
         </div>
         <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:4px">
           <div onClick="{{closeModal}}" style="font-size:13px;font-weight:600;color:light-dark(#5c6b70,#8ba0a6);border:1px solid light-dark(#e3e8ea,#1d3640);border-radius:9px;padding:9px 16px;cursor:pointer">Cancelar</div>
-          <div onClick="{{saveLead}}" style="font-size:13px;font-weight:700;background:#f6a623;color:#071225;border-radius:9px;padding:10px 18px;cursor:pointer">Salvar negociação</div>
+          <div onClick="{{saveLead}}" style="font-size:13px;font-weight:700;background:#f6a623;color:#071225;border-radius:9px;padding:10px 18px;cursor:pointer">{{modalLeadSaveLabel}}</div>
         </div>
       </div>
     </div>
@@ -1394,6 +1409,7 @@ body{background:#071225;color:#edf4ff}
         <div style="display:grid;grid-template-columns:1.8fr .55fr .8fr .7fr;gap:8px"><input onChange="{{fPanel}}" placeholder="Painel solar (marca/modelo)" style="font:inherit;border:1px solid #31415e;border-radius:8px;padding:10px;background:#081429;color:inherit"><input onChange="{{fPanelQty}}" placeholder="Qtd." type="number" style="font:inherit;border:1px solid #31415e;border-radius:8px;padding:10px;background:#081429;color:inherit"><input onChange="{{fPanelPrice}}" placeholder="R$" style="font:inherit;border:1px solid #31415e;border-radius:8px;padding:10px;background:#081429;color:inherit"><input onChange="{{fPanelWarranty}}" placeholder="Meses" type="number" style="font:inherit;border:1px solid #31415e;border-radius:8px;padding:10px;background:#081429;color:inherit"></div>
         <div style="display:grid;grid-template-columns:1.8fr .55fr .8fr .7fr;gap:8px"><input onChange="{{fContractInverter}}" placeholder="Inversor (marca/modelo)" style="font:inherit;border:1px solid #31415e;border-radius:8px;padding:10px;background:#081429;color:inherit"><input onChange="{{fInverterQty}}" placeholder="Qtd." type="number" style="font:inherit;border:1px solid #31415e;border-radius:8px;padding:10px;background:#081429;color:inherit"><input onChange="{{fInverterPrice}}" placeholder="R$" style="font:inherit;border:1px solid #31415e;border-radius:8px;padding:10px;background:#081429;color:inherit"><input onChange="{{fInverterWarranty}}" placeholder="Meses" type="number" style="font:inherit;border:1px solid #31415e;border-radius:8px;padding:10px;background:#081429;color:inherit"></div>
         <div style="display:grid;grid-template-columns:1.8fr .55fr .8fr .7fr;gap:8px"><input onChange="{{fStructure}}" placeholder="Estrutura de fixação" style="font:inherit;border:1px solid #31415e;border-radius:8px;padding:10px;background:#081429;color:inherit"><input onChange="{{fStructureQty}}" placeholder="Qtd." type="number" style="font:inherit;border:1px solid #31415e;border-radius:8px;padding:10px;background:#081429;color:inherit"><input onChange="{{fStructurePrice}}" placeholder="R$" style="font:inherit;border:1px solid #31415e;border-radius:8px;padding:10px;background:#081429;color:inherit"><input onChange="{{fStructureWarranty}}" placeholder="Meses" type="number" style="font:inherit;border:1px solid #31415e;border-radius:8px;padding:10px;background:#081429;color:inherit"></div>
+        <div style="display:grid;grid-template-columns:1.8fr .55fr .8fr .7fr;gap:8px"><input onChange="{{fLabor}}" placeholder="Mão de obra (descrição)" style="font:inherit;border:1px solid #31415e;border-radius:8px;padding:10px;background:#081429;color:inherit"><input onChange="{{fLaborQty}}" placeholder="Qtd." type="number" style="font:inherit;border:1px solid #31415e;border-radius:8px;padding:10px;background:#081429;color:inherit"><input onChange="{{fLaborPrice}}" placeholder="R$" style="font:inherit;border:1px solid #31415e;border-radius:8px;padding:10px;background:#081429;color:inherit"><div></div></div>
         <div style="font-size:11px;font-weight:750;color:#f6a623;text-transform:uppercase;letter-spacing:.08em">Preço e pagamento</div>
         <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px"><input onChange="{{fMargin}}" placeholder="Margem adicional (%)" style="font:inherit;border:1px solid #31415e;border-radius:9px;padding:11px;background:#081429;color:inherit"><input onChange="{{fDiscount}}" placeholder="Desconto (%)" style="font:inherit;border:1px solid #31415e;border-radius:9px;padding:11px;background:#081429;color:inherit"><input onChange="{{fCommission}}" placeholder="Comissão vendedor (%)" style="font:inherit;border:1px solid #31415e;border-radius:9px;padding:11px;background:#081429;color:inherit"><input onChange="{{fContractValue}}" placeholder="Valor final (R$) *" style="font:inherit;border:1px solid #f6a623;border-radius:9px;padding:11px;background:#081429;color:inherit"></div>
         <div style="display:grid;grid-template-columns:2fr .7fr 1fr;gap:10px"><input onChange="{{fPaymentTerms}}" placeholder="Condição de pagamento" style="font:inherit;border:1px solid #31415e;border-radius:9px;padding:11px;background:#081429;color:inherit"><input onChange="{{fInstallments}}" placeholder="Parcelas (1 a 120)" type="number" style="font:inherit;border:1px solid #31415e;border-radius:9px;padding:11px;background:#081429;color:inherit"><input onChange="{{fExecutionDays}}" placeholder="Prazo de execução (dias)" type="number" style="font:inherit;border:1px solid #31415e;border-radius:9px;padding:11px;background:#081429;color:inherit"></div>
@@ -1447,7 +1463,7 @@ class Component extends DCLogic {
   money(v) { return 'R$ ' + Number(v || 0).toLocaleString('pt-BR', { maximumFractionDigits: 2 }); }
   async loadOperationalData(organizationId) {
     const sb = await this.sb();
-    const [{ data: leads, error: leadsError }, { data: proposals, error: proposalsError }, { data: company }, { data: settings }, { data: activities }] = await Promise.all([
+    const [{ data: leads, error: leadsError }, { data: proposals, error: proposalsError }, { data: company, error: companyError }, { data: settings, error: settingsError }, { data: activities, error: activitiesError }] = await Promise.all([
       sb.from('leads').select('id,name,email,phone,city,customer_type,source,stage,estimated_value,created_at').eq('organization_id', organizationId).order('created_at', { ascending: false }),
       sb.from('proposals').select('id,client_id,proposal_number,status,total_value,created_at,clients(name),budgets(system_power_kwp)').eq('organization_id', organizationId).order('created_at', { ascending: false }),
       sb.from('organizations').select('name,legal_name,tax_id,city,state,utility_company,logo_path,address,branches').eq('id', organizationId).single(),
@@ -1456,11 +1472,14 @@ class Component extends DCLogic {
     ]);
     if (leadsError) throw leadsError;
     if (proposalsError) throw proposalsError;
+    if (companyError) throw companyError;
+    if (settingsError) throw settingsError;
+    if (activitiesError) throw activitiesError;
     const tableNames=['clients','budgets','proposal_versions','contracts','contract_items','contract_signatures','homologations','documents','works','work_assignments','work_checklist_items','work_photos','field_checkins','suppliers','purchase_orders','purchase_order_items','inventory_items','inventory_movements','assets','asset_maintenances','financial_accounts','financial_transactions','installments','commissions','om_contracts','service_tickets','energy_generation','warranties','nps_responses','sales_goals','notifications','audit_logs','organization_members','profiles'];
-    const loaded=await Promise.all(tableNames.map(async table=>{let q=sb.from(table).select('*');if(!['profiles'].includes(table))q=q.eq(table==='organization_members'?'organization_id':'organization_id',organizationId);const r=await q;return [table,r.error?[]:(r.data||[])];}));
+    const loaded=await Promise.all(tableNames.map(async table=>{let q=sb.from(table).select('*');if(table!=='profiles')q=q.eq('organization_id',organizationId);const r=await q;if(r.error)throw new Error('Falha ao carregar '+table+': '+r.error.message);return [table,r.data||[]];}));
     const db=Object.fromEntries(loaded);
     const funil = this.funilBase().map((column, index) => Object.assign({}, column, { cards: [], q: 0, stage: this.stageKeys[index] }));
-    const activityByLead={};(activities||[]).forEach(a=>{if(!activityByLead[a.lead_id]){let details={};try{details=JSON.parse(a.description||'{}');}catch(e){}activityByLead[a.lead_id]={subject:a.subject||'',created_at:a.created_at,details};}});
+    const activityByLead={};(activities||[]).forEach(a=>{if(!activityByLead[a.lead_id]){let details={};try{details=JSON.parse(a.description||'{}');}catch(e){details={description:a.description||''};}activityByLead[a.lead_id]={subject:a.subject||'',created_at:a.created_at,details};}});
     (leads || []).forEach(lead => {
       const index = Math.max(0, this.stageKeys.indexOf(lead.stage));
       const activity=activityByLead[lead.id]||{},details=Object.assign({email:lead.email||'',phone:lead.phone||''},activity.details||{});
@@ -1536,9 +1555,16 @@ class Component extends DCLogic {
     try { await this.saveLeadStage(k, ni); this.setState({ funil: f, modal: null, card: null }); this.toastMsg(k.n + ' movido para "' + f[ni].n + '"'); } catch (e) { this.toastMsg('Erro ao atualizar lead: ' + e.message); }
   }
   async addLead() {
-    const fm = this.state.form; if (!fm.nome || !fm.negotiationTitle) { this.toastMsg('Informe o título e o cliente da negociação'); return; }
+    const fm = this.state.form, isClient=fm.recordKind==='client';
+    if (!fm.nome || (!isClient&&!fm.negotiationTitle)) { this.toastMsg(isClient?'Informe o nome do cliente':'Informe o título e o cliente da negociação'); return; }
     try {
-      const sb = await this.sb(), value = this.parseMoney(fm.valor);
+      const sb = await this.sb(), value = this.parseMoney(fm.valor),org=this.state.organizationId,taxId=String(fm.doc||'').replace(/\D/g,'')||null;
+      if(isClient){
+        const payload={organization_id:org,name:fm.nome.trim(),person_type:taxId?.length===14?'company':'individual',tax_id:taxId,email:fm.email||null,phone:fm.telefone||null,address:{full:fm.endereco||''},city:fm.cidade||null,utility_company:fm.concessionaria||null,monthly_consumption_kwh:value||null,owner_id:this.state.userId,notes:fm.information||null};
+        let result;
+        if(taxId){const found=await sb.from('clients').select('id').eq('organization_id',org).eq('tax_id',taxId).maybeSingle();if(found.error)throw found.error;result=found.data?await sb.from('clients').update(payload).eq('id',found.data.id):await sb.from('clients').insert(payload);}else result=await sb.from('clients').insert(payload);
+        if(result.error)throw result.error;await this.loadOperationalData(org);this.setState({modal:null,form:{}});this.toastMsg('Cliente salvo com sucesso');return;
+      }
       const { data, error } = await sb.from('leads').insert({ organization_id: this.state.organizationId, name: fm.nome.trim(), email:fm.email||null,phone:fm.telefone||null,city: fm.cidade || null, customer_type: fm.tipo || null, source: fm.origem || null, estimated_value: value, stage: 'lead' }).select('id').single();
       if (error) throw error;
       const details = { title: fm.negotiationTitle, document:fm.doc||'',phone:fm.telefone||'',email:fm.email||'',address: fm.endereco || '', business_unit: fm.businessUnit || '', utility_company: fm.concessionaria || '', manager: fm.manager || '', seller: fm.seller || '', funnel: fm.funnel || '', phase: fm.phase || '', tags: fm.tags || '', information: fm.information || '' };
@@ -1606,15 +1632,11 @@ class Component extends DCLogic {
     if (!fm.contractTitle || !fm.nome || !total) { this.toastMsg('Informe título, cliente e valor do contrato'); return; }
     try {
       const sb = await this.sb(), org = this.state.organizationId, taxId = String(fm.doc || '').replace(/\D/g, '') || null;
-      let client;
-      if (taxId) { const found = await sb.from('clients').select('id').eq('organization_id', org).eq('tax_id', taxId).maybeSingle(); if (found.error) throw found.error; client = found.data; }
-      if (!client) { const inserted = await sb.from('clients').insert({ organization_id: org, name: fm.nome.trim(), person_type: taxId?.length === 14 ? 'company' : 'individual', tax_id: taxId, email: fm.email || null, phone: fm.telefone || null, address: { full: fm.endereco || '' }, owner_id: this.state.userId }).select('id').single(); if (inserted.error) throw inserted.error; client = inserted.data; }
       const number = fm.contractNumber?.trim() || 'CT-' + String(Date.now()).slice(-8), metadata = { business_unit: fm.businessUnit || 'Voltura Energia Solar', address: fm.endereco || '', panel: fm.panel || '', inverter: fm.contractInverter || '', structure: fm.structure || '', margin_percent: this.parseMoney(fm.margin) || 0, discount_percent: this.parseMoney(fm.discount) || 0, labor_warranty_days: parseInt(fm.laborWarranty) || 0, additional_warranty: fm.additionalWarranty || '', notes: fm.contractNotes || '' };
-      const saved = await sb.from('contracts').insert({ organization_id: org, contract_number: number, client_id: client.id, status: 'draft', total_value: total, title: fm.contractTitle, payment_terms: fm.paymentTerms || null, installment_count: parseInt(fm.installments) || 1, execution_days: parseInt(fm.executionDays) || null, commission_percent: this.parseMoney(fm.commission) || 0, metadata }).select('id').single(); if (saved.error) throw saved.error;
-      const rawItems = [['Painel solar', fm.panel, fm.panelQty, fm.panelPrice, fm.panelWarranty], ['Inversor', fm.contractInverter, fm.inverterQty, fm.inverterPrice, fm.inverterWarranty], ['Estrutura', fm.structure, fm.structureQty, fm.structurePrice, fm.structureWarranty], ['Mão de obra', fm.labor || 'Instalação fotovoltaica', fm.laborQty || 1, fm.laborPrice, fm.laborWarranty ? Math.round(parseInt(fm.laborWarranty) / 30) : null]];
-      const items = rawItems.filter(x => x[1] && this.parseMoney(x[2]) > 0).map(x => ({ organization_id: org, contract_id: saved.data.id, item_type: x[0], name: x[1], quantity: this.parseMoney(x[2]), unit_price: this.parseMoney(x[3]) || 0, warranty_months: parseInt(x[4]) || null }));
-      if (items.length) { const itemResult = await sb.from('contract_items').insert(items); if (itemResult.error) throw itemResult.error; }
-      const count=Math.max(1,parseInt(fm.installments)||1),installmentValue=Math.round(total/count*100)/100,installments=Array.from({length:count},(_,i)=>{const due=new Date();due.setMonth(due.getMonth()+i);return {organization_id:org,contract_id:saved.data.id,installment_number:i+1,total_installments:count,amount:i===count-1?Math.round((total-installmentValue*(count-1))*100)/100:installmentValue,due_date:due.toISOString().slice(0,10),status:'pending'};});const installmentResult=await sb.from('installments').insert(installments);if(installmentResult.error)throw installmentResult.error;
+      const rawItems = [['Painel solar', fm.panel, fm.panelQty, fm.panelPrice, fm.panelWarranty], ['Inversor', fm.contractInverter, fm.inverterQty, fm.inverterPrice, fm.inverterWarranty], ['Estrutura', fm.structure, fm.structureQty, fm.structurePrice, fm.structureWarranty], ['Mão de obra', fm.labor, fm.laborQty, fm.laborPrice, fm.laborWarranty ? Math.round(parseInt(fm.laborWarranty) / 30) : null]];
+      const items = rawItems.filter(x => x[1] && this.parseMoney(x[2]) > 0).map(x => ({ item_type: x[0], name: x[1], quantity: this.parseMoney(x[2]), unit_price: this.parseMoney(x[3]) || 0, warranty_months: parseInt(x[4]) || null }));
+      const payload={organization_id:org,contract_number:number,client_name:fm.nome.trim(),tax_id:taxId||'',email:fm.email||'',phone:fm.telefone||'',address:fm.endereco||'',title:fm.contractTitle,total_value:total,payment_terms:fm.paymentTerms||'',installment_count:Math.max(1,Math.min(120,parseInt(fm.installments)||1)),execution_days:parseInt(fm.executionDays)||null,commission_percent:this.parseMoney(fm.commission)||0,metadata,items};
+      const saved=await sb.rpc('create_contract_bundle',{p_data:payload});if(saved.error)throw saved.error;
       await this.loadOperationalData(org);this.setState({ modal: null, form: {} }); this.toastMsg('Contrato ' + number + ' criado com produtos e condições');
     } catch (e) { this.toastMsg('Erro ao criar contrato: ' + e.message); }
   }
@@ -1719,6 +1741,9 @@ class Component extends DCLogic {
     const dimensionScenarios=S.dimensionResult||this.calcCen(S.consumo,S.orcCidade),idealDimension=dimensionScenarios[1],idealPrice=this.parseMoney(idealDimension.preco)||0;
     const vals = {
       showMapa: this.props.mostrarMapa ?? true,
+      mapSummary:(S.db?.works||[]).length+' obra(s) · '+new Set((S.db?.works||[]).map(w=>w.address?.city||w.address?.full||'').filter(Boolean)).size+' localidade(s)',
+      worksSummary:(S.db?.works||[]).length+' obra(s) cadastrada(s) no banco',
+      mapLoad:e=>e.currentTarget.contentWindow?.postMessage({type:'voltura-works',works:(S.db?.works||[]).filter(w=>w.latitude!=null&&w.longitude!=null).map(w=>({name:w.name,lat:Number(w.latitude),lng:Number(w.longitude),status:w.status}))},location.origin),
       isLogin: S.screen === 'login', isApp: S.screen !== 'login', menuTransform: S.menuOpen ? 'translateX(0)' : 'translateX(-105%)', toggleMenu: () => this.toggleMenu(),
       authEmail: S.authEmail, authPassword: S.authPassword, authError: S.authError, authErrorOn: !!S.authError,
       authLoading: S.authLoading, authButton: S.authLoading ? 'Entrando…' : 'Entrar',
@@ -1727,7 +1752,9 @@ class Component extends DCLogic {
       notifOpen: S.notif, notifCount: (S.db?.notifications||[]).filter(x=>!x.read_at).length,
       toast: S.toast, toastOn: !!S.toast,
       modalLead: S.modal === 'lead', modalProp: S.modal === 'prop', modalContract: S.modal === 'contract', modalCompany:S.modal==='company', modalCalculation:S.modal==='calculation',modalInvite:S.modal==='invite', modalAction: S.modal === 'action', actionTitle: S.actionType === 'purchase' ? 'Nova solicitação de compra' : S.actionType === 'income' ? 'Registrar entrada' : S.actionType === 'expense' ? 'Registrar saída' : 'Nova cobrança', actionHint: S.actionType === 'purchase' ? 'Cadastre o fornecedor e o valor estimado do pedido.' : S.actionType === 'income' ? 'Registre uma receita recebida ou prevista.' : S.actionType === 'expense' ? 'Registre uma despesa paga ou prevista.' : 'Informe o cliente ou descrição e o valor da cobrança.', actionName: S.actionName, actionValue: S.actionValue, setActionName: e => this.setState({ actionName: e.target.value }), setActionValue: e => this.setState({ actionValue: e.target.value }), saveAction: () => this.saveAction(), modalCard: S.modal === 'card' && !!selK,
-      openLead: () => this.setState({ modal: 'lead', form: {} }),
+      openLead: () => this.setState({ modal: 'lead', form: {recordKind:'lead'} }),
+      openClient: () => this.setState({ modal: 'lead', form: {recordKind:'client'} }),
+      modalLeadTitle:S.form?.recordKind==='client'?'Novo cliente':'Nova negociação',leadIsNegotiation:S.form?.recordKind!=='client',modalLeadSaveLabel:S.form?.recordKind==='client'?'Salvar cliente':'Salvar negociação',
       openProp: () => this.setState({ modal: 'prop', form: {} }),
       modalOrc: S.modal === 'orc',
       modalPdf: S.modal === 'pdf' && !!S.pdfP,
@@ -1763,7 +1790,7 @@ class Component extends DCLogic {
       fNome: this.ff('nome'), fCidade: this.ff('cidade'), fValor: this.ff('valor'), fOrigem: this.ff('origem'), fTipo: this.ff('tipo'), fPot: this.ff('pot'),
       fDoc: this.ff('doc'), fTelefone: this.ff('telefone'), fEmail: this.ff('email'), fEndereco: this.ff('endereco'), fModulos: this.ff('modulos'), fGeracao: this.ff('geracao'), fModuloModelo: this.ff('moduloModelo'), fInversor: this.ff('inversor'), fEntrada: this.ff('entrada'), fParcelas: this.ff('parcelas'), fObservacoes: this.ff('observacoes'),
       fConcessionaria: this.ff('concessionaria'), fUc: this.ff('uc'), fTarifa: this.ff('tarifa'), fConta: this.ff('conta'), fLigacao: this.ff('ligacao'), fTensao: this.ff('tensao'), fHistorico: this.ff('historico'), fTelhado: this.ff('telhado'), fArea: this.ff('area'), fOrientacao: this.ff('orientacao'), fSombreamento: this.ff('sombreamento'), fMargem: this.ff('margem'),
-      fContractNumber: this.ff('contractNumber'), fContractTitle: this.ff('contractTitle'), fBusinessUnit: this.ff('businessUnit'), fPanel: this.ff('panel'), fPanelQty: this.ff('panelQty'), fPanelPrice: this.ff('panelPrice'), fPanelWarranty: this.ff('panelWarranty'), fContractInverter: this.ff('contractInverter'), fInverterQty: this.ff('inverterQty'), fInverterPrice: this.ff('inverterPrice'), fInverterWarranty: this.ff('inverterWarranty'), fStructure: this.ff('structure'), fStructureQty: this.ff('structureQty'), fStructurePrice: this.ff('structurePrice'), fStructureWarranty: this.ff('structureWarranty'), fMargin: this.ff('margin'), fDiscount: this.ff('discount'), fCommission: this.ff('commission'), fContractValue: this.ff('contractValue'), fPaymentTerms: this.ff('paymentTerms'), fInstallments: this.ff('installments'), fExecutionDays: this.ff('executionDays'), fLaborWarranty: this.ff('laborWarranty'), fAdditionalWarranty: this.ff('additionalWarranty'), fContractNotes: this.ff('contractNotes'), saveContract: () => this.saveContract(),
+      fContractNumber: this.ff('contractNumber'), fContractTitle: this.ff('contractTitle'), fBusinessUnit: this.ff('businessUnit'), fPanel: this.ff('panel'), fPanelQty: this.ff('panelQty'), fPanelPrice: this.ff('panelPrice'), fPanelWarranty: this.ff('panelWarranty'), fContractInverter: this.ff('contractInverter'), fInverterQty: this.ff('inverterQty'), fInverterPrice: this.ff('inverterPrice'), fInverterWarranty: this.ff('inverterWarranty'), fStructure: this.ff('structure'), fStructureQty: this.ff('structureQty'), fStructurePrice: this.ff('structurePrice'), fStructureWarranty: this.ff('structureWarranty'), fLabor: this.ff('labor'), fLaborQty: this.ff('laborQty'), fLaborPrice: this.ff('laborPrice'), fMargin: this.ff('margin'), fDiscount: this.ff('discount'), fCommission: this.ff('commission'), fContractValue: this.ff('contractValue'), fPaymentTerms: this.ff('paymentTerms'), fInstallments: this.ff('installments'), fExecutionDays: this.ff('executionDays'), fLaborWarranty: this.ff('laborWarranty'), fAdditionalWarranty: this.ff('additionalWarranty'), fContractNotes: this.ff('contractNotes'), saveContract: () => this.saveContract(),
       fNegotiationTitle: this.ff('negotiationTitle'), fManager: this.ff('manager'), fSeller: this.ff('seller'), fFunnel: this.ff('funnel'), fPhase: this.ff('phase'), fTags: this.ff('tags'), fInformation: this.ff('information'),
       fCompanyLegal:this.ff('legalName'),fCompanyTrade:this.ff('tradeName'),fCompanyTax:this.ff('companyTaxId'),fCompanyCity:this.ff('companyCity'),fCompanyState:this.ff('companyState'),fCompanyUtility:this.ff('companyUtility'),fCompanyAddress:this.ff('companyAddress'),fCompanyBranches:this.ff('companyBranches'),selectLogo:e=>this.setState({logoFile:e.target.files?.[0]||null}),saveCompany:()=>this.saveCompanySettings(),companyLegalVal:S.form.legalName||'',companyTradeVal:S.form.tradeName||'',companyTaxVal:S.form.companyTaxId||'',companyCityVal:S.form.companyCity||'',companyStateVal:S.form.companyState||'',companyUtilityVal:S.form.companyUtility||'',companyAddressVal:S.form.companyAddress||'',companyBranchesVal:S.form.companyBranches||'',companyLogoStatus:S.logoFile?'Arquivo selecionado: '+S.logoFile.name:(S.company?.logo_path?'Logo salva e ativa':'Nenhuma logo salva'),
       fCalcMargin:this.ff('calcMargin'),fCalcLoss:this.ff('calcLoss'),fCalcTariff:this.ff('calcTariff'),fCalcIrradiation:this.ff('calcIrradiation'),fCalcModule:this.ff('calcModule'),fCalcModuleModel:this.ff('calcModuleModel'),saveCalculation:()=>this.saveCalculationSettings(),calcMarginVal:S.form.calcMargin||'',calcLossVal:S.form.calcLoss||'',calcTariffVal:S.form.calcTariff||'',calcIrradiationVal:S.form.calcIrradiation||'',calcModuleVal:S.form.calcModule||'',calcModuleModelVal:S.form.calcModuleModel||'',
@@ -1913,7 +1940,7 @@ class Component extends DCLogic {
     return Object.assign(scr, {
       is_operational_subpage:!!operational,subpageTitle:operational?.title||'',subpageDescription:operational?.description||'',subpagePrimary:operational?.primary||(()=>{}),subpagePrimaryLabel:operational?.primaryLabel||'',subpageStats:(operational?.stats||[]).map(x=>({l:x[0],v:x[1],c:x[2],d:x[3]})),subpageCol1:operational?.cols?.[0]||'',subpageCol2:operational?.cols?.[1]||'',subpageCol3:operational?.cols?.[2]||'',subpageRows:operational?.rows||[],subpageEmpty:!!operational&&!operational.rows.length,
       crmShowClients:S.menuSelection==='Comercial|Clientes',crmShowLeads:S.menuSelection==='Comercial|Leads',crmShowManagement:S.menuSelection==='Comercial|Gestão de Negociações',crmShowFunnel:!['Comercial|Clientes','Comercial|Leads','Comercial|Gestão de Negociações'].includes(S.menuSelection)||S.menuSelection==='Comercial|Funil de Vendas',
-      crmClients:this.mapFunil(this.getFunil()).flatMap(col=>col.cards).map(c=>({n:c.n,city:c.c,type:c.tipo,source:c.o,value:c.v,open:()=>this.setState({screen:'cliente',cliSel:c})})),
+      crmClients:(S.db?.clients||[]).map(c=>{const item={id:c.id,n:c.name,c:[c.city,c.state].filter(Boolean).join(' / ')||'—',tipo:c.person_type==='company'?'Pessoa jurídica':'Pessoa física',o:c.utility_company||'—',v:c.monthly_consumption_kwh?Number(c.monthly_consumption_kwh).toLocaleString('pt-BR')+' kWh/mês':'—',createdAt:c.created_at,activityTitle:'Cliente cadastrado',details:{document:c.tax_id||'',phone:c.phone||'',email:c.email||'',address:c.address?.full||'',utility_company:c.utility_company||'',business_unit:'',information:c.notes||''}};return {n:item.n,city:item.c,type:item.tipo,source:item.o,value:item.v,open:()=>this.setState({screen:'cliente',menuSelection:'',cliSel:item})};}),
       crmLeads:this.mapFunil(this.getFunil()).slice(0,2).flatMap(col=>col.cards).map(c=>({n:c.n,city:c.c,type:c.tipo,source:c.o,value:c.v,open:c.open})),crmManagementStats:[{l:'Negociações ativas',v:String(this.getFunil().slice(0,5).reduce((n,c)=>n+c.cards.length,0))},{l:'Propostas enviadas',v:String(this.getFunil()[3]?.cards.length||0)},{l:'Fechamentos',v:String(this.getFunil()[5]?.cards.length||0)}],
       funilCols: this.mapFunil(this.getFunil()),
       atividades: this.detMap([
