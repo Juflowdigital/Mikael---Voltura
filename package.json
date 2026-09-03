@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite --open /Voltua%20ERP.dc.html",
+    "dev": "vite --open /",
     "build": "vite build",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
