@@ -405,3 +405,90 @@ export interface FieldCheckin {
   longitude: number
   occurred_at: string
 }
+
+/* ---------- Financeiro ---------- */
+
+export type FinanceDirection = 'income' | 'expense'
+export type PaymentStatus = 'pending' | 'paid' | 'overdue' | 'cancelled'
+
+export interface FinancialAccount {
+  id: string
+  name: string
+  bank_name: string | null
+  account_type: string | null
+  opening_balance: number
+  active: boolean
+  created_at: string
+}
+
+export interface FinancialTransaction {
+  id: string
+  account_id: string | null
+  client_id: string | null
+  supplier_id: string | null
+  work_id: string | null
+  contract_id: string | null
+  cost_center_id: string | null
+  direction: FinanceDirection
+  category: string
+  description: string
+  amount: number
+  due_date: string
+  paid_at: string | null
+  status: PaymentStatus
+  payment_method: string | null
+  created_at: string
+}
+
+export interface Installment {
+  id: string
+  contract_id: string
+  transaction_id: string | null
+  installment_number: number
+  total_installments: number
+  amount: number
+  due_date: string
+  paid_at: string | null
+  status: PaymentStatus
+  payment_method: string | null
+}
+
+export interface CostCenter {
+  id: string
+  code: string
+  name: string
+  kind: 'income' | 'expense' | 'both'
+  monthly_budget: number
+  active: boolean
+  created_at: string
+}
+
+export type InvoiceStatus = 'draft' | 'issued' | 'cancelled' | 'error'
+
+export interface Invoice {
+  id: string
+  number: string
+  series: string | null
+  kind: 'nfe' | 'nfse'
+  client_id: string | null
+  contract_id: string | null
+  issue_date: string
+  total_value: number
+  status: InvoiceStatus
+  access_key: string | null
+  notes: string | null
+  created_at: string
+}
+
+export interface StatementEntry {
+  id: string
+  account_id: string
+  occurred_at: string
+  description: string
+  amount: number
+  direction: FinanceDirection
+  bank_reference: string | null
+  matched_transaction_id: string | null
+  reconciled_at: string | null
+  created_at: string
+}
