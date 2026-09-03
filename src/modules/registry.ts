@@ -21,6 +21,13 @@ export const SCREENS: Record<string, ScreenLoader> = {
   '/projetos/visao-geral': () => import('./projetos/visao-geral'),
   '/projetos/gestao-de-projetos': () => import('./projetos/gestao-de-projetos'),
   '/projetos/relatorios': () => import('./projetos/relatorios'),
+  '/administracao/visao-geral': () => import('./administracao/visao-geral'),
+  '/administracao/minha-empresa': () => import('./administracao/minha-empresa'),
+  '/administracao/integracoes': () => import('./administracao/integracoes'),
+  '/administracao/usuarios': () => import('./administracao/usuarios'),
+  '/administracao/modelos': () => import('./administracao/modelos'),
+  '/administracao/regras-de-aprovacao': () => import('./administracao/regras-de-aprovacao'),
+  '/administracao/configuracoes-gerais': () => import('./administracao/configuracoes-gerais'),
 }
 
 export function screenLoader(path: string): ScreenLoader | null {

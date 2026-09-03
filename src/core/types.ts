@@ -11,17 +11,23 @@ export interface Organization {
   state: string | null
   utility_company: string | null
   logo_path: string | null
-  address: Record<string, unknown> | null
-  branches: BusinessUnit[] | null
+  address: string | null
+  /** Campo de texto livre herdado do app anterior; as unidades reais vivem em business_units. */
+  branches: string | null
 }
 
 export interface BusinessUnit {
   id: string
   name: string
-  tax_id?: string | null
-  address?: string | null
-  is_primary?: boolean
-  pending_fiscal?: number
+  tax_id: string | null
+  address: string | null
+  city: string | null
+  state: string | null
+  utility_company: string | null
+  is_primary: boolean
+  fiscal_pending: string[]
+  created_at: string
+  updated_at: string
 }
 
 export interface OrganizationSettings {
