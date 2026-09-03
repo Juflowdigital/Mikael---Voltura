@@ -65,9 +65,16 @@ function toastHost(): HTMLElement {
   return host
 }
 
+/** Quantos avisos ficam visiveis ao mesmo tempo antes de descartar os mais antigos. */
+const MAX_TOASTS = 3
+
 export function toast(message: string, kind: 'info' | 'success' | 'error' = 'info'): void {
+  const host = toastHost()
   const node = h('div', { class: 'toast' + (kind === 'info' ? '' : ' is-' + kind) }, message)
-  toastHost().appendChild(node)
+  host.appendChild(node)
+
+  while (host.childElementCount > MAX_TOASTS) host.firstElementChild?.remove()
+
   setTimeout(() => node.remove(), kind === 'error' ? 6500 : 4000)
 }
 

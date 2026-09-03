@@ -492,3 +492,83 @@ export interface StatementEntry {
   reconciled_at: string | null
   created_at: string
 }
+
+/* ---------- Pós-Vendas ---------- */
+
+export type Priority = 'low' | 'medium' | 'high' | 'critical'
+export type TicketStatus = 'open' | 'in_progress' | 'waiting_client' | 'resolved' | 'cancelled'
+
+export interface ServiceTicket {
+  id: string
+  ticket_number: string
+  client_id: string
+  work_id: string | null
+  title: string
+  description: string | null
+  priority: Priority
+  status: TicketStatus
+  assigned_to: string | null
+  sla_due_at: string | null
+  resolved_at: string | null
+  created_at: string
+}
+
+export type ServiceOrderKind = 'corretiva' | 'preventiva' | 'garantia' | 'instalacao'
+export type ServiceOrderStatus = 'scheduled' | 'in_progress' | 'done' | 'cancelled'
+
+export interface ServiceOrder {
+  id: string
+  order_number: string
+  ticket_id: string | null
+  client_id: string
+  work_id: string | null
+  kind: ServiceOrderKind
+  status: ServiceOrderStatus
+  scheduled_for: string | null
+  technician_id: string | null
+  started_at: string | null
+  finished_at: string | null
+  notes: string | null
+  created_at: string
+}
+
+export interface OmContract {
+  id: string
+  client_id: string
+  work_id: string | null
+  plan_name: string
+  frequency: string
+  amount: number
+  starts_on: string
+  ends_on: string | null
+  active: boolean
+}
+
+export interface Warranty {
+  id: string
+  client_id: string
+  work_id: string | null
+  kind: string
+  manufacturer: string | null
+  serial_number: string | null
+  starts_on: string
+  ends_on: string
+}
+
+export interface NpsResponse {
+  id: string
+  client_id: string
+  work_id: string | null
+  score: number
+  comment: string | null
+  responded_at: string
+}
+
+export interface EnergyGeneration {
+  id: string
+  work_id: string
+  reference_month: string
+  projected_kwh: number | null
+  generated_kwh: number
+  source: string
+}

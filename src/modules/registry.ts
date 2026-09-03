@@ -48,6 +48,11 @@ export const SCREENS: Record<string, ScreenLoader> = {
   '/financeiro/conciliacao': () => import('./financeiro/conciliacao'),
   '/financeiro/notas-fiscais': () => import('./financeiro/notas-fiscais'),
   '/financeiro/relatorios': () => import('./financeiro/relatorios'),
+  '/pos-vendas/visao-geral': () => import('./pos-vendas/visao-geral'),
+  '/pos-vendas/chamados': () => import('./pos-vendas/chamados'),
+  '/pos-vendas/ordens-de-servico': () => import('./pos-vendas/ordens-de-servico'),
+  '/pos-vendas/satisfacao': () => import('./pos-vendas/satisfacao'),
+  '/pos-vendas/relatorios': () => import('./pos-vendas/relatorios'),
 }
 
 export function screenLoader(path: string): ScreenLoader | null {
