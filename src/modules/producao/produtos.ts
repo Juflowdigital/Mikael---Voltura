@@ -72,20 +72,50 @@ function productForm(onSaved: () => Promise<void>): void {
 
   const body = h('div')
 
+  /**
+   * Nós derivados vivem fora do `draw()`: a cada tecla atualizamos só o texto deles.
+   * Remontar o formulário inteiro destruía o campo em foco — o cursor saltava para
+   * fora e o modal voltava ao topo a cada caractere digitado.
+   */
+  const powerReadout = h(
+    'span',
+    { style: { fontFamily: 'var(--font-display)', fontSize: '22px', fontWeight: '700', color: 'var(--accent)' } },
+    '',
+  )
+  const pricePerKwp = h('div.input', { style: { color: 'var(--text-muted)' } }, '')
+  let nameInput: HTMLInputElement | null = null
+
   function autoName(): string {
     const type = draft.generator_type ? GENERATOR_LABEL[draft.generator_type] : ''
     return `Gerador Fotovoltaico ${type} ${decimal(kitPowerKwp(lines))} kWp`.replace(/\s+/g, ' ').trim()
   }
 
+  /** Valor de um campo de metadata como texto, para reidratar o input ao trocar de aba. */
+  function metaText(key: string): string {
+    const value = draft.metadata[key]
+    return value === null || value === undefined || value === '' ? '' : String(value)
+  }
+
+  /** Recalcula potência e preço por kWp sem remontar o formulário. */
+  function refreshDerived(): void {
+    const power = kitPowerKwp(lines)
+    draft = { ...draft, total_power_wp: power * 1000 }
+    powerReadout.textContent = decimal(power, ' kWp')
+    pricePerKwp.textContent = power > 0 ? money(draft.kit_price / power) : '—'
+    if (nameInput) nameInput.placeholder = autoName()
+  }
+
   function lineEditor(line: Line): HTMLElement {
     const config = LINE_FIELDS[line.component_type]
+    /** Sempre parte do estado atual — `line` é uma cópia que envelhece entre renders. */
     const patch = (part: Partial<Line>) => {
       lines = lines.map((entry) => (entry.key === line.key ? { ...entry, ...part } : entry))
-      draw()
+      refreshDerived()
     }
     const patchAttr = (key: string, value: string) => {
-      const attributes = { ...line.attributes, [key]: value }
-      lines = lines.map((entry) => (entry.key === line.key ? { ...entry, attributes } : entry))
+      lines = lines.map((entry) =>
+        entry.key === line.key ? { ...entry, attributes: { ...entry.attributes, [key]: value } } : entry,
+      )
     }
 
     return h(
@@ -153,9 +183,6 @@ function productForm(onSaved: () => Promise<void>): void {
   }
 
   function draw(): void {
-    const power = kitPowerKwp(lines)
-    draft = { ...draft, total_power_wp: power * 1000 }
-
     const characteristics = h(
       'div',
       { style: { display: 'flex', flexDirection: 'column', gap: '16px' } },
@@ -171,11 +198,7 @@ function productForm(onSaved: () => Promise<void>): void {
           },
         },
         h('span', { style: { fontSize: '13px', fontWeight: '650' } }, 'Potência Total do Gerador Completo'),
-        h(
-          'span',
-          { style: { fontFamily: 'var(--font-display)', fontSize: '22px', fontWeight: '700', color: 'var(--accent)' } },
-          decimal(power, ' kWp'),
-        ),
+        powerReadout,
       ),
       ...(['painel', 'inversor', 'estrutura'] as ComponentType[]).map((type) =>
         h(
@@ -206,13 +229,10 @@ function productForm(onSaved: () => Promise<void>): void {
           value: draft.kit_price ? String(draft.kit_price) : '',
           onInput: (value) => {
             draft = { ...draft, kit_price: parseMoney(value) }
+            refreshDerived()
           },
         }),
-        h(
-          'div.field',
-          h('span.field-label', 'Preço por kWp'),
-          h('div.input', { style: { color: 'var(--text-muted)' } }, power > 0 ? money(draft.kit_price / power) : '—'),
-        ),
+        h('div.field', h('span.field-label', 'Preço por kWp'), pricePerKwp),
       ),
     )
 
@@ -224,18 +244,31 @@ function productForm(onSaved: () => Promise<void>): void {
         '1fr 1fr',
         textField({
           label: 'Garantia de instalação (anos)',
+          value: metaText('installation_warranty_years'),
           onInput: (value) => {
             draft = { ...draft, metadata: { ...draft.metadata, installation_warranty_years: parseMoney(value) } }
           },
         }),
         textField({
           label: 'Garantia de mão de obra (dias)',
+          value: metaText('labor_warranty_days'),
           onInput: (value) => {
             draft = { ...draft, metadata: { ...draft.metadata, labor_warranty_days: parseMoney(value) } }
           },
         }),
       ),
     )
+
+    const nameField = textField({
+      label: 'Nome',
+      required: true,
+      value: draft.name,
+      placeholder: autoName(),
+      onInput: (value) => {
+        draft = { ...draft, name: value }
+      },
+    })
+    nameInput = nameField.querySelector('input')
 
     mount(
       body,
@@ -284,15 +317,7 @@ function productForm(onSaved: () => Promise<void>): void {
         ),
         formRow(
           '3fr 1fr',
-          textField({
-            label: 'Nome',
-            required: true,
-            value: draft.name,
-            placeholder: autoName(),
-            onInput: (value) => {
-              draft = { ...draft, name: value }
-            },
-          }),
+          nameField,
           h(
             'div',
             { style: { alignSelf: 'end', paddingBottom: '9px' } },
@@ -305,7 +330,11 @@ function productForm(onSaved: () => Promise<void>): void {
         formRow(
           '1fr 1fr',
           textField({ label: 'Unidade', value: draft.unit, onInput: (value) => (draft = { ...draft, unit: value }) }),
-          textField({ label: 'Categoria', onInput: (value) => (draft = { ...draft, category: value || null }) }),
+          textField({
+            label: 'Categoria',
+            value: draft.category ?? '',
+            onInput: (value) => (draft = { ...draft, category: value || null }),
+          }),
         ),
         tabs({
           tabs: [
@@ -322,6 +351,8 @@ function productForm(onSaved: () => Promise<void>): void {
         activeTab === 'preco' ? price : activeTab === 'garantia' ? warranty : characteristics,
       ),
     )
+
+    refreshDerived()
   }
 
   const handle = openModal({
@@ -346,7 +377,7 @@ function productForm(onSaved: () => Promise<void>): void {
             }
             const ok = await guard(async () => {
               await createProduct(
-                { ...draft, name },
+                { ...draft, name, total_power_wp: kitPowerKwp(lines) * 1000 },
                 lines.map(({ key, ...rest }) => {
                   void key
                   return rest

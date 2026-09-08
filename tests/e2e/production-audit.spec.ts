@@ -1,87 +1,27 @@
-import { test, expect, type Page } from '@playwright/test'
-import { createClient, type SupabaseClient } from '@supabase/supabase-js'
-import { readFileSync } from 'node:fs'
+/** Auditoria de produção: login, navegação pelos 11 módulos e persistência real no banco. */
+import { test, expect } from '@playwright/test'
+import { createTenant, destroyTenant, goto, login, must, type Tenant } from './support/tenant'
 
-function localEnv(): Record<string, string> {
-  const result: Record<string, string> = {}
-  for (const line of readFileSync('.env.local', 'utf8').split(/\r?\n/)) {
-    const match = line.match(/^([^#=]+)=(.*)$/)
-    if (match) result[match[1].trim()] = match[2].trim().replace(/^['"]|['"]$/g, '')
-  }
-  return result
-}
-
-const env = localEnv()
-const stamp = `${Date.now()}`
-const email = `audit-${stamp}@example.invalid`
-const password = `Audit-${stamp}-Aa9!`
-
-let admin: SupabaseClient
-let userId = ''
-let organizationId = ''
-let clientId = ''
-
-async function must<T extends { error: unknown }>(promise: PromiseLike<T>): Promise<T> {
-  const result = await promise
-  if (result.error) throw result.error
-  return result
-}
-
-/** Navega pelo menu usando a rota, sem depender de rótulos ambíguos. */
-async function goto(page: Page, group: string, path: string): Promise<void> {
-  const item = page.locator(`.sidebar-sub-item[data-path="${path}"]`)
-  if (!(await item.isVisible().catch(() => false))) {
-    await page.locator(`.sidebar-group[data-group="${group}"]`).click()
-  }
-  await item.click()
-  await page.waitForTimeout(300)
-}
-
-async function login(page: Page): Promise<void> {
-  await page.goto('/')
-  await page.getByPlaceholder('voce@empresa.com.br').fill(email)
-  await page.getByPlaceholder('Digite sua senha').fill(password)
-  await page.getByRole('button', { name: 'Entrar' }).click()
-  await page.locator('.app-sidebar').waitFor({ timeout: 20_000 })
-}
+let tenant: Tenant
 
 test.beforeAll(async () => {
-  expect(env.VITE_SUPABASE_URL).toBeTruthy()
-  expect(env.SUPABASE_SERVICE_ROLE_KEY).toBeTruthy()
-  admin = createClient(env.VITE_SUPABASE_URL, env.SUPABASE_SERVICE_ROLE_KEY, {
-    auth: { persistSession: false, autoRefreshToken: false },
-  })
+  tenant = await createTenant('audit')
 
-  const created = await admin.auth.admin.createUser({ email, password, email_confirm: true })
-  if (created.error || !created.data.user) throw created.error ?? new Error('Usuário de auditoria não criado')
-  userId = created.data.user.id
-  await must(admin.from('profiles').upsert({ id: userId, full_name: 'Auditor E2E' }))
-
-  const org = await must(
-    admin
-      .from('organizations')
-      .insert({ name: `Organização Auditoria ${stamp}`, city: 'Cuiabá', state: 'MT', utility_company: 'Energisa MT' })
-      .select('id')
-      .single(),
+  /* Um cliente semeado, para conferir que a lista lê do banco. */
+  await must(
+    tenant.admin.from('clients').insert({
+      organization_id: tenant.organizationId,
+      name: `Cliente Auditoria ${tenant.stamp}`,
+      person_type: 'company',
+      city: 'Cuiabá',
+      state: 'MT',
+      owner_id: tenant.userId,
+    }),
   )
-  organizationId = org.data.id
-
-  await must(admin.from('organization_members').insert({ organization_id: organizationId, user_id: userId, role: 'admin', active: true }))
-  await must(admin.from('organization_settings').insert({ organization_id: organizationId, calculation: { module_power_w: 570 }, alerts: {}, integrations: {} }))
-
-  const client = await must(
-    admin
-      .from('clients')
-      .insert({ organization_id: organizationId, name: `Cliente Auditoria ${stamp}`, person_type: 'company', city: 'Cuiabá', state: 'MT', owner_id: userId })
-      .select('id')
-      .single(),
-  )
-  clientId = client.data.id
 })
 
 test.afterAll(async () => {
-  if (organizationId) await admin.from('organizations').delete().eq('id', organizationId)
-  if (userId) await admin.auth.admin.deleteUser(userId)
+  await destroyTenant(tenant)
 })
 
 test('login, navegação e persistência funcionam de ponta a ponta', async ({ page }) => {
@@ -97,7 +37,7 @@ test('login, navegação e persistência funcionam de ponta a ponta', async ({ p
     }
   })
 
-  await login(page)
+  await login(page, tenant)
 
   /* O painel inicial carrega com o nome de quem entrou. */
   await expect(page.locator('.page-title')).toContainText('AUDITOR')
@@ -107,10 +47,10 @@ test('login, navegação e persistência funcionam de ponta a ponta', async ({ p
 
   /* Cliente semeado aparece na lista. */
   await goto(page, 'comercial', '/comercial/clientes')
-  await expect(page.getByText(`Cliente Auditoria ${stamp}`)).toBeVisible()
+  await expect(page.getByText(`Cliente Auditoria ${tenant.stamp}`)).toBeVisible()
 
   /* Cadastro grava no banco. */
-  const novoCliente = `Cliente Criado ${stamp}`
+  const novoCliente = `Cliente Criado ${tenant.stamp}`
   await page.getByRole('button', { name: '+ Novo Cliente' }).click()
   const modal = page.locator('.modal')
   await modal.locator('.field', { hasText: 'Nome' }).locator('input').fill(novoCliente)
@@ -118,7 +58,7 @@ test('login, navegação e persistência funcionam de ponta a ponta', async ({ p
   await modal.getByRole('button', { name: 'Salvar cliente' }).click()
   await expect(page.getByText('Cliente cadastrado.')).toBeVisible()
 
-  const gravado = await admin.from('clients').select('id').eq('organization_id', organizationId).eq('name', novoCliente)
+  const gravado = await tenant.admin.from('clients').select('id').eq('organization_id', tenant.organizationId).eq('name', novoCliente)
   expect(gravado.data).toHaveLength(1)
 
   /* O dado sobrevive ao reload. */
