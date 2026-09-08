@@ -23,6 +23,7 @@ const rules = [
   [/\b(?:TODO|FIXME|XXX)\b/g, 'implementação pendente'],
   [/(?:mock|fake|dummy)Data\b/gi, 'dados simulados ativos'],
   [/console\.log\(/g, 'console.log esquecido'],
+  [/onInput[^\n]*\bdraw\(\)/g, 'redesenho a cada tecla: o campo perde o foco e a tela volta ao topo'],
 ]
 
 const failures = []

@@ -130,6 +130,30 @@ export async function render(host: HTMLElement): Promise<void> {
 
   const body = h('div')
 
+  /**
+   * Os totais de preço vivem fora do `draw()`: a cada tecla só o texto deles muda.
+   * Remontar a página inteira destruía o campo em foco — o cursor saltava para fora
+   * e a tela voltava ao topo a cada caractere digitado.
+   */
+  const readOnlyStyle = { color: 'var(--text-muted)' }
+  const totalProducts = h('div.input', { style: readOnlyStyle }, '')
+  const totalWithMargin = h('div.input', { style: readOnlyStyle }, '')
+  const totalFinal = h('div.input', { style: { borderColor: 'var(--accent)', fontWeight: '700' } }, '')
+  const totalCommission = h('div.input', { style: readOnlyStyle }, '')
+
+  /** Zero significa "não preenchido" nestes campos — evita exibir "0" em todas as caixas. */
+  const numText = (value: number): string => (value ? String(value) : '')
+  const optionalText = (value: number | null): string => (value === null ? '' : String(value))
+
+  /** Recalcula os totais sem remontar a tela. */
+  function refreshPrice(): void {
+    const price = priceOf(draft)
+    totalProducts.textContent = money(price.products)
+    totalWithMargin.textContent = money(price.withMargin)
+    totalFinal.textContent = money(price.final)
+    totalCommission.textContent = money(price.commission)
+  }
+
   function itemColumns(): Column<ItemInput & { key: number }>[] {
     return [
       {
@@ -234,13 +258,7 @@ export async function render(host: HTMLElement): Promise<void> {
   }
 
   function drawPrice(): HTMLElement {
-    const price = priceOf(draft)
-    const readOnly = (label: string, value: string, strong = false) =>
-      h(
-        'div.field',
-        h('span.field-label', label),
-        h('div.input', { style: strong ? { borderColor: 'var(--accent)', fontWeight: '700' } : { color: 'var(--text-muted)' } }, value),
-      )
+    const readOnly = (label: string, node: HTMLElement) => h('div.field', h('span.field-label', label), node)
 
     return h(
       'div',
@@ -249,24 +267,24 @@ export async function render(host: HTMLElement): Promise<void> {
         'div.card',
         { style: { padding: '18px' } },
         h('div.field-label', { style: { marginBottom: '10px' } }, 'Valores Base'),
-        formRow('1fr 1fr', readOnly('Valor dos Produtos (R$)', money(price.products)), readOnly('Preço com Margem (R$)', money(price.withMargin))),
+        formRow('1fr 1fr', readOnly('Valor dos Produtos (R$)', totalProducts), readOnly('Preço com Margem (R$)', totalWithMargin)),
         h('div.field-label', { style: { margin: '18px 0 10px' } }, 'Ajustes de Preço'),
         formRow(
           '1fr 1fr 1fr 1fr',
-          textField({ label: 'Margem Adicional (%)', onInput: (v) => { draft.extraMarginPercent = parseMoney(v); draw() } }),
-          textField({ label: 'Margem Adicional (R$)', onInput: (v) => { draft.extraMarginValue = parseMoney(v); draw() } }),
-          textField({ label: 'Desconto (%)', onInput: (v) => { draft.discountPercent = parseMoney(v); draw() } }),
-          textField({ label: 'Desconto (R$)', onInput: (v) => { draft.discountValue = parseMoney(v); draw() } }),
+          textField({ label: 'Margem Adicional (%)', value: numText(draft.extraMarginPercent), onInput: (v) => { draft.extraMarginPercent = parseMoney(v); refreshPrice() } }),
+          textField({ label: 'Margem Adicional (R$)', value: numText(draft.extraMarginValue), onInput: (v) => { draft.extraMarginValue = parseMoney(v); refreshPrice() } }),
+          textField({ label: 'Desconto (%)', value: numText(draft.discountPercent), onInput: (v) => { draft.discountPercent = parseMoney(v); refreshPrice() } }),
+          textField({ label: 'Desconto (R$)', value: numText(draft.discountValue), onInput: (v) => { draft.discountValue = parseMoney(v); refreshPrice() } }),
         ),
         h('div.field-label', { style: { margin: '18px 0 10px' } }, 'Valor Final e Comissão'),
         formRow(
           '1.2fr 1fr 1fr 1fr',
           draft.useCalculated
-            ? readOnly('Preço do contrato (R$)', money(price.final), true)
-            : textField({ label: 'Preço do contrato (R$)', onInput: (v) => { draft.manualPrice = parseMoney(v); draw() } }),
+            ? readOnly('Preço do contrato (R$)', totalFinal)
+            : textField({ label: 'Preço do contrato (R$)', value: numText(draft.manualPrice), onInput: (v) => { draft.manualPrice = parseMoney(v); refreshPrice() } }),
           h('div', { style: { alignSelf: 'end', paddingBottom: '9px' } }, toggleField('Usar Valor Calculado', draft.useCalculated, (value) => { draft.useCalculated = value; draw() })),
-          textField({ label: 'Comissão (%)', onInput: (v) => { draft.commissionPercent = parseMoney(v); draw() } }),
-          readOnly('Comissão do Vendedor (R$)', money(price.commission)),
+          textField({ label: 'Comissão (%)', value: numText(draft.commissionPercent), onInput: (v) => { draft.commissionPercent = parseMoney(v); refreshPrice() } }),
+          readOnly('Comissão do Vendedor (R$)', totalCommission),
         ),
       ),
     )
@@ -279,14 +297,14 @@ export async function render(host: HTMLElement): Promise<void> {
       h(
         'div.card',
         { style: { padding: '18px' } },
-        textField({ label: 'Condição de Pagamento', onInput: (v) => (draft.paymentTerms = v) }),
+        textField({ label: 'Condição de Pagamento', value: draft.paymentTerms, onInput: (v) => (draft.paymentTerms = v) }),
         h(
           'div',
           { style: { marginTop: '14px' } },
           formRow(
             '1fr 1fr',
-            textField({ label: 'Número de Parcelas (1 a 120)', onInput: (v) => (draft.installments = v.trim() ? Math.round(parseMoney(v)) : null) }),
-            selectField({ label: 'Forma de Pagamento Padrão', placeholder: 'Selecione', options: PAYMENT_METHODS, onChange: (v) => (draft.paymentMethod = v) }),
+            textField({ label: 'Número de Parcelas (1 a 120)', value: optionalText(draft.installments), onInput: (v) => (draft.installments = v.trim() ? Math.round(parseMoney(v)) : null) }),
+            selectField({ label: 'Forma de Pagamento Padrão', value: draft.paymentMethod, placeholder: 'Selecione', options: PAYMENT_METHODS, onChange: (v) => (draft.paymentMethod = v) }),
           ),
         ),
       ),
@@ -296,16 +314,16 @@ export async function render(host: HTMLElement): Promise<void> {
         { style: { padding: '18px' } },
         formRow(
           '1fr 1fr',
-          textField({ label: 'Painéis Solares (anos)', onInput: (v) => (draft.warrantyPanels = v.trim() ? parseMoney(v) : null) }),
-          textField({ label: 'Armazenamento (anos)', onInput: (v) => (draft.warrantyStorage = v.trim() ? parseMoney(v) : null) }),
+          textField({ label: 'Painéis Solares (anos)', value: optionalText(draft.warrantyPanels), onInput: (v) => (draft.warrantyPanels = v.trim() ? parseMoney(v) : null) }),
+          textField({ label: 'Armazenamento (anos)', value: optionalText(draft.warrantyStorage), onInput: (v) => (draft.warrantyStorage = v.trim() ? parseMoney(v) : null) }),
         ),
         h(
           'div',
           { style: { marginTop: '14px' } },
           formRow(
             '1fr 1fr',
-            textField({ label: 'Inversores (anos)', onInput: (v) => (draft.warrantyInverters = v.trim() ? parseMoney(v) : null) }),
-            textField({ label: 'Mão de Obra (dias)', onInput: (v) => (draft.warrantyLabor = v.trim() ? parseMoney(v) : null) }),
+            textField({ label: 'Inversores (anos)', value: optionalText(draft.warrantyInverters), onInput: (v) => (draft.warrantyInverters = v.trim() ? parseMoney(v) : null) }),
+            textField({ label: 'Mão de Obra (dias)', value: optionalText(draft.warrantyLabor), onInput: (v) => (draft.warrantyLabor = v.trim() ? parseMoney(v) : null) }),
           ),
         ),
       ),
@@ -315,8 +333,8 @@ export async function render(host: HTMLElement): Promise<void> {
         { style: { padding: '18px' } },
         formRow(
           '1fr 1fr',
-          textField({ label: 'Prazo de Execução (Dias)', onInput: (v) => (draft.executionDays = v.trim() ? Math.round(parseMoney(v)) : null) }),
-          textField({ label: 'Potência do sistema (kWp)', onInput: (v) => (draft.systemPowerKwp = v.trim() ? parseMoney(v) : null) }),
+          textField({ label: 'Prazo de Execução (Dias)', value: optionalText(draft.executionDays), onInput: (v) => (draft.executionDays = v.trim() ? Math.round(parseMoney(v)) : null) }),
+          textField({ label: 'Potência do sistema (kWp)', value: optionalText(draft.systemPowerKwp), onInput: (v) => (draft.systemPowerKwp = v.trim() ? parseMoney(v) : null) }),
         ),
       ),
     )
@@ -352,6 +370,8 @@ export async function render(host: HTMLElement): Promise<void> {
         h('button.btn.btn-light', { onClick: () => void save() }, 'Criar Contrato'),
       ),
     )
+
+    refreshPrice()
   }
 
   async function save(): Promise<void> {
