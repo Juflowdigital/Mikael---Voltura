@@ -35,6 +35,10 @@ const BUCKET_TITLE: Record<DealBucket, string> = {
   arquivadas: 'Arquivadas',
 }
 
+function openProposal(proposal: Proposal): void {
+  navigate('/comercial/proposta', { id: proposal.id })
+}
+
 export async function render(host: HTMLElement, ctx: RouteContext): Promise<void> {
   const all = await findAll()
   const bucket = (ctx.query.get('filtro') as DealBucket | null) ?? 'andamento'
@@ -86,6 +90,25 @@ export async function render(host: HTMLElement, ctx: RouteContext): Promise<void
       value: (row) => PROPOSAL_LABEL[row.status],
       render: (row) => badge(PROPOSAL_LABEL[row.status], PROPOSAL_TONE[row.status]),
     },
+    {
+      key: 'actions',
+      label: 'Ações',
+      align: 'right',
+      width: '130px',
+      render: (row) =>
+        h(
+          'button.btn.btn-light',
+          {
+            style: { padding: '5px 12px', fontSize: '12px' },
+            title: 'Abrir a proposta para imprimir ou enviar',
+            onClick: (event: MouseEvent) => {
+              event.stopPropagation()
+              openProposal(row)
+            },
+          },
+          'Ver proposta',
+        ),
+    },
   ]
 
   mount(
@@ -119,6 +142,7 @@ export async function render(host: HTMLElement, ctx: RouteContext): Promise<void
         dataTable({
           columns,
           rows,
+          onRowClick: openProposal,
           searchable: true,
           searchPlaceholder: 'Buscar…',
           initialSort: { key: 'created_at', ascending: false },
