@@ -213,6 +213,7 @@ export interface NavLocation {
  */
 export const SUBPAGES: { groupSlug: string; label: string; slug: string }[] = [
   { groupSlug: 'comercial', label: 'Nova Negociação', slug: 'nova-negociacao' },
+  { groupSlug: 'comercial', label: 'Proposta', slug: 'proposta' },
   { groupSlug: 'contratos', label: 'Criar Contrato', slug: 'criar-contrato' },
 ]
 

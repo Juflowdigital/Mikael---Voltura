@@ -1,5 +1,5 @@
 /** Repositorio de propostas comerciais. */
-import { insert, list } from './db'
+import { findById, insert, list, update } from './db'
 import type { Proposal, ProposalStatus } from '../core/types'
 import type { Tone } from '../ui/components/badge'
 
@@ -26,6 +26,15 @@ export const PROPOSAL_TONE: Record<ProposalStatus, Tone> = {
 
 export function findAll(): Promise<Proposal[]> {
   return list<Proposal>('proposals', { select: SELECT, orderBy: 'created_at' })
+}
+
+export function findOne(id: string): Promise<Proposal | null> {
+  return findById<Proposal>('proposals', id, SELECT)
+}
+
+/** Move a negociacao entre os estados do funil (enviada, aceita, perdida...). */
+export function setStatus(id: string, status: ProposalStatus): Promise<Proposal> {
+  return update<Proposal>('proposals', id, { status })
 }
 
 
